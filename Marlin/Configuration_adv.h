@@ -138,7 +138,7 @@
  */
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
   #define THERMAL_PROTECTION_PERIOD 40        // Seconds
-  #define THERMAL_PROTECTION_HYSTERESIS 4     // Degrees Celsius
+  #define THERMAL_PROTECTION_HYSTERESIS 10    // Degrees Celsius
 
   //#define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
   #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
@@ -219,7 +219,7 @@
 
 // Show Temperature ADC value
 // Enable for M105 to include ADC values read from temperature sensors.
-//#define SHOW_TEMP_ADC_VALUES
+#define SHOW_TEMP_ADC_VALUES
 
 /**
  * High Temperature Thermistor Support
@@ -345,7 +345,7 @@
  * Multiple extruders can be assigned to the same pin in which case
  * the fan will turn on when any selected extruder is above the threshold.
  */
-#define E0_AUTO_FAN_PIN -1
+#define E0_AUTO_FAN_PIN 77
 #define E1_AUTO_FAN_PIN -1
 #define E2_AUTO_FAN_PIN -1
 #define E3_AUTO_FAN_PIN -1
@@ -514,7 +514,7 @@
 #define X_HOME_BUMP_MM 5
 #define Y_HOME_BUMP_MM 5
 #define Z_HOME_BUMP_MM 2
-#define HOMING_BUMP_DIVISOR { 2, 2, 4 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#define HOMING_BUMP_DIVISOR { 10, 10, 10 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 //#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
 //#define HOMING_BACKOFF_MM { 2, 2, 2 }  // (mm) Move away from the endstops after homing
 
@@ -655,7 +655,7 @@
 #define DEFAULT_MINSEGMENTTIME        20000
 
 // If defined the movements slow down when the look ahead buffer is only half full
-#define SLOWDOWN
+//#define SLOWDOWN
 
 // Frequency limit
 // See nophead's blog for more info
@@ -843,7 +843,7 @@
 #endif
 
 // Include a page of printer information in the LCD Main Menu
-//#define LCD_INFO_MENU
+#define LCD_INFO_MENU
 
 // Scroll a longer status message into view
 //#define STATUS_MESSAGE_SCROLLING
@@ -858,7 +858,7 @@
 //#define LCD_SET_PROGRESS_MANUALLY
 
 #if HAS_CHARACTER_LCD && HAS_PRINT_PROGRESS
-  //#define LCD_PROGRESS_BAR              // Show a progress bar on HD44780 LCDs for SD printing
+  #define LCD_PROGRESS_BAR              // Show a progress bar on HD44780 LCDs for SD printing
   #if ENABLED(LCD_PROGRESS_BAR)
     #define PROGRESS_BAR_BAR_TIME 2000    // (ms) Amount of time to show the bar
     #define PROGRESS_BAR_MSG_TIME 3000    // (ms) Amount of time to show the status message
@@ -872,16 +872,16 @@
  * LED Control Menu
  * Enable this feature to add LED Control to the LCD menu
  */
-//#define LED_CONTROL_MENU
+#define LED_CONTROL_MENU
 #if ENABLED(LED_CONTROL_MENU)
   #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
   #if ENABLED(LED_COLOR_PRESETS)
-    #define LED_USER_PRESET_RED        255  // User defined RED value
-    #define LED_USER_PRESET_GREEN      128  // User defined GREEN value
-    #define LED_USER_PRESET_BLUE         0  // User defined BLUE value
+    #define LED_USER_PRESET_RED          5  // User defined RED value
+    #define LED_USER_PRESET_GREEN        5  // User defined GREEN value
+    #define LED_USER_PRESET_BLUE         5  // User defined BLUE value
     #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
-    //#define LED_USER_PRESET_STARTUP       // Have the printer display the user preset color on startup
+    #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
   #endif
 #endif // LED_CONTROL_MENU
 
@@ -905,7 +905,7 @@
 
   //#define MENU_ADDAUTOSTART               // Add a menu option to run auto#.g files
 
-  #define EVENT_GCODE_SD_STOP "G28XY"       // G-code to run on Stop Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_STOP "G28"         // G-code to run on Stop Print (e.g., "G28XY" or "G27")
 
   /**
    * Continue after Power-Loss (Creality3D)
@@ -915,10 +915,10 @@
    * an option on the LCD screen to continue the print from the last-known
    * point in the file.
    */
-  //#define POWER_LOSS_RECOVERY
+  #define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
-    //#define POWER_LOSS_PIN         44 // Pin to detect power loss (optional)
-    //#define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
+    #define POWER_LOSS_PIN           44 // Pin to detect power loss (optional)
+    #define POWER_LOSS_STATE        LOW // State of pin indicating power loss
     //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
     //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
 
@@ -969,7 +969,7 @@
   //#define LONG_FILENAME_HOST_SUPPORT
 
   // Enable this option to scroll long filenames in the SD card menu
-  //#define SCROLL_LONG_FILENAMES
+  #define SCROLL_LONG_FILENAMES
 
   // Leave the heaters on after Stop Print (not recommended!)
   //#define SD_ABORT_NO_COOLDOWN
@@ -1148,7 +1148,7 @@
  *
  * Warning: Does not respect endstops!
  */
-//#define BABYSTEPPING
+#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define BABYSTEP_WITHOUT_HOMING
   //#define BABYSTEP_XY                     // Also enable X/Y Babystepping. Not supported on DELTA!
@@ -2035,7 +2035,7 @@
 
 // @section i2cbus
 
-//#define EXPERIMENTAL_I2CBUS
+#define EXPERIMENTAL_I2CBUS
 #define I2C_SLAVE_ADDRESS  0 // Set a value from 8 to 127 to act as a slave
 
 // @section extras
@@ -2160,6 +2160,18 @@
 
   // Display filament width on the LCD status line. Status messages will expire after 5 seconds.
   //#define FILAMENT_LCD_DISPLAY
+#endif
+
+/*
+ * LEDs using PCA9632 but wired up differently
+*/
+#if ENABLED(PCA9632)
+  #define PCA9632_NO_AUTO_INC                        // Overlord, seems it doesn't support auto-increment
+  //#define PCA9632_MODE1_VALUE 0b10100001             // Overlord, (AI2,AI0, ALLCALL)
+  //#define PCA9632_MODE2_VALUE 0b00000001             // Overlord, (DIMMING, CHANGE ON STOP)
+  #define PCA9632_GRN 0x00                           // Overlord, colors on different pins
+  #define PCA9632_RED 0x02                           // Overlord
+  #define PCA9632_BLU 0x04                           // Overlord
 #endif
 
 /**
@@ -2498,12 +2510,12 @@
   //#define SERVICE_INTERVAL_3    1 // print hours
 #endif
 
-// @section develop
+    // @section develop
 
-/**
+    /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-//#define PINS_DEBUGGING
+    //#define PINS_DEBUGGING
 
-// Enable Marlin dev mode which adds some special commands
-//#define MARLIN_DEV_MODE
+    // Enable Marlin dev mode which adds some special commands
+    //#define MARLIN_DEV_MODE
