@@ -1841,16 +1841,18 @@ void Temperature::init() {
 
     static float tr_target_temperature[HOTENDS + 1] = { 0.0 };
 
-    /**
+    /***/
       SERIAL_ECHO_START();
       SERIAL_ECHOPGM("Thermal Thermal Runaway Running. Heater ID: ");
       if (heater_id == -2) SERIAL_ECHOPGM("chamber");
       if (heater_id < 0) SERIAL_ECHOPGM("bed"); else SERIAL_ECHO(heater_id);
       SERIAL_ECHOPAIR(" ;  State:", sm.state, " ;  Timer:", sm.timer, " ;  Temperature:", current, " ;  Target Temp:", target);
-      if (heater_id >= 0)
-        SERIAL_ECHOPAIR(" ;  Idle Timeout:", hotend_idle[heater_id].timed_out);
-      else
-        SERIAL_ECHOPAIR(" ;  Idle Timeout:", bed_idle.timed_out);
+      #if HEATER_IDLE_HANDLER
+        if (heater_id >= 0)
+          SERIAL_ECHOPAIR(" ;  Idle Timeout:", hotend_idle[heater_id].timed_out);
+        else
+          SERIAL_ECHOPAIR(" ;  Idle Timeout:", bed_idle.timed_out);
+      #endif
       SERIAL_EOL();
     //*/
 
