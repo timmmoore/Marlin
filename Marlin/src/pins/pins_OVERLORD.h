@@ -122,7 +122,7 @@
 #define LCD_PINS_D7 6
 
 //  #define APPROACH_PIN 11
-  #define APPROACH_PIN 46
+#define APPROACH_PIN 46
 
 //#define GATE_PIN 36
 
