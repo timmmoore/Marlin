@@ -137,7 +137,7 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME " Overlord Pro"
+#define CUSTOM_MACHINE_NAME "Overlord Pro"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -615,7 +615,7 @@
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS 50.0 // (mm)
+    #define DELTA_CALIBRATION_RADIUS 75.0 // (mm)
     // Set the steprate for papertest probing
     #define PROBE_MANUALLY_STEP 0.05  // (mm)
   #endif
@@ -627,12 +627,12 @@
   #define DELTA_DIAGONAL_ROD 206.0    // (mm)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 285.59         // (mm) Get this value from G33 auto calibrate
+  #define DELTA_HEIGHT 286.39         // (mm) Get this value from G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { -3.25, 0.0, -0.41 } // Get these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.02, -0.69 } // Get these values from G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 96.88          // (mm) Get this value from G33 auto calibrate
+  #define DELTA_RADIUS 99.83          // (mm) Get this value from G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
@@ -972,7 +972,7 @@
 #define Z_PROBE_SPEED_FAST (HOMING_FEEDRATE_Z /3)
 
 // Feedrate (mm/m) for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 15)
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 10)
 
 // The number of probes to perform at each point.
 //   Set to 2 for a fast/slow probe, using the second probe result.
@@ -1979,6 +1979,9 @@
 // https://github.com/Ultimaker/Ultimaker2/tree/master/1249_Ulticontroller_Board_(x1)
 //
 #define ULTI_CONTROLLER
+#if defined(ULTI_CONTROLLER)
+  #define U8GLIB_SH1106
+#endif
 
 //
 // TinyBoy2 128x64 OLED / Encoder Panel
