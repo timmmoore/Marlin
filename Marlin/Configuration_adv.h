@@ -2166,12 +2166,9 @@
  * LEDs using PCA9632 but wired up differently
 */
 #if ENABLED(PCA9632)
-  #define PCA9632_NO_AUTO_INC                        // Overlord, seems it doesn't support auto-increment
-  //#define PCA9632_MODE1_VALUE 0b10100001             // Overlord, (AI2,AI0, ALLCALL)
-  //#define PCA9632_MODE2_VALUE 0b00000001             // Overlord, (DIMMING, CHANGE ON STOP)
   #define PCA9632_GRN 0x00                           // Overlord, colors on different pins
   #define PCA9632_RED 0x02                           // Overlord
-  #define PCA9632_BLU 0x04                           // Overlord
+//  #define PCA9632_BLU 0x04                           // Overlord
 #endif
 
 /**
