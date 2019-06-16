@@ -56,21 +56,21 @@
 
   #define X_STEP_PIN 25
   #define X_DIR_PIN 23
-  #define X_MIN_PIN -1 //46 //JC Change from 22 in GGC source
+  #define X_MIN_PIN -1
   #define X_MAX_PIN 24
   #define X_ENABLE_PIN 27
 
   #define Y_STEP_PIN 31
   #define Y_DIR_PIN 33
-  #define Y_MIN_PIN -1 // JC: Changed from 26 in GGC source
+  #define Y_MIN_PIN -1
   #define Y_MAX_PIN 28
   #define Y_ENABLE_PIN 29
 
   #define Z_STEP_PIN 37
   #define Z_DIR_PIN 39
-  #define Z_MIN_PIN 46 //30 // Test for BL-Touch JC: Changed from 30 in GGC source
-  #define Z_MIN_PROBE_PIN 46 //11// Test for BL-Touch
-  #define SERVO0_PIN -1 //46 // Test for BL-Touch
+  #define Z_MIN_PIN 46
+  #define Z_MIN_PROBE_PIN 46
+  #define SERVO0_PIN -1
   #define Z_MAX_PIN 32
   #define Z_ENABLE_PIN 35
 
@@ -92,20 +92,20 @@
   #define E1_ENABLE_PIN       48
 
   #define SDSS                53
-  #define LED_PIN             8 // JC: According to the MarlinForOverlord source this should be 13
+  #define LED_PIN             8
   #define FAN_PIN             7
 
-  #define PS_ON_PIN           12 //JC: Changed from 12 in GGE Source
-  #define EXP_VOLTAGE_LEVEL_PIN 34 //GGE Test
+  #define PS_ON_PIN           12
+  #define EXP_VOLTAGE_LEVEL_PIN 34
  
-//  #define KILL_PIN           -1 // JC: uncommented
-//  #define SUICIDE_PIN        -1  // JC: This was set to 12 and commented reset to -1 //PIN that has to be turned on right after start, to keep power flowing.
+//  #define KILL_PIN           -1
+//  #define SUICIDE_PIN        -1
  #define SLEEP_PIN 6          
  #define ENERGE_PIN 12        // Not exsisting for Marlin
 
-  #define BTN_ENC 16          //GGE Enter Pin
-  #define BTN_UP 19             //GGE Button UP Pin
-  #define BTN_DWN  17           //GGE Button DOWN Pin
+  #define BTN_ENC 16            // Enter Pin
+  #define BTN_UP 19             // Button UP Pin
+  #define BTN_DWN  17           // Button DOWN Pin
 
   #ifdef FilamentDetection
   #define FilamentDetectionPin 46
@@ -122,7 +122,6 @@
 #define LCD_PINS_D7 6
 
 //  #define APPROACH_PIN 11
-//  #define APPROACH_PIN -1
   #define APPROACH_PIN 46
 
 //#define GATE_PIN 36
