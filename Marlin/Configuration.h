@@ -309,7 +309,7 @@
  *
  * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
  */
-// Note for Overlord this isn't a X360 power supply, but is used to enable internal power to steppers and heaters
+// Note for Overlord this isn't a X360 power supply, but is used to switch on internal power to steppers and heaters
 #define POWER_SUPPLY 2
 
 #if POWER_SUPPLY > 0
@@ -379,6 +379,7 @@
  *  1010 : Pt1000 with 1k pullup (non standard)
  *   147 : Pt100 with 4k7 pullup
  *   110 : Pt100 with 1k pullup (non standard)
+ *   201 : Pt100 with circuit in Overlord
  *
  *  1000 : Custom - Specify parameters in Configuration_adv.h
  *
