@@ -1841,7 +1841,7 @@ void Temperature::init() {
 
     static float tr_target_temperature[HOTENDS + 1] = { 0.0 };
 
-    /***/
+    /**
       SERIAL_ECHO_START();
       SERIAL_ECHOPGM("Thermal Thermal Runaway Running. Heater ID: ");
       if (heater_id == -2) SERIAL_ECHOPGM("chamber");
