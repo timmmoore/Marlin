@@ -309,6 +309,7 @@
  *
  * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
  */
+// Note for Overlord this isn't a X360 power supply, but is used to enable internal power to steppers and heaters
 #define POWER_SUPPLY 2
 
 #if POWER_SUPPLY > 0
@@ -506,6 +507,7 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
+// If a Overlord Pro then the power supply needs upgrading since it cannot support power requirements for hotend/bed/etc.
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
@@ -615,29 +617,29 @@
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS 75.0 // (mm)
+    #define DELTA_CALIBRATION_RADIUS 75.0                         // (mm)
     // Set the steprate for papertest probing
-    #define PROBE_MANUALLY_STEP 0.05  // (mm)
+    #define PROBE_MANUALLY_STEP 0.05                              // (mm)
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS 85.0 // (mm)
+  #define DELTA_PRINTABLE_RADIUS 85.0                             // (mm)
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 206.0    // (mm)
+  #define DELTA_DIAGONAL_ROD 206.0                                // (mm)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 286.39         // (mm) Get this value from G33 auto calibrate
+  #define DELTA_HEIGHT 286.39                                     // (mm) Update this value from G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, -0.02, -0.69 } // Get these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.02, -0.69 }                 // Update these values from G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 99.83          // (mm) Get this value from G33 auto calibrate
+  #define DELTA_RADIUS 99.83                                      // (mm) Update this value from G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 }                // Update these values from G33 auto calibrate
 
   // Delta radius and diagonal rod adjustments (mm)
   #define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
@@ -711,7 +713,7 @@
  *          TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE  TMC2208_STANDALONE
+#define X_DRIVER_TYPE  TMC2208_STANDALONE       // Note modified from standard Overlord which has DRV8825
 #define Y_DRIVER_TYPE  TMC2208_STANDALONE
 #define Z_DRIVER_TYPE  TMC2208_STANDALONE
 //#define X2_DRIVER_TYPE A4988
@@ -771,11 +773,12 @@
  */
 // variables to calculate steps
 #define XYZ_FULL_STEPS_PER_ROTATION 200
-#define XYZ_MICROSTEPS 8
+#define XYZ_MICROSTEPS 8                    // Modified from standard Overlord Pro
 #define XYZ_BELT_PITCH 2.03
 #define XYZ_PULLEY_TEETH 20
 // delta speeds must be the same on xyz
 #define DEFAULT_XYZ_STEPS_PER_UNIT ((XYZ_FULL_STEPS_PER_ROTATION) * (XYZ_MICROSTEPS) / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
+                                                                                                                          // Extruder steps per unit from calibration
 #define DEFAULT_AXIS_STEPS_PER_UNIT { DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, 67.394}
 
 /**
@@ -853,7 +856,7 @@
  *
  * Enable this option for a probe connected to the Z Min endstop pin.
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN                          // Overlord Pro with Nozzle upgrade with integrated probe
 
 /**
  * Z_MIN_PROBE_PIN
@@ -969,10 +972,10 @@
 #define XY_PROBE_SPEED 4000
 
 // Feedrate (mm/m) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_SPEED_FAST (HOMING_FEEDRATE_Z /3)
+#define Z_PROBE_SPEED_FAST (HOMING_FEEDRATE_Z / 2)
 
 // Feedrate (mm/m) for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 10)
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 10)              // Slow 2nd probe down a lot, seems to give better results with the Overlord probe
 
 // The number of probes to perform at each point.
 //   Set to 2 for a fast/slow probe, using the second probe result.
@@ -1375,7 +1378,7 @@
 
 // Homing speeds (mm/m)
 //#define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (50*60)
+#define HOMING_FEEDRATE_Z  (100*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -1489,7 +1492,7 @@
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
 #define PREHEAT_1_TEMP_HOTEND 190
-#define PREHEAT_1_TEMP_BED     50
+#define PREHEAT_1_TEMP_BED     40
 #define PREHEAT_1_FAN_SPEED   255 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
@@ -1508,7 +1511,7 @@
  *    P1  Raise the nozzle always to Z-park height.
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
-//#define NOZZLE_PARK_FEATURE
+#define NOZZLE_PARK_FEATURE
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
@@ -1700,13 +1703,13 @@
 // This option overrides the default number of encoder pulses needed to
 // produce one step. Should be increased for high-resolution encoders.
 //
-#define ENCODER_PULSES_PER_STEP 1
+#define ENCODER_PULSES_PER_STEP 1                     // Overlord uses buttons rather than an encoder
 
 //
 // Use this option to override the number of step signals required to
 // move between next/prev menu items.
 //
-#define ENCODER_STEPS_PER_MENU_ITEM 1
+#define ENCODER_STEPS_PER_MENU_ITEM 1                 // Overlord uses buttons rather than an encoder
 
 /**
  * Encoder Direction Options
@@ -1980,7 +1983,7 @@
 //
 #define ULTI_CONTROLLER
 #if defined(ULTI_CONTROLLER)
-  #define U8GLIB_SH1106
+  #define U8GLIB_SH1106                     // Overlord seems to use a differnt controller than ULTI_CONTROLLER uses by default
 #endif
 
 //
@@ -2128,7 +2131,7 @@
 //#define BLINKM
 
 // Support for PCA9632 PWM LED driver
-#define PCA9632
+#define PCA9632                               // Leds in top of Overlord case
 
 // Support for PCA9533 PWM LED driver
 // https://github.com/mikeshub/SailfishRGB_LED
