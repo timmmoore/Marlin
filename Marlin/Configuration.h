@@ -459,7 +459,7 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-// Overlord Pro with new hotend
+// Overlord Pro with new nozzle with integrated probe
 #define DEFAULT_Kp 9.46
 #define DEFAULT_Ki 0.60
 #define DEFAULT_Kd 37.19
