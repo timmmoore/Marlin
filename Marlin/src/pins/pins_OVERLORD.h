@@ -54,76 +54,76 @@
 
   #define LARGE_FLASH true
 
-  #define X_STEP_PIN        25
-  #define X_DIR_PIN         23
-  #define X_MIN_PIN         -1
-  #define X_MAX_PIN         24
-  #define X_ENABLE_PIN      27
+  #define X_STEP_PIN            25
+  #define X_DIR_PIN             23
+  #define X_MIN_PIN             -1
+  #define X_MAX_PIN             24
+  #define X_ENABLE_PIN          27
 
-  #define Y_STEP_PIN        31
-  #define Y_DIR_PIN         33
-  #define Y_MIN_PIN         -1
-  #define Y_MAX_PIN         28
-  #define Y_ENABLE_PIN      29
+  #define Y_STEP_PIN            31
+  #define Y_DIR_PIN             33
+  #define Y_MIN_PIN             -1
+  #define Y_MAX_PIN             28
+  #define Y_ENABLE_PIN          29
 
-  #define Z_STEP_PIN        37
-  #define Z_DIR_PIN         39
-  #define Z_MIN_PIN         46
-  #define Z_MIN_PROBE_PIN   46
-  #define SERVO0_PIN        -1
-  #define Z_MAX_PIN         32
-  #define Z_ENABLE_PIN      35
+  #define Z_STEP_PIN            37
+  #define Z_DIR_PIN             39
+  #define Z_MIN_PIN             46
+  #define Z_MIN_PROBE_PIN       46
+  #define Z_MAX_PIN             32
+  #define Z_ENABLE_PIN          35
 
-  #define HEATER_BED_PIN    4
-  #define TEMP_BED_PIN      10
+  #define SERVO0_PIN            -1
 
-  #define HEATER_0_PIN      2
-  #define TEMP_0_PIN        8
+  #define HEATER_BED_PIN        4
+  #define TEMP_BED_PIN          10
 
-  #define HEATER_1_PIN      3
-  #define TEMP_1_PIN        9
+  #define HEATER_0_PIN          2
+  #define TEMP_0_PIN            8
 
-  #define E0_STEP_PIN       43
-  #define E0_DIR_PIN        45
-  #define E0_ENABLE_PIN     41
+  #define HEATER_1_PIN          3
+  #define TEMP_1_PIN            9
 
-  #define E1_STEP_PIN       49
-  #define E1_DIR_PIN        47
-  #define E1_ENABLE_PIN     48
+  #define E0_STEP_PIN           43
+  #define E0_DIR_PIN            45
+  #define E0_ENABLE_PIN         41
 
-  #define SDSS              53
-  #define LED_PIN           8
-  #define FAN_PIN           7
+  #define E1_STEP_PIN           49
+  #define E1_DIR_PIN            47
+  #define E1_ENABLE_PIN         48
 
-  #define PS_ON_PIN         12  // take high to power steppers/heaters
-  #define EXP_VOLTAGE_LEVEL_PIN 34
- 
-//  #define KILL_PIN        -1
-//  #define SUICIDE_PIN     -1
-//  #define SLEEP_PIN 12
-//  #define ENERGE_PIN      6
+  #define SDSS                  53
+  #define LED_PIN               8
+  #define FAN_PIN               7
 
-  #define BTN_ENC           16  // Enter Pin
-  #define BTN_UP            19  // Button UP Pin
-  #define BTN_DWN           17  // Button DOWN Pin
+  #define PS_ON_PIN             12 // take high to power steppers/heaters
+  #define EXP_VOLTAGE_LEVEL_PIN 34 // read system voltage
+
+  #define KILL_PIN              -1
+  #define SUICIDE_PIN           -1
+  #define SLEEP_PIN             -1
+//  #define ENERGE_PIN            6
+
+  #define BTN_ENC               16  // Enter Pin
+  #define BTN_UP                19  // Button UP Pin
+  #define BTN_DWN               17  // Button DOWN Pin
 
   #ifdef FilamentDetection
   #define FilamentDetectionPin 46
   #endif
 
-  #define SD_DETECT_PIN     38
+  #define SD_DETECT_PIN         38
 
 // ULTI LCD PINS
-//#define LCD_PINS_RS 20
-//#define LCD_PINS_D5 21
-#define LCD_PINS_ENABLE     15
-#define LCD_PINS_D4         14
-#define LCD_PINS_D6         5
-#define LCD_PINS_D7         6
+//#define LCD_PINS_RS             20
+//#define LCD_PINS_D5             21
+#define LCD_PINS_ENABLE         15
+#define LCD_PINS_D4             14
+#define LCD_PINS_D6             5
+#define LCD_PINS_D7             6
 
-//  #define APPROACH_PIN 11
-#define APPROACH_PIN        46
+#define APPROACH_PIN            46  // 11
 
-//#define GATE_PIN 36
+//#define GATE_PIN                36
 
 #endif
