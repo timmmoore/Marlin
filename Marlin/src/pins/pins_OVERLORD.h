@@ -69,7 +69,7 @@
   #define Z_STEP_PIN            37
   #define Z_DIR_PIN             39
   #define Z_MIN_PIN             46
-  #define Z_MIN_PROBE_PIN       46
+  #define Z_MIN_PROBE_PIN       46  // JP4, Tfeed1
   #define Z_MAX_PIN             32
   #define Z_ENABLE_PIN          35
 
@@ -80,9 +80,11 @@
 
   #define HEATER_0_PIN          2
   #define TEMP_0_PIN            8
+  #define TEMP_1_PIN            9
 
   #define HEATER_1_PIN          3
-  #define TEMP_1_PIN            9
+//  #define TEMP_2_PIN            12
+//  #define TEMP_3_PIN            14
 
   #define E0_STEP_PIN           43
   #define E0_DIR_PIN            45
@@ -96,34 +98,34 @@
   #define LED_PIN               8
   #define FAN_PIN               7
 
-  #define PS_ON_PIN             12 // take high to power steppers/heaters
-  #define EXP_VOLTAGE_LEVEL_PIN 34 // read system voltage
+  #define PS_ON_PIN             12  // take high to power steppers/heaters
 
   #define KILL_PIN              -1
   #define SUICIDE_PIN           -1
   #define SLEEP_PIN             -1
-//  #define ENERGE_PIN            6
 
   #define BTN_ENC               16  // Enter Pin
   #define BTN_UP                19  // Button UP Pin
   #define BTN_DWN               17  // Button DOWN Pin
 
-  #ifdef FilamentDetection
-  #define FilamentDetectionPin 46
-  #endif
+#if ENABLED(FILAMENT_RUNOUT_SENSOR)
+  #define FIL_RUNOUT_PIN        44  // JP3, Tfeed2
+#endif
 
-  #define SD_DETECT_PIN         38
+  #define SD_DETECT_PIN 38
 
 // ULTI LCD PINS
-//#define LCD_PINS_RS             20
-//#define LCD_PINS_D5             21
-#define LCD_PINS_ENABLE         15
-#define LCD_PINS_D4             14
-#define LCD_PINS_D6             5
-#define LCD_PINS_D7             6
+//  #define LCD_PINS_RS           20
+//  #define LCD_PINS_D5           21
+  #define LCD_PINS_ENABLE       15
+  #define LCD_PINS_D4           14
+  #define LCD_PINS_D6           5
+  #define LCD_PINS_D7           6
 
-#define APPROACH_PIN            46  // 11
-
-//#define GATE_PIN                36
-
+//  #define APPROACH_PIN          11  // JP7, Tpd
+//  #define GATE_PIN              36  // Threshold, JP6, Tg
+//  #define EXP_VOLTAGE_LEVEL_PIN 34  // power check - digital input, check whether hotend/steppers have power
+//  #define VOLTAGE_DETECTION     11  // voltage level of main input
+//  #define BATTERY_STATUS        26  // Status of power loss battery
+//  #define ENERGE_PIN            6
 #endif
