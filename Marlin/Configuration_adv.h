@@ -846,16 +846,16 @@
 #define LCD_INFO_MENU
 
 // Scroll a longer status message into view
-//#define STATUS_MESSAGE_SCROLLING
+#define STATUS_MESSAGE_SCROLLING
 
 // On the Info Screen, display XY with one decimal place when possible
-//#define LCD_DECIMAL_SMALL_XY
+#define LCD_DECIMAL_SMALL_XY
 
 // The timeout (in ms) to return to the status screen from sub-menus
-//#define LCD_TIMEOUT_TO_STATUS 15000
+#define LCD_TIMEOUT_TO_STATUS 15000
 
 // Add an 'M73' G-code to set the current percentage
-//#define LCD_SET_PROGRESS_MANUALLY
+#define LCD_SET_PROGRESS_MANUALLY
 
 #if HAS_CHARACTER_LCD && HAS_PRINT_PROGRESS
   #define LCD_PROGRESS_BAR              // Show a progress bar on HD44780 LCDs for SD printing
@@ -991,7 +991,7 @@
   /**
    * Auto-report SdCard status with M27 S<seconds>
    */
-  //#define AUTO_REPORT_SD_STATUS
+  #define AUTO_REPORT_SD_STATUS
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -1499,10 +1499,10 @@
   #define FILAMENT_CHANGE_ALERT_BEEPS         10  // Number of alert beeps to play when a response is needed.
   #define PAUSE_PARK_NO_STEPPER_TIMEOUT           // Enable for XYZ steppers to stay powered on during filament change.
 
-  //#define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
-  //#define HOME_BEFORE_FILAMENT_CHANGE           // Ensure homing has been completed prior to parking for filament change
+  #define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
+  #define HOME_BEFORE_FILAMENT_CHANGE           // Ensure homing has been completed prior to parking for filament change
 
-  //#define FILAMENT_LOAD_UNLOAD_GCODES           // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
+  #define FILAMENT_LOAD_UNLOAD_GCODES           // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
   //#define FILAMENT_UNLOAD_ALL_EXTRUDERS         // Allow M702 to unload all extruders above a minimum target temp (as set by M302)
 #endif
 
@@ -2512,7 +2512,7 @@
     /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-    //#define PINS_DEBUGGING
+  #define PINS_DEBUGGING
 
     // Enable Marlin dev mode which adds some special commands
     //#define MARLIN_DEV_MODE
