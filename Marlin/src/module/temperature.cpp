@@ -2825,15 +2825,16 @@ void Temperature::isr() {
           , rawHotendTemp(target_extruder)
         #endif
       );
+      #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
+        print_heater_state(redundant_temperature, degTargetHotend(target_extruder)
+          #if ENABLED(SHOW_TEMP_ADC_VALUES)
+            , redundant_temperature_raw
+          #endif
+          , -3 // REDUNDANT
+        );
+      #endif
     #endif
-    #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-      print_heater_state(redundant_temperature, degTargetHotend(target_extruder)
-        #if ENABLED(SHOW_TEMP_ADC_VALUES)
-             , redundant_temperature_raw
-        #endif
-        , -3 // REDUNDANT
-      );
-    #endif
+
     #if HAS_HEATED_BED
       print_heater_state(degBed(), degTargetBed()
         #if ENABLED(SHOW_TEMP_ADC_VALUES)
@@ -2842,6 +2843,7 @@ void Temperature::isr() {
         , -1 // BED
       );
     #endif
+
     #if HAS_TEMP_CHAMBER
       print_heater_state(degChamber()
         #if HAS_HEATED_CHAMBER
@@ -2854,7 +2856,8 @@ void Temperature::isr() {
         #endif
         , -2 // CHAMBER
       );
-    #endif // HAS_TEMP_CHAMBER
+    #endif
+
     #if HOTENDS > 1
       HOTEND_LOOP() print_heater_state(degHotend(e), degTargetHotend(e)
         #if ENABLED(SHOW_TEMP_ADC_VALUES)
