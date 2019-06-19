@@ -309,15 +309,15 @@
  *
  * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
  */
-// Note for Overlord this isn't a X360 power supply, but is used to enable internal power to steppers and heaters
+// Note for Overlord this isn't a X360 power supply, but is used to switch on internal power to steppers and heaters
 #define POWER_SUPPLY 2
 
 #if POWER_SUPPLY > 0
   // Enable this option to leave the PSU off at startup.
   // Power to steppers and heaters will need to be turned on with M80.
-  //#define PS_DEFAULT_OFF
+  #define PS_DEFAULT_OFF
 
-  //#define AUTO_POWER_CONTROL        // Enable automatic control of the PS_ON pin
+  #define AUTO_POWER_CONTROL          // Enable automatic control of the PS_ON pin
   #if ENABLED(AUTO_POWER_CONTROL)
     #define AUTO_POWER_FANS           // Turn on PSU if fans need power
     #define AUTO_POWER_E_FANS
@@ -379,6 +379,7 @@
  *  1010 : Pt1000 with 1k pullup (non standard)
  *   147 : Pt100 with 4k7 pullup
  *   110 : Pt100 with 1k pullup (non standard)
+ *   201 : Pt100 with circuit in Overlord
  *
  *  1000 : Custom - Specify parameters in Configuration_adv.h
  *
@@ -447,7 +448,7 @@
 #define PID_K1 0.95      // Smoothing factor within any PID loop
 #if ENABLED(PIDTEMP)
   //#define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
-  #define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
+  #define PID_AUTOTUNE_MENU       // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
   //#define PID_DEBUG             // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1        // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
   //#define SLOW_PWM_HEATERS      // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
@@ -458,10 +459,10 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-// Overlord Pro with new hotend
-#define DEFAULT_Kp 9.46
-#define DEFAULT_Ki 0.60
-#define DEFAULT_Kd 37.19
+// Overlord Pro with new nozzle with integrated probe, update using M303
+#define DEFAULT_Kp 8.62
+#define DEFAULT_Ki 0.55
+#define DEFAULT_Kd 33.89
 
 // Ultimaker
 //#define DEFAULT_Kp 22.2
@@ -497,7 +498,7 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-//#define PIDTEMPBED
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -514,11 +515,16 @@
 
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
+  //Overlord Pro heater into 4mm aluminium, update using M303
+  #define DEFAULT_bedKp 253.16
+  #define DEFAULT_bedKi 24.14
+  #define DEFAULT_bedKd 663.66
+
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  #define DEFAULT_bedKp 10.00
-  #define DEFAULT_bedKi .023
-  #define DEFAULT_bedKd 305.4
+  //#define DEFAULT_bedKp 10.00
+  //#define DEFAULT_bedKi .023
+  //#define DEFAULT_bedKd 305.4
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -629,17 +635,17 @@
   #define DELTA_DIAGONAL_ROD 206.0                                // (mm)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 286.39                                     // (mm) Update this value from G33 auto calibrate
+  #define DELTA_HEIGHT 286.39                                     // (mm) Update this value using G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, -0.02, -0.69 }                 // Update these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.02, -0.69 }                 // Update these values using G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 99.83                                      // (mm) Update this value from G33 auto calibrate
+  #define DELTA_RADIUS 99.83                                      // (mm) Update this value using G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 }                // Update these values from G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 }                // Update these values using G33 auto calibrate
 
   // Delta radius and diagonal rod adjustments (mm)
   #define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
@@ -961,9 +967,9 @@
  *     O-- FRONT --+
  *   (0,0)
  */
-#define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 0   // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
+#define X_PROBE_OFFSET_FROM_EXTRUDER 0    // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 0    // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.75 // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
@@ -975,7 +981,7 @@
 #define Z_PROBE_SPEED_FAST (HOMING_FEEDRATE_Z / 2)
 
 // Feedrate (mm/m) for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 10)              // Slow 2nd probe down a lot, seems to give better results with the Overlord probe
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 10)              // Slow 2nd probe down a lot, seems to give better results with the Overlord nozzle probe
 
 // The number of probes to perform at each point.
 //   Set to 2 for a fast/slow probe, using the second probe result.
@@ -1124,7 +1130,7 @@
 #endif
 
 #if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  //#define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
+  #define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -1135,7 +1141,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-//#define FILAMENT_RUNOUT_SENSOR
+#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // set to true to invert the logic of the sensor.
@@ -1611,7 +1617,7 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 
 //=============================================================================
 //============================= LCD and SD support ============================
@@ -1734,7 +1740,7 @@
 //  If CLOCKWISE normally moves DOWN this makes it go UP.
 //  If CLOCKWISE normally moves UP this makes it go DOWN.
 //
-#define REVERSE_MENU_DIRECTION
+//#define REVERSE_MENU_DIRECTION
 
 //
 // Individual Axis Homing
@@ -1971,7 +1977,7 @@
 //
 // SAV OLEd LCD module support using either SSD1306 or SH1106 based LCD modules
 //
-//#define SAV_3DGLCD
+#define SAV_3DGLCD
 #if ENABLED(SAV_3DGLCD)
   //#define U8GLIB_SSD1306
   #define U8GLIB_SH1106
@@ -1981,10 +1987,7 @@
 // Original Ulticontroller from Ultimaker 2 printer with SSD1309 I2C display and encoder
 // https://github.com/Ultimaker/Ultimaker2/tree/master/1249_Ulticontroller_Board_(x1)
 //
-#define ULTI_CONTROLLER
-#if defined(ULTI_CONTROLLER)
-  #define U8GLIB_SH1106                     // Overlord seems to use a differnt controller than ULTI_CONTROLLER uses by default
-#endif
+//#define ULTI_CONTROLLER
 
 //
 // TinyBoy2 128x64 OLED / Encoder Panel
