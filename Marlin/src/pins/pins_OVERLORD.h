@@ -115,16 +115,19 @@
   #define SD_DETECT_PIN 38
 
 // ULTI LCD PINS
-//  #define LCD_PINS_RS           20
-//  #define LCD_PINS_D5           21
+  #define LCD_PINS_RS           20
+  #define LCD_PINS_D5           21
   #define LCD_PINS_ENABLE       15
   #define LCD_PINS_D4           14
   #define LCD_PINS_D6           5
   #define LCD_PINS_D7           6
+  #if DISABLED(LCD_RESET_PIN)
+    #define LCD_RESET_PIN LCD_PINS_D6
+  #endif
 
 //  #define APPROACH_PIN          11  // JP7, Tpd
 //  #define GATE_PIN              36  // Threshold, JP6, Tg
-//  #define EXP_VOLTAGE_LEVEL_PIN 34  // power check - digital input, check whether hotend/steppers have power
+//  #define EXP_VOLTAGE_LEVEL_PIN 34  // power check - digital, check whether hotend/steppers have power
 //  #define VOLTAGE_DETECTION     11  // voltage level of main input
 //  #define BATTERY_STATUS        26  // Status of power loss battery
 //  #define ENERGE_PIN            6

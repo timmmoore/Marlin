@@ -317,7 +317,7 @@
   // Power to steppers and heaters will need to be turned on with M80.
   #define PS_DEFAULT_OFF
 
-  //#define AUTO_POWER_CONTROL        // Enable automatic control of the PS_ON pin
+  #define AUTO_POWER_CONTROL          // Enable automatic control of the PS_ON pin
   #if ENABLED(AUTO_POWER_CONTROL)
     #define AUTO_POWER_FANS           // Turn on PSU if fans need power
     #define AUTO_POWER_E_FANS
@@ -443,7 +443,7 @@
 
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
-#define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
+#define BANG_MAX 160     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1 0.95      // Smoothing factor within any PID loop
 #if ENABLED(PIDTEMP)
@@ -460,9 +460,9 @@
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
 // Overlord Pro with new nozzle with integrated probe, update using M303
-#define DEFAULT_Kp 9.46
-#define DEFAULT_Ki 0.60
-#define DEFAULT_Kd 37.19
+#define DEFAULT_Kp 8.62
+#define DEFAULT_Ki 0.55
+#define DEFAULT_Kd 33.89
 
 // Ultimaker
 //#define DEFAULT_Kp 22.2
@@ -516,9 +516,9 @@
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
   //Overlord Pro heater into 4mm aluminium, update using M303
-  #define DEFAULT_bedKp 10.00
-  #define DEFAULT_bedKi .023
-  #define DEFAULT_bedKd 305.4
+  #define DEFAULT_bedKp 253.16
+  #define DEFAULT_bedKi 24.14
+  #define DEFAULT_bedKd 663.66
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
@@ -967,9 +967,9 @@
  *     O-- FRONT --+
  *   (0,0)
  */
-#define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 0   // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.6 // Z offset: -below +above  [the nozzle]
+#define X_PROBE_OFFSET_FROM_EXTRUDER 0    // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 0    // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.75 // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
@@ -1740,7 +1740,7 @@
 //  If CLOCKWISE normally moves DOWN this makes it go UP.
 //  If CLOCKWISE normally moves UP this makes it go DOWN.
 //
-#define REVERSE_MENU_DIRECTION
+//#define REVERSE_MENU_DIRECTION
 
 //
 // Individual Axis Homing
@@ -1977,7 +1977,7 @@
 //
 // SAV OLEd LCD module support using either SSD1306 or SH1106 based LCD modules
 //
-//#define SAV_3DGLCD
+#define SAV_3DGLCD
 #if ENABLED(SAV_3DGLCD)
   //#define U8GLIB_SSD1306
   #define U8GLIB_SH1106
@@ -1987,10 +1987,7 @@
 // Original Ulticontroller from Ultimaker 2 printer with SSD1309 I2C display and encoder
 // https://github.com/Ultimaker/Ultimaker2/tree/master/1249_Ulticontroller_Board_(x1)
 //
-#define ULTI_CONTROLLER
-#if defined(ULTI_CONTROLLER)
-  #define U8GLIB_SH1106                     // Overlord seems to use a differnt controller than ULTI_CONTROLLER uses by default
-#endif
+//#define ULTI_CONTROLLER
 
 //
 // TinyBoy2 128x64 OLED / Encoder Panel
