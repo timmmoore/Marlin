@@ -62,16 +62,27 @@
 // Green LED1
 // Blue  LED2
 #if defined(PCA9632_RED) || defined(PCA9632_GRN) || defined(PCA9632_BLU)
+<<<<<<< Updated upstream
 #define PCA9632_NO_AUTO_INC
+=======
+#define PCA9632_NO_AUTO_INC // if LED indexes overriden then dont use auto inc, since need different order
+>>>>>>> Stashed changes
 #endif
 #if !defined(PCA9632_RED)
 #define PCA9632_RED 0x00
 #endif
 #if !defined(PCA9632_GRN)
+<<<<<<< Updated upstream
   #define PCA9632_GRN 0x02
 #endif
 #if !defined(PCA9632_BLU)
   #define PCA9632_BLU 0x04
+=======
+#define PCA9632_GRN 0x02
+#endif
+#if !defined(PCA9632_BLU)
+#define PCA9632_BLU 0x04
+>>>>>>> Stashed changes
 #endif
 
 #define LED_OFF   0x00
