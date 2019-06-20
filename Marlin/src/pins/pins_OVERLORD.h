@@ -82,10 +82,6 @@
   #define TEMP_0_PIN            8
   #define TEMP_1_PIN            9
 
-  #define HEATER_1_PIN          3
-//  #define TEMP_2_PIN            12
-//  #define TEMP_3_PIN            14
-
   #define E0_STEP_PIN           43
   #define E0_DIR_PIN            45
   #define E0_ENABLE_PIN         41
@@ -125,10 +121,14 @@
     #define LCD_RESET_PIN LCD_PINS_D6
   #endif
 
+// Additional connectors/pins on the Overlord V1.0 board
+//  #define HEATER_1_PIN          3
+//  #define TEMP_2_PIN            12
+//  #define TEMP_3_PIN            14
 //  #define APPROACH_PIN          11  // JP7, Tpd
 //  #define GATE_PIN              36  // Threshold, JP6, Tg
 //  #define EXP_VOLTAGE_LEVEL_PIN 34  // power check - digital, check whether hotend/steppers have power
 //  #define VOLTAGE_DETECTION     11  // voltage level of main input
-//  #define BATTERY_STATUS        26  // Status of power loss battery
+//  #define BATTERY_STATUS        26  // Status of power loss battery, whether it is charged or not
 //  #define ENERGE_PIN            6
 #endif
