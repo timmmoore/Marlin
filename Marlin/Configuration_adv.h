@@ -2165,9 +2165,11 @@
 /*
  * LEDs using PCA9632 but wired up differently
 */
+// Overlord PCA9632 implementation doesn't support auto-inc
+// Overlord has red and green leds switched
 #if ENABLED(PCA9632)
-  #define PCA9632_NO_AUTO_INC   // Overlord PCA9632 implementation doesn't support auto-inc
-  #define PCA9632_GRN 0x00      // Overlord has leds in different order
+  #define PCA9632_NO_AUTO_INC
+  #define PCA9632_GRN 0x00
   #define PCA9632_RED 0x02
 //  #define PCA9632_BLU 0x04
 #endif
