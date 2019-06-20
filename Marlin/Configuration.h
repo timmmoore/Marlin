@@ -309,7 +309,7 @@
  *
  * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
  */
-// Note for Overlord this isn't a X360 power supply, but is used to switch on internal power to steppers and heaters
+// Note for Overlord this isn't a X360 power supply, but is used to switch a relay to connect 24V steppers, heaters and fans
 #define POWER_SUPPLY 2
 
 #if POWER_SUPPLY > 0
@@ -508,7 +508,9 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
-// If a Overlord Pro then the power supply needs upgrading since it cannot support power requirements for hotend/bed/etc.
+// For Overlord Pro, the default PSU isn't powerful for hotend/bed/etc.
+// The original software had power management code to manage the power and keep it under what the default PSU could supply
+// This code hasn't been ported over so the default PSU needs upgrading - Meanwell RSP-500-24 works
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
@@ -1141,6 +1143,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
+// Not on Overlord by default
 #define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
