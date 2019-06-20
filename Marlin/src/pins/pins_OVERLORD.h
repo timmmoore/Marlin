@@ -80,7 +80,7 @@
 
   #define HEATER_0_PIN          2
   #define TEMP_0_PIN            8
-  #define TEMP_1_PIN            9
+  #define TEMP_1_PIN            9   // Redundant temp sensor
 
   #define E0_STEP_PIN           43
   #define E0_DIR_PIN            45
@@ -95,6 +95,7 @@
   #define FAN_PIN               7
 
   #define PS_ON_PIN             12  // take high to power steppers/heaters
+  #define POWER_LOSS_PIN        34  // power check - whether hotend/steppers/fans have power
 
   #define KILL_PIN              -1
   #define SUICIDE_PIN           -1
@@ -108,7 +109,7 @@
   #define FIL_RUNOUT_PIN        44  // JP3, Tfeed2
 #endif
 
-  #define SD_DETECT_PIN 38
+  #define SD_DETECT_PIN         38
 
 // ULTI LCD PINS
   #define LCD_PINS_RS           20
@@ -118,7 +119,7 @@
   #define LCD_PINS_D6           5
   #define LCD_PINS_D7           6
   #if DISABLED(LCD_RESET_PIN)
-    #define LCD_RESET_PIN LCD_PINS_D6
+    #define LCD_RESET_PIN       LCD_PINS_D6
   #endif
 
 // Additional connectors/pins on the Overlord V1.0 board
@@ -127,8 +128,6 @@
 //  #define TEMP_3_PIN            14
 //  #define APPROACH_PIN          11  // JP7, Tpd
 //  #define GATE_PIN              36  // Threshold, JP6, Tg
-//  #define EXP_VOLTAGE_LEVEL_PIN 34  // power check - digital, check whether hotend/steppers have power
 //  #define VOLTAGE_DETECTION     11  // voltage level of main input
 //  #define BATTERY_STATUS        26  // Status of power loss battery, whether it is charged or not
-//  #define ENERGE_PIN            6
 #endif
