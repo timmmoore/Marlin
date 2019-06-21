@@ -91,11 +91,12 @@
   #define E1_ENABLE_PIN         48
 
   #define SDSS                  53
-  #define LED_PIN               8
+  #define LED_PIN               13
   #define FAN_PIN               7
 
   #define PS_ON_PIN             12  // take high to power steppers/heaters
   #define POWER_LOSS_PIN        34  // power check - whether hotend/steppers/fans have power
+  #define BATTERY_STATUS_PIN    26  // Status of power loss battery, whether it is charged (low) or charging (high)
 
   #define KILL_PIN              -1
   #define SUICIDE_PIN           -1
@@ -105,9 +106,9 @@
   #define BTN_UP                19  // Button UP Pin
   #define BTN_DWN               17  // Button DOWN Pin
 
-#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-  #define FIL_RUNOUT_PIN        44  // JP3, Tfeed2
-#endif
+  #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+    #define FIL_RUNOUT_PIN      44  // JP3, Tfeed2
+  #endif
 
   #define SD_DETECT_PIN         38
 
@@ -129,5 +130,5 @@
 //  #define APPROACH_PIN          11  // JP7, Tpd
 //  #define GATE_PIN              36  // Threshold, JP6, Tg
 //  #define VOLTAGE_DETECTION     11  // voltage level of main input
-//  #define BATTERY_STATUS        26  // Status of power loss battery, whether it is charged or not
+//  #define PCB_VERSION_PIN       22
 #endif
