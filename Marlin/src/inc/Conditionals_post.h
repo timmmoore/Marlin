@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -277,7 +277,7 @@
 #if (POWER_SUPPLY == 1)     // 1 = ATX
   #define PS_ON_AWAKE  LOW
   #define PS_ON_ASLEEP HIGH
-#elif (POWER_SUPPLY == 2)   // 2 = X-Box 360 203W
+#elif (POWER_SUPPLY == 2) || (POWER_SUPPLY == 3)   // 2 = X-Box 360 203W, 3 = Overlord
   #define PS_ON_AWAKE  HIGH
   #define PS_ON_ASLEEP LOW
 #endif
