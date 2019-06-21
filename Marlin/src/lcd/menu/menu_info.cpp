@@ -35,7 +35,7 @@
 #include "menu.h"
 // #include "../../module/motion.h"
 // #include "../../module/planner.h"
-// #include "../../module/temperature.h"
+#include "../../module/temperature.h"
 // #include "../../Marlin.h"
 
 // #if HAS_LEVELING
@@ -171,7 +171,12 @@ void menu_info_thermistors() {
 // About Printer > Board Info
 //
 void menu_info_board() {
-  if (ui.use_click()) return ui.goto_previous_screen();
+  #if ENABLED(VOLTAGE_DETECTION)
+    char buffer[21];
+    uint16_t volt;
+  #endif
+  if (ui.use_click())
+    return ui.goto_previous_screen();
   START_SCREEN();
   STATIC_ITEM(BOARD_NAME, true, true);                           // MyPrinterController
   STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
@@ -183,13 +188,18 @@ void menu_info_board() {
   #elif POWER_SUPPLY == 2
     STATIC_ITEM(MSG_INFO_PSU ": XBox", true);     // Power Supply: XBox
   #elif POWER_SUPPLY == 3
-    STATIC_ITEM(MSG_INFO_PSU ": Overlord", true);   // Power Supply: Overlord
-    #if PIN_EXISTS(BATTERY_STATUS)
-      if (READ(BATTERY_STATUS_PIN))
-        STATIC_ITEM("Battery" ": Charging", true);  // Power Supply Battery: Charging
-      else
-        STATIC_ITEM("Battery" ": Charged",  true);  // Power Supply Battery: Charged
-    #endif
+    STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
+  #endif
+  #if PIN_EXISTS(BATTERY_STATUS)
+    if (READ(BATTERY_STATUS_PIN))
+      STATIC_ITEM("Battery" ": Charging", true);  // Power Supply Battery: Charging
+    else
+      STATIC_ITEM("Battery" ": Charged", true);   // Power Supply Battery: Charged
+  #endif
+  #if ENABLED(VOLTAGE_DETECTION)
+    volt = (uint16_t)((float)voltage_level * ADC_VREF * DIVIDER_TOTAL) / ((1024000L / 100L) * DIVIDER_LOWER);
+    sprintf_P(buffer, PSTR("%s: %d.%02dV"), MSG_INFO_PSU, volt / 100, volt % 100);
+    STATIC_ITEM_P(buffer, true);
   #endif
   END_SCREEN();
 }

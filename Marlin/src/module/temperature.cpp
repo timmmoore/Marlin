@@ -126,6 +126,10 @@ Temperature thermalManager;
   uint8_t Temperature::chamberfan_speed; // = 0
 #endif
 
+#if ENABLED(VOLTAGE_DETECTION)
+  uint16_t voltage_level;
+#endif
+
 #if FAN_COUNT > 0
 
   uint8_t Temperature::fan_speed[FAN_COUNT]; // = { 0 }
@@ -1664,6 +1668,9 @@ void Temperature::init() {
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     HAL_ANALOG_SELECT(FILWIDTH_PIN);
   #endif
+  #if PIN_EXISTS(VOLTAGE_DETECTION)
+    HAL_ANALOG_SELECT(VOLTAGE_DETECTION_PIN);
+  #endif
 
   HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
   ENABLE_TEMPERATURE_INTERRUPT();
@@ -2755,26 +2762,39 @@ void Temperature::isr() {
         break;
     #endif // ADC_KEYPAD
 
-    case StartupDelay: break;
+    #if ENABLED(VOLTAGE_DETECTION)
+      case Prepare_VOLTAGE_DETECTION:
+        HAL_START_ADC(VOLTAGE_DETECTION_PIN);
+        break;
+      case Measure_VOLTAGE_DETECTION:
+        if (!HAL_ADC_READY())
+          next_sensor_state = adc_sensor_state; // redo this state
+        else
+          voltage_level = HAL_READ_ADC();
+        break;
+    #endif
 
-  } // switch(adc_sensor_state)
+      case StartupDelay:
+        break;
 
-  // Go to the next state
-  adc_sensor_state = next_sensor_state;
+      } // switch(adc_sensor_state)
 
-  //
-  // Additional ~1KHz Tasks
-  //
+      // Go to the next state
+      adc_sensor_state = next_sensor_state;
 
-  #if ENABLED(BABYSTEPPING)
-    babystep.task();
-  #endif
+      //
+      // Additional ~1KHz Tasks
+      //
 
-  // Poll endstops state, if required
-  endstops.poll();
+#if ENABLED(BABYSTEPPING)
+      babystep.task();
+#endif
 
-  // Periodically call the planner timer
-  planner.tick();
+      // Poll endstops state, if required
+      endstops.poll();
+
+      // Periodically call the planner timer
+      planner.tick();
 }
 
 #if HAS_TEMP_SENSOR
@@ -2920,10 +2940,11 @@ void Temperature::isr() {
     #endif
 
     bool Temperature::wait_for_hotend(const uint8_t target_extruder, const bool no_wait_for_cooling/*=true*/
-      #if G26_CLICK_CAN_CANCEL
-        , const bool click_to_cancel/*=false*/
+#if G26_CLICK_CAN_CANCEL
+                                                                         ,
+                                                                         const bool click_to_cancel /*=false*/
       #endif
-    ) {
+                                                                        ) {
       #if TEMP_RESIDENCY_TIME > 0
         millis_t residency_start_ms = 0;
         // Loop until the temperature has stabilized

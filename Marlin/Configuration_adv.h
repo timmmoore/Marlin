@@ -831,7 +831,7 @@
 // Change values more rapidly when the encoder is rotated faster
 #define ENCODER_RATE_MULTIPLIER
 #if ENABLED(ENCODER_RATE_MULTIPLIER)
-  #define ENCODER_10X_STEPS_PER_SEC   30  // (steps/s) Encoder rate for 10x speed
+  #define ENCODER_10X_STEPS_PER_SEC   3   // (steps/s) Encoder rate for 10x speed
   #define ENCODER_100X_STEPS_PER_SEC  80  // (steps/s) Encoder rate for 100x speed
 #endif
 
@@ -917,7 +917,7 @@
    */
   #define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
-    #define POWER_LOSS_PIN           34 // Pin to detect power loss (optional)
+    //#define POWER_LOSS_PIN           44 // Pin to detect power loss (optional)
     #define POWER_LOSS_STATE        LOW // State of pin indicating power loss
     //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
     //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
@@ -2172,6 +2172,14 @@
   #define PCA9632_GRN 0x00
   #define PCA9632_RED 0x02
 //  #define PCA9632_BLU 0x04
+#endif
+
+// Overlord input voltage ADC configuration values
+#define VOLTAGE_DETECTION
+#if ENABLED(VOLTAGE_DETECTION)
+  #define DIVIDER_TOTAL 287.0
+  #define DIVIDER_LOWER 47.0
+  #define ADC_VREF      4096.0
 #endif
 
 /**

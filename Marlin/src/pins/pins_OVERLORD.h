@@ -97,6 +97,7 @@
   #define PS_ON_PIN             12  // take high to power steppers/heaters
   #define POWER_LOSS_PIN        34  // power check - whether hotend/steppers/fans have power
   #define BATTERY_STATUS_PIN    26  // Status of power loss battery, whether it is charged (low) or charging (high)
+  #define VOLTAGE_DETECTION_PIN 11  // ADC reading voltage level of main input
 
   #define KILL_PIN              -1
   #define SUICIDE_PIN           -1
@@ -129,6 +130,5 @@
 //  #define TEMP_3_PIN            14
 //  #define APPROACH_PIN          11  // JP7, Tpd
 //  #define GATE_PIN              36  // Threshold, JP6, Tg
-//  #define VOLTAGE_DETECTION     11  // voltage level of main input
 //  #define PCB_VERSION_PIN       22
 #endif

@@ -33,6 +33,10 @@
   #include "../feature/power.h"
 #endif
 
+#if ENABLED(VOLTAGE_DETECTION)
+  extern uint16_t voltage_level;
+#endif
+
 #ifndef SOFT_PWM_SCALE
   #define SOFT_PWM_SCALE 0
 #endif
@@ -123,6 +127,10 @@ enum ADCSensorState : char {
   #if HAS_ADC_BUTTONS
     Prepare_ADC_KEY,
     Measure_ADC_KEY,
+  #endif
+  #if ENABLED(VOLTAGE_DETECTION)
+    Prepare_VOLTAGE_DETECTION,
+    Measure_VOLTAGE_DETECTION,
   #endif
   SensorsReady, // Temperatures ready. Delay the next round of readings to let ADC pins settle.
   StartupDelay  // Startup, delay initial temp reading a tiny bit so the hardware can settle
