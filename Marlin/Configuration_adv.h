@@ -2175,12 +2175,15 @@
   #define PCA9632_BUZZER            // buzzer wired up to PCA9632
 #endif
 
+// Display battery status in Board info menu page
+// Needs BATTERY_STATUS_PIN defined
 #define BATTERY_STATUS
 #if ENABLED(BATTERY_STATUS)
   #define BATTERY_STATUS_CHARGED LOW
 #endif
 
 // Board has an ADC measuring input voltage, display in Board info menu page
+// Needs VOLTAGE_DETECTION_PIN defined
 #define VOLTAGE_DETECTION
 #if ENABLED(VOLTAGE_DETECTION)
   // Divider total and divider lower, assume a resistor divider network to lower voltage to something ADC can handle

@@ -510,7 +510,7 @@
  */
 // For Overlord Pro, the default PSU isn't powerful for hotend/bed/etc.
 // The original software had power management code to manage the power and keep it under what the default PSU could supply
-// This code hasn't been ported over so the default PSU needs upgrading - Meanwell RSP-500-24 works
+// This code hasn't been ported over so the default PSU needs upgrading - a Meanwell RSP-500-24 works
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
