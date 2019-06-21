@@ -307,10 +307,10 @@
  * 1 = ATX
  * 2 = X-Box 360 203Watts (the blue wire connected to PS_ON and the red wire to VCC)
  *
- * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
+ * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360', 3:'Overlord' }
  */
 // Note for Overlord this isn't a X360 power supply, but is used to switch a relay to connect 24V steppers, heaters and fans
-#define POWER_SUPPLY 2
+#define POWER_SUPPLY 3
 
 #if POWER_SUPPLY > 0
   // Enable this option to leave the PSU off at startup.
