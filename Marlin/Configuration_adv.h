@@ -2172,14 +2172,21 @@
   #define PCA9632_GRN 0x00
   #define PCA9632_RED 0x02
 //  #define PCA9632_BLU 0x04
+  #define PCA9632_BUZZER            // buzzer wired up to PCA9632
 #endif
 
-// Overlord input voltage ADC configuration values
+#define BATTERY_STATUS
+#if ENABLED(BATTERY_STATUS)
+  #define BATTERY_STATUS_CHARGED LOW
+#endif
+
+// Board has an ADC measuring input voltage, display in Board info menu page
 #define VOLTAGE_DETECTION
 #if ENABLED(VOLTAGE_DETECTION)
-  #define DIVIDER_TOTAL 287.0
-  #define DIVIDER_LOWER 47.0
-  #define ADC_VREF      4096.0
+  // Divider total and divider lower, assume a resistor divider network to lower voltage to something ADC can handle
+  #define DIVIDER_TOTAL 288.0f        // Overlord is 240K + 47K, adjusted so matching measured voltage
+  #define DIVIDER_LOWER 48.84f        // Overlord is 47K, adjusted so matching measured voltage
+  #define ADC_VREF 5.0f               // Whatever the ADC AREF is, default is 5.0V
 #endif
 
 /**

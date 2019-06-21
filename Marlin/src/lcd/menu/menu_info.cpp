@@ -171,10 +171,6 @@ void menu_info_thermistors() {
 // About Printer > Board Info
 //
 void menu_info_board() {
-  #if ENABLED(VOLTAGE_DETECTION)
-    char buffer[21];
-    uint16_t volt;
-  #endif
   if (ui.use_click())
     return ui.goto_previous_screen();
   START_SCREEN();
@@ -190,17 +186,22 @@ void menu_info_board() {
   #elif POWER_SUPPLY == 3
     STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
   #endif
-  #if PIN_EXISTS(BATTERY_STATUS)
-    if (READ(BATTERY_STATUS_PIN))
+  #if ENABLED(BATTERY_STATUS)
+    if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
       STATIC_ITEM("Battery" ": Charging", true);  // Power Supply Battery: Charging
     else
       STATIC_ITEM("Battery" ": Charged", true);   // Power Supply Battery: Charged
   #endif
   #if ENABLED(VOLTAGE_DETECTION)
-    volt = (uint16_t)((float)voltage_level * ADC_VREF * DIVIDER_TOTAL) / ((1024000L / 100L) * DIVIDER_LOWER);
-    sprintf_P(buffer, PSTR("%s: %d.%02dV"), MSG_INFO_PSU, volt / 100, volt % 100);
-    STATIC_ITEM_P(buffer, true);
-  #endif
+    #define ADC_RESOLUTION 1024.0f
+    {
+      char buffer[8];
+      uint16_t volt;
+      volt = (uint16_t)(((((float)voltage_level * ADC_VREF * DIVIDER_TOTAL) / (ADC_RESOLUTION * DIVIDER_LOWER)) * 100.0f) + 0.5f);
+      sprintf_P(buffer, PSTR("%d.%02dV"), volt / 100, volt % 100);
+      STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
+    }
+#endif
   END_SCREEN();
 }
 
