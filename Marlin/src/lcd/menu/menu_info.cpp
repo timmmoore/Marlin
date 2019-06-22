@@ -195,11 +195,11 @@ void menu_info_board() {
   #if PIN_EXISTS(PCB_VERSION)
     if (READ(PCB_VERSION_PIN))
       STATIC_ITEM("PCB"
-                  ": V1.1",
+                  ": V1.0",
                   true); // Overlord Motherboard version
     else
       STATIC_ITEM("PCB"
-                  ": V1.0",
+                  ": V1.1",
                   true); // Overlord Motherboard version
   #endif
   #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
