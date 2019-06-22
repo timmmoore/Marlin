@@ -219,7 +219,7 @@
 
 // Show Temperature ADC value
 // Enable for M105 to include ADC values read from temperature sensors.
-#define SHOW_TEMP_ADC_VALUES
+//#define SHOW_TEMP_ADC_VALUES
 
 /**
  * High Temperature Thermistor Support
@@ -2560,7 +2560,7 @@
     /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-  #define PINS_DEBUGGING
+//  #define PINS_DEBUGGING
 
     // Enable Marlin dev mode which adds some special commands
     //#define MARLIN_DEV_MODE
