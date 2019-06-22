@@ -658,7 +658,9 @@ static float run_z_probe() {
         backlash.measure_with_probe();
       #endif
 
-      const float z = current_position[Z_AXIS];
+      #if EXTRA_PROBING || (TOTAL_PROBING > 2)
+        const float z = current_position[Z_AXIS];
+      #endif
 
       #if EXTRA_PROBING
         // Insert Z measurement into probes[]. Keep it sorted ascending.
