@@ -607,7 +607,7 @@ void MarlinUI::quick_feedback(const bool clear_buttons/*=true*/) {
     #elif PIN_EXISTS(BEEPER)
       for (int8_t i = 5; i--;) { buzzer.tick(); delay(2); }
     #elif ENABLED(PCA9632_BUZZER)
-      pca9632_buzz();
+      pca9632_buzz(LCD_FEEDBACK_FREQUENCY_DURATION_MS, LCD_FEEDBACK_FREQUENCY_HZ);
     #endif
   #endif
 }
