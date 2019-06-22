@@ -583,6 +583,16 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
   return !probe_triggered;
 }
 
+#if ENABLED(DEBUG_LEVELING_FEATURE)
+static void print_probe_state(const bool is_hit)
+{
+  serialprintPGM(PSTR(MSG_Z_PROBE));
+  SERIAL_ECHOPGM(": ");
+  serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));
+  SERIAL_EOL();
+  }
+#endif
+
 /**
  * @brief Probe at the current XY (possibly more than once) to find the bed Z.
  *
@@ -599,6 +609,16 @@ static float run_z_probe() {
   // If Z isn't known then probe to -10mm.
   const float z_probe_low_point = TEST(axis_known_position, Z_AXIS) ? -zprobe_zoffset + Z_PROBE_LOW_POINT : -10.0;
 
+  if (DEBUGGING(LEVELING))
+  {
+    print_probe_state(
+#if USES_Z_MIN_PROBE_ENDSTOP
+      READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING
+#else
+      READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING
+#endif
+    );
+  }
   // Double-probing does a fast probe followed by a slow probe
   #if TOTAL_PROBING == 2
 
@@ -624,6 +644,16 @@ static float run_z_probe() {
     // move down quickly before doing the slow probe
     const float z = Z_CLEARANCE_DEPLOY_PROBE + 5.0 + (zprobe_zoffset < 0 ? -zprobe_zoffset : 0);
     if (current_position[Z_AXIS] > z) {
+      if (DEBUGGING(LEVELING))
+      {
+        print_probe_state(
+        #if USES_Z_MIN_PROBE_ENDSTOP
+          READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING
+        #else
+          READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING
+        #endif
+        );
+      }
       // Probe down fast. If the probe never triggered, raise for probe clearance
       if (!do_probe_move(z, MMM_TO_MMS(Z_PROBE_SPEED_FAST)))
         do_blocking_move_to_z(current_position[Z_AXIS] + Z_CLEARANCE_BETWEEN_PROBES, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
@@ -645,9 +675,21 @@ static float run_z_probe() {
     )
   #endif
     {
+      if (DEBUGGING(LEVELING))
+      {
+        print_probe_state(
+        #if USES_Z_MIN_PROBE_ENDSTOP
+          READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING
+        #else
+          READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING
+        #endif
+        );
+      }
       // Probe downward slowly to find the bed
-      if (do_probe_move(z_probe_low_point, MMM_TO_MMS(Z_PROBE_SPEED_SLOW))) {
-        if (DEBUGGING(LEVELING)) {
+      if (do_probe_move(z_probe_low_point, MMM_TO_MMS(Z_PROBE_SPEED_SLOW)))
+      {
+        if (DEBUGGING(LEVELING))
+        {
           DEBUG_ECHOLNPGM("SLOW Probe fail!");
           DEBUG_POS("<<< run_z_probe", current_position);
         }
