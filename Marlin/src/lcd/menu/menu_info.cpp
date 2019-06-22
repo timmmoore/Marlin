@@ -184,7 +184,14 @@ void menu_info_board() {
   #elif POWER_SUPPLY == 2
     STATIC_ITEM(MSG_INFO_PSU ": XBox", true);     // Power Supply: XBox
   #elif POWER_SUPPLY == 3
-    STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
+    #if PIN_EXISTS(PCB_VERSION)
+      if (READ(PCB_VERSION_PIN))
+        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true); // Power Supply: Overlord Motherboard version
+      else
+        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true); // Power Supply: Overlord Motherboard version
+    #else
+      STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
+    #endif
   #endif
   #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
@@ -192,23 +199,13 @@ void menu_info_board() {
     else
       STATIC_ITEM("Battery" ": Charged", true);   // Power Supply Battery: Charged
   #endif
-  #if PIN_EXISTS(PCB_VERSION)
-    if (READ(PCB_VERSION_PIN))
-      STATIC_ITEM("PCB"
-                  ": V1.0",
-                  true); // Overlord Motherboard version
-    else
-      STATIC_ITEM("PCB"
-                  ": V1.1",
-                  true); // Overlord Motherboard version
-  #endif
   #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
     #define ADC_RESOLUTION 1024.0f
     {
       char buffer[8];
       uint16_t volt;
       volt = (uint16_t)(((((float)voltage_level * ADC_VREF * DIVIDER_TOTAL) / (ADC_RESOLUTION * DIVIDER_LOWER)) * 100.0f) + 0.5f);
-      sprintf_P(buffer, PSTR("%d.%02dV"), volt / 100, volt % 100);
+      sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
       STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
     }
   #endif
