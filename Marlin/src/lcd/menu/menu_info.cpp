@@ -186,9 +186,9 @@ void menu_info_board() {
   #elif POWER_SUPPLY == 3
     #if PIN_EXISTS(PCB_VERSION)
       if (READ(PCB_VERSION_PIN))
-        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true); // Power Supply: Overlord Motherboard version
-      else
         STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true); // Power Supply: Overlord Motherboard version
+      else
+        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true);
     #else
       STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
     #endif
