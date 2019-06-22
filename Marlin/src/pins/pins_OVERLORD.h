@@ -91,10 +91,10 @@
   #define E1_ENABLE_PIN         48
 
   #define SDSS                  53
-  #define LED_PIN               13
-  #define FAN_PIN               7
+  #define LED_PIN               13  // On PCB status led
+  #define FAN_PIN               7   // material cooling fan
 
-  #define PS_ON_PIN             12  // take high to power steppers/heaters
+  #define PS_ON_PIN             12  // take high to power steppers/heaters/fans
   #define POWER_LOSS_PIN        34  // power check - whether hotend/steppers/fans have power
   #define BATTERY_STATUS_PIN    26  // Status of power loss battery, whether it is charged (low) or charging (high)
   #define VOLTAGE_DETECTION_PIN 11  // ADC reading voltage level of main input
