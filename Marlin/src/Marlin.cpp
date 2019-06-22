@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -676,7 +676,7 @@ void idle(
     print_job_timer.tick();
   #endif
 
-  #if HAS_BUZZER && DISABLED(LCD_USE_I2C_BUZZER)
+  #if HAS_BUZZER && DISABLED(LCD_USE_I2C_BUZZER) && DISABLED(PCA9632_BUZZER)
     buzzer.tick();
   #endif
 
