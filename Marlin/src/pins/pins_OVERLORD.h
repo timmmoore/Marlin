@@ -130,5 +130,5 @@
 //  #define TEMP_3_PIN            14
 //  #define APPROACH_PIN          11  // JP7, Tpd
 //  #define GATE_PIN              36  // Threshold, JP6, Tg
-//  #define PCB_VERSION_PIN       22
+  #define PCB_VERSION_PIN       22
 #endif

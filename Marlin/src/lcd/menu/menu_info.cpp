@@ -192,6 +192,16 @@ void menu_info_board() {
     else
       STATIC_ITEM("Battery" ": Charged", true);   // Power Supply Battery: Charged
   #endif
+  #if PIN_EXISTS(PCB_VERSION)
+    if (READ(PCB_VERSION_PIN))
+      STATIC_ITEM("PCB"
+                  ": V1.1",
+                  true); // Overlord Motherboard version
+    else
+      STATIC_ITEM("PCB"
+                  ": V1.0",
+                  true); // Overlord Motherboard version
+  #endif
   #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
     #define ADC_RESOLUTION 1024.0f
     {
