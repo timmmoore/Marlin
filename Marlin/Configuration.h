@@ -780,10 +780,10 @@
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
 // variables to calculate steps
-#define XYZ_FULL_STEPS_PER_ROTATION 200
-#define XYZ_MICROSTEPS 8                    // Modified from standard Overlord Pro
-#define XYZ_BELT_PITCH 2.03
-#define XYZ_PULLEY_TEETH 20
+#define XYZ_FULL_STEPS_PER_ROTATION 100
+#define XYZ_MICROSTEPS              16         // Modified from standard Overlord Pro which uses DRV8825 with 32 microsteps
+#define XYZ_BELT_PITCH              2.03
+#define XYZ_PULLEY_TEETH            20
 // delta speeds must be the same on xyz
 #define DEFAULT_XYZ_STEPS_PER_UNIT ((XYZ_FULL_STEPS_PER_ROTATION) * (XYZ_MICROSTEPS) / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
                                                                                                                           // Extruder steps per unit from calibration
