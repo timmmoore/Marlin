@@ -186,13 +186,13 @@ void menu_info_board() {
   #elif POWER_SUPPLY == 3
     STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
   #endif
-  #if ENABLED(BATTERY_STATUS)
+  #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
       STATIC_ITEM("Battery" ": Charging", true);  // Power Supply Battery: Charging
     else
       STATIC_ITEM("Battery" ": Charged", true);   // Power Supply Battery: Charged
   #endif
-  #if ENABLED(VOLTAGE_DETECTION)
+  #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
     #define ADC_RESOLUTION 1024.0f
     {
       char buffer[8];
@@ -201,7 +201,7 @@ void menu_info_board() {
       sprintf_P(buffer, PSTR("%d.%02dV"), volt / 100, volt % 100);
       STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
     }
-#endif
+  #endif
   END_SCREEN();
 }
 

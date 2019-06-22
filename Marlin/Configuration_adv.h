@@ -2177,19 +2177,19 @@
 
 // Display battery status in Board info menu page
 // Needs BATTERY_STATUS_PIN defined
-#define BATTERY_STATUS
-#if ENABLED(BATTERY_STATUS)
+#define BATTERY_STATUS_AVAILABLE
+#if ENABLED(BATTERY_STATUS_AVAILABLE)
   #define BATTERY_STATUS_CHARGED LOW
 #endif
 
 // Board has an ADC measuring input voltage, display in Board info menu page
 // Needs VOLTAGE_DETECTION_PIN defined
-#define VOLTAGE_DETECTION
-#if ENABLED(VOLTAGE_DETECTION)
+#define INPUT_VOLTAGE_AVAILABLE
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   // Divider total and divider lower, assume a resistor divider network to lower voltage to something ADC can handle
-  #define DIVIDER_TOTAL 288.0f        // Overlord is 240K + 47K, adjusted so matching measured voltage
-  #define DIVIDER_LOWER 48.84f        // Overlord is 47K, adjusted so matching measured voltage
-  #define ADC_VREF 5.0f               // Whatever the ADC AREF is, default is 5.0V
+  #define DIVIDER_TOTAL 288.0f // Overlord is 240K + 47K, adjusted so matching measured voltage
+  #define DIVIDER_LOWER 48.84f // Overlord is 47K, adjusted so matching measured voltage
+  #define ADC_VREF 5.0f        // Whatever the ADC AREF is, default is 5.0V
 #endif
 
 /**

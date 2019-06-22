@@ -126,7 +126,7 @@ Temperature thermalManager;
   uint8_t Temperature::chamberfan_speed; // = 0
 #endif
 
-#if ENABLED(VOLTAGE_DETECTION)
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   uint16_t voltage_level;
 #endif
 
@@ -1668,7 +1668,7 @@ void Temperature::init() {
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     HAL_ANALOG_SELECT(FILWIDTH_PIN);
   #endif
-  #if PIN_EXISTS(VOLTAGE_DETECTION)
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)
     HAL_ANALOG_SELECT(VOLTAGE_DETECTION_PIN);
   #endif
 
@@ -2762,7 +2762,7 @@ void Temperature::isr() {
         break;
     #endif // ADC_KEYPAD
 
-    #if ENABLED(VOLTAGE_DETECTION)
+    #if ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)
       case Prepare_VOLTAGE_DETECTION:
         HAL_START_ADC(VOLTAGE_DETECTION_PIN);
         break;

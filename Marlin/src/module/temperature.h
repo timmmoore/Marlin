@@ -33,7 +33,7 @@
   #include "../feature/power.h"
 #endif
 
-#if ENABLED(VOLTAGE_DETECTION)
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   extern uint16_t voltage_level;
 #endif
 
@@ -128,7 +128,7 @@ enum ADCSensorState : char {
     Prepare_ADC_KEY,
     Measure_ADC_KEY,
   #endif
-  #if ENABLED(VOLTAGE_DETECTION)
+  #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
     Prepare_VOLTAGE_DETECTION,
     Measure_VOLTAGE_DETECTION,
   #endif
