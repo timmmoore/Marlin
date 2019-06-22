@@ -390,7 +390,7 @@ class Temperature {
       static int8_t meas_shift_index;  // Index of a delayed sample in buffer
     #endif
 
-    #if HAS_AUTO_FAN
+    #if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
       static millis_t next_auto_fan_check_ms;
     #endif
 
