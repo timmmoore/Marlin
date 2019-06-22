@@ -637,7 +637,7 @@ int16_t Temperature::getHeaterPower(const int8_t heater) {
   );
 }
 
-#if HAS_AUTO_FAN
+#if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
 
   #define AUTO_1_IS_0 (E1_AUTO_FAN_PIN == E0_AUTO_FAN_PIN)
   #define AUTO_2_IS_0 (E2_AUTO_FAN_PIN == E0_AUTO_FAN_PIN)
