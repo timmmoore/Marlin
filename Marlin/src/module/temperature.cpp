@@ -695,7 +695,7 @@ int16_t Temperature::getHeaterPower(const int8_t heater) {
       if (temp_hotend[e].current > EXTRUDER_AUTO_FAN_TEMPERATURE)
         SBI(fanState, pgm_read_byte(&fanBit[e]));
 
-    #if HAS_AUTO_CHAMBER_FAN
+    #if HAS_AUTO_CHAMBER_FAN || ENABLED(AUTO_POWER_CHAMBER_FAN)
       if (temp_chamber.current > CHAMBER_AUTO_FAN_TEMPERATURE)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
     #endif
