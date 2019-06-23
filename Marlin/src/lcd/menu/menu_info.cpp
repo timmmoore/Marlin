@@ -185,10 +185,13 @@ void menu_info_board() {
     STATIC_ITEM(MSG_INFO_PSU ": XBox", true);     // Power Supply: XBox
   #elif POWER_SUPPLY == 3
     #if PIN_EXISTS(PCB_VERSION)
+      WRITE(PCB_VERSION_PIN, HIGH);
+      SET_INPUT(PCB_VERSION_PIN);
+      delay(1);
       if (READ(PCB_VERSION_PIN))
-        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true); // Power Supply: Overlord Motherboard version
+        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true); // Power Supply: Overlord Motherboard version
       else
-        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true);
+        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true);
     #else
       STATIC_ITEM(MSG_INFO_PSU ": Overlord", true); // Power Supply: Overlord
     #endif
