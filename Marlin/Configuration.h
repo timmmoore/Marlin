@@ -306,10 +306,10 @@
  * 0 = No Power Switch
  * 1 = ATX
  * 2 = X-Box 360 203Watts (the blue wire connected to PS_ON and the red wire to VCC)
+ * 3 = Overlord: internal relay to switch 24V to steppers, heaters and fans
  *
  * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360', 3:'Overlord' }
  */
-// Note for Overlord this isn't a X360 power supply, but is used to switch a relay to connect 24V steppers, heaters and fans
 #define POWER_SUPPLY 3
 
 #if POWER_SUPPLY > 0
@@ -508,16 +508,19 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
-// For Overlord Pro, the default PSU isn't powerful for hotend/bed/etc.
-// The original software had power management code to manage the power and keep it under what the default PSU could supply
-// This code hasn't been ported over so the default PSU needs upgrading - a Meanwell RSP-500-24 works
+/*
+ * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
+ * The original software had power management code to manage the power and only power either hotend or bed at a time
+ * This code hasn't been ported over so the default PSU needs upgrading - a Meanwell RSP-500-24 works
+ * You could try reducing MAX_BED_POWER but testing with both BANG_MAX and MAX_BED_POWER at 160 wasn't enough once steppers started moving
+ */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
 
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
-  //Overlord Pro heater into 4mm aluminium, update using M303
+  //Overlord Pro heater into aluminium bed, update using M303
   #define DEFAULT_bedKp 253.16
   #define DEFAULT_bedKi 24.14
   #define DEFAULT_bedKd 663.66
@@ -625,24 +628,24 @@
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS 75.0                         // (mm)
+    #define DELTA_CALIBRATION_RADIUS 75.0                         // (mm) Overlord Pro
     // Set the steprate for papertest probing
     #define PROBE_MANUALLY_STEP 0.05                              // (mm)
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS 85.0                             // (mm)
+  #define DELTA_PRINTABLE_RADIUS 85.0                             // (mm) Overlord Pro
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 206.0                                // (mm)
+  #define DELTA_DIAGONAL_ROD 206.0                                // (mm) Overlord Pro
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 286.2                                      // (mm) Update this value using G33 auto calibrate
+  #define DELTA_HEIGHT 286.2                                      // (mm) Overlord Pro - Update this value using G33 auto calibrate
 
   #define DELTA_ENDSTOP_ADJ { 0.0, -0.13, -1.00 }                 // Update these values using G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 99.81                                      // (mm) Update this value using G33 auto calibrate
+  #define DELTA_RADIUS 99.81                                      // (mm) Overlord Pro - Update this value using G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
@@ -721,7 +724,7 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE  TMC2208_STANDALONE       // Note modified from standard Overlord which has DRV8825
+#define X_DRIVER_TYPE  TMC2208_STANDALONE       // Note modified from standard Overlord Pro which has DRV8825
 #define Y_DRIVER_TYPE  TMC2208_STANDALONE
 #define Z_DRIVER_TYPE  TMC2208_STANDALONE
 //#define X2_DRIVER_TYPE A4988
@@ -1150,8 +1153,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-// Not on Overlord by default
-#define FILAMENT_RUNOUT_SENSOR
+#define FILAMENT_RUNOUT_SENSOR        // Not on Overlord by default
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // Set to true to invert the logic of the sensor.

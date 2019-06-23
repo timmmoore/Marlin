@@ -2194,31 +2194,35 @@
 /*
  * LEDs using PCA9632 but wired up differently
 */
-// Overlord PCA9632 implementation doesn't support auto-inc
-// Overlord has red and green leds switched
 #if ENABLED(PCA9632)
-  #define PCA9632_NO_AUTO_INC
-  #define PCA9632_GRN 0x00
+  #define PCA9632_NO_AUTO_INC           // Overlord PCA9632 implementation doesn't support auto-inc
+  #define PCA9632_GRN 0x00              // Overlord has red and green leds switched
   #define PCA9632_RED 0x02
 //  #define PCA9632_BLU 0x04
-  #define PCA9632_BUZZER            // buzzer wired up to PCA9632
+  #define PCA9632_BUZZER                // Overlord: buzzer wired up to PCA9632
 #endif
 
-// Display battery status in Board info menu page
-// Needs BATTERY_STATUS_PIN defined
-#define BATTERY_STATUS_AVAILABLE
+/*
+ * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
+ * If a pin is available to see if charged will show in menu info
+ * Needs BATTERY_STATUS_PIN defined
+ */
+#define BATTERY_STATUS_AVAILABLE        // Overlord Pro has internal rechargable battery
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
   #define BATTERY_STATUS_CHARGED LOW
 #endif
 
-// Board has an ADC measuring input voltage, display in Board info menu page
-// Needs VOLTAGE_DETECTION_PIN defined
+/*
+ * An ADC measuring input voltage is, display in Board info menu page
+ * Assumes a resistor divider network to lower voltage to something ADC can handle
+ * Configure the total resistance and lower resistor
+ * Needs VOLTAGE_DETECTION_PIN defined
+ */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  // Divider total and divider lower, assume a resistor divider network to lower voltage to something ADC can handle
-  #define DIVIDER_TOTAL 288.0f // Overlord is 240K + 47K, adjusted so matching measured voltage
-  #define DIVIDER_LOWER 48.84f // Overlord is 47K, adjusted so matching measured voltage
-  #define ADC_VREF 5.0f        // Whatever the ADC AREF is, default is 5.0V
+  #define DIVIDER_TOTAL 288.0f          // Overlord is 240K + 47K, adjusted so matching measured voltage
+  #define DIVIDER_LOWER 48.84f          // Overlord is 47K, adjusted so matching measured voltage
+  #define ADC_VREF 5.0f                 // Whatever the ADC AREF is, default is 5.0V
 #endif
 
 /**
