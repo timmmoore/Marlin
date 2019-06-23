@@ -96,8 +96,12 @@
 
   #define PS_ON_PIN             12  // take high to power steppers/heaters/fans
   #define POWER_LOSS_PIN        34  // power check - whether hotend/steppers/fans have power
-  #define BATTERY_STATUS_PIN    26  // Status of power loss battery, whether it is charged (low) or charging (high)
-  #define VOLTAGE_DETECTION_PIN 11  // ADC reading voltage level of main input
+  #if ENABLED(BATTERY_STATUS_AVAILABLE)
+    #define BATTERY_STATUS_PIN  26  // Status of power loss battery, whether it is charged (low) or charging (high)
+  #endif
+  #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+    #define VOLTAGE_DETECTION_PIN 11  // ADC reading voltage level of main input
+  #endif
 
   #define KILL_PIN              -1
   #define SUICIDE_PIN           -1
