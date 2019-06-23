@@ -124,11 +124,12 @@
     #define LCD_RESET_PIN       LCD_PINS_D6
   #endif
 
-// Additional connectors/pins on the Overlord V1.0 board
-//  #define HEATER_1_PIN          3
-//  #define TEMP_2_PIN            12
-//  #define TEMP_3_PIN            14
-//  #define APPROACH_PIN          11  // JP7, Tpd
-//  #define GATE_PIN              36  // Threshold, JP6, Tg
-  #define PCB_VERSION_PIN       22
+  #define PCB_VERSION_PIN 22
+
+  // Additional connectors/pins on the Overlord V1.X board
+  //#define HEATER_1_PIN          3
+  //#define TEMP_2_PIN            12
+  //#define TEMP_3_PIN            14
+  //#define APPROACH_PIN          11  // JP7, Tpd
+  //#define GATE_PIN              36  // Threshold, JP6, Tg
 #endif
