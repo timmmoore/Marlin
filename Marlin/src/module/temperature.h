@@ -279,7 +279,7 @@ class Temperature {
       static bed_info_t temp_bed;
     #endif
 
-    #if HAS_TEMP_CHAMBER || ENABLED(AUTO_POWER_CHAMBER_FAN)
+    #if HAS_TEMP_CHAMBER
       static chamber_info_t temp_chamber;
     #endif
 
