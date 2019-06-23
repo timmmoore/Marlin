@@ -637,12 +637,12 @@
   #define DELTA_DIAGONAL_ROD 206.0                                // (mm)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 286.39                                     // (mm) Update this value using G33 auto calibrate
+  #define DELTA_HEIGHT 286.2                                      // (mm) Update this value using G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, -0.02, -0.69 }                 // Update these values using G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.13, -1.00 }                 // Update these values using G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 99.83                                      // (mm) Update this value using G33 auto calibrate
+  #define DELTA_RADIUS 99.81                                      // (mm) Update this value using G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
@@ -971,7 +971,7 @@
  */
 #define X_PROBE_OFFSET_FROM_EXTRUDER 0    // X offset: -left  +right  [of the nozzle]
 #define Y_PROBE_OFFSET_FROM_EXTRUDER 0    // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.75 // Z offset: -below +above  [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.65 // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
