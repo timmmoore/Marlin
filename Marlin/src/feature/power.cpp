@@ -54,6 +54,7 @@ bool Power::is_power_needed() {
     if (thermalManager.chamberfan_speed) return true;
   #endif
 
+  #if 0
   // If any of the drivers or the bed are enabled...
   if (X_ENABLE_READ == X_ENABLE_ON || Y_ENABLE_READ == Y_ENABLE_ON || Z_ENABLE_READ == Z_ENABLE_ON
     #if HAS_HEATED_BED
@@ -87,6 +88,7 @@ bool Power::is_power_needed() {
         #endif // E_STEPPERS > 1
       #endif // E_STEPPERS
   ) return true;
+  #endif
 
   HOTEND_LOOP() if (thermalManager.degTargetHotend(e) > 0) return true;
 

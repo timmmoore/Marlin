@@ -238,7 +238,7 @@ Temperature thermalManager;
   #endif
 #endif // HAS_HEATED_BED
 
-#if HAS_TEMP_CHAMBER
+#if HAS_TEMP_CHAMBER || ENABLED(AUTO_POWER_CHAMBER_FAN)
   chamber_info_t Temperature::temp_chamber; // = { 0 }
   #if HAS_HEATED_CHAMBER
     #ifdef CHAMBER_MINTEMP

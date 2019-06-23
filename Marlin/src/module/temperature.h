@@ -187,7 +187,7 @@ struct PIDHeaterInfo : public HeaterInfo {
     typedef heater_info_t bed_info_t;
   #endif
 #endif
-#if HAS_HEATED_CHAMBER
+#if HAS_HEATED_CHAMBER || ENABLED(AUTO_POWER_CHAMBER_FAN)
   typedef heater_info_t chamber_info_t;
 #elif HAS_TEMP_CHAMBER
   typedef temp_info_t chamber_info_t;
@@ -279,7 +279,7 @@ class Temperature {
       static bed_info_t temp_bed;
     #endif
 
-    #if HAS_TEMP_CHAMBER
+    #if HAS_TEMP_CHAMBER || ENABLED(AUTO_POWER_CHAMBER_FAN)
       static chamber_info_t temp_chamber;
     #endif
 
