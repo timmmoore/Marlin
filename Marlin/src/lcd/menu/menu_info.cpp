@@ -189,7 +189,7 @@ void menu_info_board() {
       SET_INPUT(PCB_VERSION_PIN);
       delay(1);
       if (READ(PCB_VERSION_PIN))
-        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true); // Power Supply: Overlord Motherboard version
+        STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true); // Overlord Motherboard version
       else
         STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true);
     #else
