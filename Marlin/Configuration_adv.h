@@ -2227,6 +2227,7 @@
   #define DIVIDER_LOWER 48.84f          // Overlord is 47K, adjusted so matching measured voltage
   #define ADC_VREF 5.0f                 // Whatever the ADC AREF is, default is 5.0V
   #define VOLTAGE_MINIMUM 625           // Alert if input voltage ADC reading goes lower than this (~21V)
+  #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
 #endif
 
 /**

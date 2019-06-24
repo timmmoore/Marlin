@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -128,6 +128,8 @@ Temperature thermalManager;
 
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   uint16_t voltage_level;
+  bool voltage_out_of_power = false;
+  millis_t voltage_millis;
 #endif
 
 #if FAN_COUNT > 0
@@ -436,7 +438,7 @@ temp_range_t Temperature::temp_range[HOTENDS] = ARRAY_BY_HOTENDS(sensor_heater_0
           ONHEATING(start_temp, current, target);
         #endif
 
-#if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
+        #if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
           if (ELAPSED(ms, next_auto_fan_check_ms)) {
             checkExtruderAutoFans();
             next_auto_fan_check_ms = ms + 2500UL;
@@ -2780,10 +2782,20 @@ void Temperature::isr() {
         else
           voltage_level = HAL_READ_ADC();
           if(voltage_level < VOLTAGE_MINIMUM) {
-            // May need to check for too low a volage multiple times before generating an alert
-            SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
-            ui.set_status_P(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
-            //kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+            // Input volltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
+            if(voltage_out_of_power == false) {
+              voltage_out_of_power = true;
+              voltage_millis = millis() + VOLTAGE_LEVEL_TIMEOUT;
+            }
+            else if(ELAPSED(millis(), voltage_millis)) {
+              SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
+              ui.set_status_P(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+              //kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+            }
+          }
+          else
+          {
+            voltage_out_of_power = false;
           }
         break;
     #endif
