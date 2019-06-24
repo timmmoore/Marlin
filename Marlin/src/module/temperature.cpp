@@ -2779,6 +2779,12 @@ void Temperature::isr() {
           next_sensor_state = adc_sensor_state; // redo this state
         else
           voltage_level = HAL_READ_ADC();
+          if(voltage_level < VOLTAGE_MINIMUM) {
+            // May need to check for too low a volage multiple times
+            SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
+            ui.set_status_P(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+            //kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+          }
         break;
     #endif
 
