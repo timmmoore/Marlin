@@ -128,7 +128,7 @@ Temperature thermalManager;
 
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   uint16_t voltage_level;
-  bool voltage_out_of_power = false;
+  uint16_t voltage_out_of_power;
   millis_t voltage_millis;
 #endif
 
@@ -2783,19 +2783,25 @@ void Temperature::isr() {
           voltage_level = HAL_READ_ADC();
           if(voltage_level < VOLTAGE_MINIMUM) {
             // Input volltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
-            if(voltage_out_of_power == false) {
-              voltage_out_of_power = true;
+            if(voltage_out_of_power == 0) {
+              voltage_out_of_power = 1;
               voltage_millis = millis() + VOLTAGE_LEVEL_TIMEOUT;
             }
             else if(ELAPSED(millis(), voltage_millis)) {
-              SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
-              ui.set_status_P(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
-              //kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+              if(voltage_out_of_power == 1) {
+                voltage_out_of_power = 2;
+                SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
+                ui.set_alert_status_P(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+                //kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+              }
             }
           }
           else
           {
-            voltage_out_of_power = false;
+            if(voltage_out_of_power == 2) {
+                  ui.reset_status();
+            }
+            voltage_out_of_power = 0;
           }
         break;
     #endif
