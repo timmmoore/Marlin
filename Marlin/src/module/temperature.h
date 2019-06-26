@@ -283,7 +283,7 @@ class Temperature {
       static chamber_info_t temp_chamber;
     #endif
 
-    #if ENABLED(AUTO_POWER_E_FANS)
+    #if HAS_AUTO_FAN
       static uint8_t autofan_speed[HOTENDS];
     #endif
 

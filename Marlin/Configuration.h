@@ -320,10 +320,8 @@
   #define AUTO_POWER_CONTROL            // Enable automatic control of the PS_ON pin
   #if ENABLED(AUTO_POWER_CONTROL)
     #define AUTO_POWER_FANS             // Turn on PSU if fans need power
-    #define AUTO_POWER_E_FANS           // Pin controlled E fans that need power
-    #define AUTO_POWER_E_FANS_NO_PIN    // Non-pin controlled E fans that need power
+    #define AUTO_POWER_E_FANS
     #define AUTO_POWER_CONTROLLERFAN
-    #define AUTO_POWER_CONTROLLERFAN_NO_PIN
     #define AUTO_POWER_CHAMBER_FAN
     #define POWER_TIMEOUT 30
   #endif
