@@ -729,25 +729,25 @@ int16_t Temperature::getHeaterPower(const int8_t heater) {
       }
 
       switch (f) {
-        #if HAS_AUTO_PIN_FAN_0
+        #if HAS_AUTO_FAN_0
           case 0: _UPDATE_AUTO_FAN(E0, fan_on, EXTRUDER_AUTO_FAN_SPEED); break;
         #endif
-        #if HAS_AUTO_PIN_FAN_1
+        #if HAS_AUTO_FAN_1
           case 1: _UPDATE_AUTO_FAN(E1, fan_on, EXTRUDER_AUTO_FAN_SPEED); break;
         #endif
-        #if HAS_AUTO_PIN_FAN_2
+        #if HAS_AUTO_FAN_2
           case 2: _UPDATE_AUTO_FAN(E2, fan_on, EXTRUDER_AUTO_FAN_SPEED); break;
         #endif
-        #if HAS_AUTO_PIN_FAN_3
+        #if HAS_AUTO_FAN_3
           case 3: _UPDATE_AUTO_FAN(E3, fan_on, EXTRUDER_AUTO_FAN_SPEED); break;
         #endif
-        #if HAS_AUTO_PIN_FAN_4
+        #if HAS_AUTO_FAN_4
           case 4: _UPDATE_AUTO_FAN(E4, fan_on, EXTRUDER_AUTO_FAN_SPEED); break;
         #endif
-        #if HAS_AUTO_PIN_FAN_5
+        #if HAS_AUTO_FAN_5
           case 5: _UPDATE_AUTO_FAN(E5, fan_on, EXTRUDER_AUTO_FAN_SPEED); break;
         #endif
-        #if HAS_AUTO_CHAMBER_PIN_FAN && !AUTO_CHAMBER_IS_E
+        #if HAS_AUTO_CHAMBER_FAN && !AUTO_CHAMBER_IS_E
           case CHAMBER_FAN_INDEX: _UPDATE_AUTO_FAN(CHAMBER, fan_on, CHAMBER_AUTO_FAN_SPEED); break;
         #endif
       }
@@ -1629,7 +1629,7 @@ void Temperature::init() {
   #if HAS_FAN2
     INIT_FAN_PIN(FAN2_PIN);
   #endif
-  #if ENABLED(USE_CONTROLLER_FAN)
+  #if HAS_CONTROLLER_FAN
     INIT_FAN_PIN(CONTROLLER_FAN_PIN);
   #endif
 
