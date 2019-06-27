@@ -2789,33 +2789,35 @@ void Temperature::isr() {
       UNUSED(e);
     #endif
 
+    char k;
+    switch (e) {
+      #if HAS_TEMP_CHAMBER
+        case -2: k = 'C'; break;
+      #endif
+      #if HAS_TEMP_HOTEND
+        default: k = 'T'; break;
+        #if HAS_HEATED_BED
+          case -1: k = 'B'; break;
+        #endif
+        #if ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING)
+          case -3: k = 'R'; break;
+        #endif
+      #elif HAS_HEATED_BED
+        default: k = 'B'; break;
+      #else
+        default: break;
+      #endif
+    }
     SERIAL_CHAR(' ');
-    SERIAL_CHAR(
-      #if ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_TEMP_CHAMBER && HAS_HEATED_BED && HAS_TEMP_HOTEND
-        e == -3 ? 'R' : e == -2 ? 'C' : e == -1 ? 'B' : 'T'
-      #elif HAS_TEMP_CHAMBER && HAS_HEATED_BED && HAS_TEMP_HOTEND
-        e == -2 ? 'C' : e == -1 ? 'B' : 'T'
-      #elif ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_HEATED_BED && HAS_TEMP_HOTEND
-+        e == -3 ? 'R' : e == -1 ? 'B' : 'T'
-      #elif HAS_HEATED_BED && HAS_TEMP_HOTEND
-        e == -1 ? 'B' : 'T'
-#elif ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_TEMP_HOTEND
-+        e == -3 ? 'R' : 'T'
-#elif HAS_TEMP_HOTEND
-        'T'
-#else
-        'B'
-#endif
-    );
-#if HOTENDS > 1
-    if (e >= 0)
-      SERIAL_CHAR('0' + e);
-#endif
+    SERIAL_CHAR(k);
+    #if HOTENDS > 1
+      if (e >= 0) SERIAL_CHAR('0' + e);
+    #endif
     SERIAL_CHAR(':');
     SERIAL_ECHO(c);
     SERIAL_ECHOPAIR(" /" , t);
     #if ENABLED(SHOW_TEMP_ADC_VALUES)
-      SERIAL_ECHOPAIR(" (", r / OVERSAMPLENR);
+      SERIAL_ECHOPAIR(" (", r * RECIPROCAL(OVERSAMPLENR));
       SERIAL_CHAR(')');
     #endif
     delay(2);
