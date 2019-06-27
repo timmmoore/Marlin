@@ -282,7 +282,7 @@
   #define CONTROLLER_FAN_PIN PS_ON_PIN   // Set a custom pin for the controller fan
   #define CONTROLLERFAN_SECS 60          // Duration in seconds for the fan to run after all motors are disabled
   #define CONTROLLERFAN_SPEED 255        // 255 == full speed
-  #define AUTO_POWER_CONTROLLER_COOLING   // Keep PSU on for Controller fans
+  #define AUTO_POWER_CONTROLLER_COOLING  // Keep PSU on for Controller fans
 #endif
 
 // When first starting the main fan, run it at full speed for the
@@ -359,7 +359,7 @@
 #define CHAMBER_AUTO_FAN_SPEED 255
 // These use the "AUTO_FAN" temperature settings:
 #define AUTO_POWER_E_COOLING // Keep PSU on for E fans
-#define AUTO_POWER_C_COOLING // Keep PSU on for Chamber fans
+//#define AUTO_POWER_C_COOLING // Keep PSU on for Chamber fans
 
 /**
  * Part-Cooling Fan Multiplexer
