@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -112,11 +112,11 @@ Temperature thermalManager;
   bool Temperature::adaptive_fan_slowing = true;
 #endif
 
-  hotend_info_t Temperature::temp_hotend[HOTENDS
-    #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-      + 1
-    #endif
-  ]; // = { 0 }
+hotend_info_t Temperature::temp_hotend[HOTENDS
+  #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
+    + 1
+  #endif
+]; // = { 0 }
 
 #if ENABLED(AUTO_POWER_E_FANS)
   uint8_t Temperature::autofan_speed[HOTENDS]; // = { 0 }
@@ -2785,10 +2785,6 @@ void Temperature::isr() {
     #endif
     , const int8_t e=-4
   ) {
-    #if !(DISABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_HEATED_BED && HAS_TEMP_HOTEND && HAS_TEMP_CHAMBER) && HOTENDS <= 1
-      UNUSED(e);
-    #endif
-
     char k;
     switch (e) {
       #if HAS_TEMP_CHAMBER
@@ -2799,7 +2795,7 @@ void Temperature::isr() {
         #if HAS_HEATED_BED
           case -1: k = 'B'; break;
         #endif
-        #if ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING)
+        #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
           case -3: k = 'R'; break;
         #endif
       #elif HAS_HEATED_BED
@@ -2823,15 +2819,19 @@ void Temperature::isr() {
     delay(2);
   }
 
-  void Temperature::print_heater_states(const uint8_t target_extruder) {
+  void Temperature::print_heater_states(const uint8_t target_extruder
+    #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
+      const bool include_r/*=false*/
+    #endif
+  ) {
     #if HAS_TEMP_HOTEND
       print_heater_state(degHotend(target_extruder), degTargetHotend(target_extruder)
         #if ENABLED(SHOW_TEMP_ADC_VALUES)
           , rawHotendTemp(target_extruder)
         #endif
       );
-      #if ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING)
-        print_heater_state(redundant_temperature, degTargetHotend(target_extruder)
+      #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
+        if (include_r) print_heater_state(redundant_temperature, degTargetHotend(target_extruder)
           #if ENABLED(SHOW_TEMP_ADC_VALUES)
             , redundant_temperature_raw
           #endif
