@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -2785,31 +2785,32 @@ void Temperature::isr() {
     #endif
     , const int8_t e=-4
   ) {
-    #if !(DISABLED(TEMP_SENSOR_1_AS_REDUNDANT) && HAS_HEATED_BED && HAS_TEMP_HOTEND && HAS_TEMP_CHAMBER) && HOTENDS <= 1
+    #if !(DISABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_HEATED_BED && HAS_TEMP_HOTEND && HAS_TEMP_CHAMBER) && HOTENDS <= 1
       UNUSED(e);
     #endif
 
     SERIAL_CHAR(' ');
     SERIAL_CHAR(
-      #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT) && HAS_TEMP_CHAMBER && HAS_HEATED_BED && HAS_TEMP_HOTEND
+      #if ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_TEMP_CHAMBER && HAS_HEATED_BED && HAS_TEMP_HOTEND
         e == -3 ? 'R' : e == -2 ? 'C' : e == -1 ? 'B' : 'T'
       #elif HAS_TEMP_CHAMBER && HAS_HEATED_BED && HAS_TEMP_HOTEND
         e == -2 ? 'C' : e == -1 ? 'B' : 'T'
-      #elif ENABLED(TEMP_SENSOR_1_AS_REDUNDANT) && HAS_HEATED_BED && HAS_TEMP_HOTEND
+      #elif ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_HEATED_BED && HAS_TEMP_HOTEND
 +        e == -3 ? 'R' : e == -1 ? 'B' : 'T'
       #elif HAS_HEATED_BED && HAS_TEMP_HOTEND
         e == -1 ? 'B' : 'T'
-      #elif ENABLED(TEMP_SENSOR_1_AS_REDUNDANT) &&  HAS_TEMP_HOTEND
+#elif ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING) && HAS_TEMP_HOTEND
 +        e == -3 ? 'R' : 'T'
-      #elif HAS_TEMP_HOTEND
+#elif HAS_TEMP_HOTEND
         'T'
-      #else
+#else
         'B'
-      #endif
+#endif
     );
-    #if HOTENDS > 1
-      if (e >= 0) SERIAL_CHAR('0' + e);
-    #endif
+#if HOTENDS > 1
+    if (e >= 0)
+      SERIAL_CHAR('0' + e);
+#endif
     SERIAL_CHAR(':');
     SERIAL_ECHO(c);
     SERIAL_ECHOPAIR(" /" , t);
@@ -2827,7 +2828,7 @@ void Temperature::isr() {
           , rawHotendTemp(target_extruder)
         #endif
       );
-      #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
+      #if ENABLED(TEMP_SENSOR_REDUNDANT_DEBUGGING)
         print_heater_state(redundant_temperature, degTargetHotend(target_extruder)
           #if ENABLED(SHOW_TEMP_ADC_VALUES)
             , redundant_temperature_raw
