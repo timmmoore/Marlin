@@ -327,6 +327,8 @@
     #define AUTO_POWER_E_FANS
     #define AUTO_POWER_CONTROLLERFAN
     #define AUTO_POWER_CHAMBER_FAN
+    //#define AUTO_POWER_E_TEMP       // Keep PSU on above EXTRUDER_AUTO_FAN_TEMPERATURE
+    //#define AUTO_POWER_CHAMBER_TEMP // Keep PSU on above CHAMBER_AUTO_FAN_TEMPERATURE
     #define POWER_TIMEOUT 30
   #endif
 
