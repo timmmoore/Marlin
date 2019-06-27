@@ -2821,7 +2821,7 @@ void Temperature::isr() {
 
   void Temperature::print_heater_states(const uint8_t target_extruder
     #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-      const bool include_r/*=false*/
+      , const bool include_r/*=false*/
     #endif
   ) {
     #if HAS_TEMP_HOTEND
