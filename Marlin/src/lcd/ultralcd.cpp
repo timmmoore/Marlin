@@ -38,6 +38,9 @@
   #if ENABLED(HOST_ACTION_COMMANDS)
     #include "../feature/host_actions.h"
   #endif
+  #if ENABLED(PCA9632_BUZZER)
+    #include "../feature/leds/pca9632.h"
+  #endif
 #endif
 
 #if HAS_SPI_LCD
@@ -603,6 +606,8 @@ void MarlinUI::quick_feedback(const bool clear_buttons/*=true*/) {
       delay(10);
     #elif PIN_EXISTS(BEEPER)
       for (int8_t i = 5; i--;) { buzzer.tick(); delay(2); }
+    #elif ENABLED(PCA9632_BUZZER)
+      pca9632_buzz(LCD_FEEDBACK_FREQUENCY_DURATION_MS, LCD_FEEDBACK_FREQUENCY_HZ);
     #endif
   #endif
 }
