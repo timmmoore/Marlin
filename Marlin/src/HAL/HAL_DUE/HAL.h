@@ -80,6 +80,7 @@
 
 typedef int8_t pin_t;
 
+#define SHARED_SERVOS HAS_SERVOS
 #define HAL_SERVO_LIB Servo
 
 //
@@ -152,7 +153,6 @@ void noTone(const pin_t _pin);
 
 // Enable hooks into idle and setup for HAL
 #define HAL_IDLETASK 1
-#define HAL_INIT 1
 void HAL_idletask(void);
 void HAL_init(void);
 

@@ -68,6 +68,7 @@ typedef uint16_t hal_timer_t;
 
 typedef int8_t pin_t;
 
+#define SHARED_SERVOS HAS_SERVOS
 #define HAL_SERVO_LIB Servo
 
 // --------------------------------------------------------------------------
@@ -107,6 +108,8 @@ typedef int8_t pin_t;
 // --------------------------------------------------------------------------
 // Public functions
 // --------------------------------------------------------------------------
+
+void HAL_init(void);
 
 //void cli(void);
 

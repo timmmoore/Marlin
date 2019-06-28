@@ -362,6 +362,12 @@
   #error "MENU_ITEM_CASE_LIGHT is now CASE_LIGHT_MENU. Please update your configuration."
 #elif defined(ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED)
   #error "ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED is now SD_ABORT_ON_ENDSTOP_HIT. Please update your Configuration_adv.h."
+#elif defined(LPC_SD_LCD) || defined(LPC_SD_ONBOARD) || defined(LPC_SD_CUSTOM_CABLE)
+  #error "LPC_SD_(LCD|ONBOARD|CUSTOM_CABLE) are now SDCARD_CONNECTION. Please update your Configuration_adv.h."
+#elif defined(USB_SD_DISABLED)
+  #error "USB_SD_DISABLED is now NO_SD_HOST_DRIVE. Please update your Configuration_adv.h."
+#elif defined(USB_SD_ONBOARD)
+  #error "USB_SD_ONBOARD is obsolete. Disable NO_SD_HOST_DRIVE instead."
 #endif
 
 #define BOARD_MKS_13     -47
@@ -2276,5 +2282,13 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
     #error "DUAL_X_CARRIAGE requires both MIN_ and MAX_SOFTWARE_ENDSTOPS."
   #elif HAS_HOTEND_OFFSET
     #error "MIN_ and MAX_SOFTWARE_ENDSTOPS are both required with offset hotends."
+  #endif
+#endif
+
+#if ENABLED(AUTO_POWER_CONTROL)
+  #if ENABLED(AUTO_POWER_E_TEMP) && !defined(EXTRUDER_AUTO_FAN_TEMPERATURE)
+    #error "EXTRUDER_AUTO_FAN_TEMPERATURE is required for AUTO_POWER_E_TEMP."
+  #elif ENABLED(AUTO_POWER_CHAMBER_TEMP) && !defined(CHAMBER_AUTO_FAN_TEMPERATURE)
+    #error "CHAMBER_AUTO_FAN_TEMPERATURE is required for AUTO_POWER_CHAMBER_TEMP."
   #endif
 #endif

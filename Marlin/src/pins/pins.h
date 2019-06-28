@@ -156,6 +156,8 @@
   #include "pins_TRIGORILLA_13.h"     // ATmega2560                                 env:megaatmega2560
 #elif MB(TRIGORILLA_14)
   #include "pins_TRIGORILLA_14.h"     // ATmega2560                                 env:megaatmega2560
+#elif MB(TRIGORILLA_14_11)
+  #include "pins_TRIGORILLA_14.h"     // ATmega2560                                 env:megaatmega2560
 #elif MB(RAMPS_ENDER_4)
   #include "pins_RAMPS_ENDER_4.h"     // ATmega2560                                 env:megaatmega2560
 #elif MB(RAMPS_CREALITY)
@@ -322,6 +324,8 @@
   #include "pins_MKS_SBASE.h"           // LPC1768                                    env:LPC1768
 #elif MB(MKS_SGEN)
   #include "pins_MKS_SGEN.h"            // LPC1769                                    env:LPC1769
+#elif MB(MKS_SGEN_L)
+  #include "pins_MKS_SGEN_L.h"          // LPC1768                                    env:LPC1768
 #elif MB(AZSMZ_MINI)
   #include "pins_AZSMZ_MINI.h"          // LPC1768                                    env:LPC1768
 #elif MB(AZTEEG_X5_GT)
@@ -428,8 +432,14 @@
   #include "pins_MORPHEUS.h"          // STM32F1                                    env:STM32F1
 #elif MB(MKS_ROBIN)
   #include "pins_MKS_ROBIN.h"         // STM32F1                                    env:mks_robin
+#elif MB(MKS_ROBIN_MINI)
+  #include "pins_MKS_ROBIN_MINI.h"    // STM32F1                                    env:mks_robin_mini
 #elif MB(JGAURORA_A5S_A1)
   #include "pins_JGAURORA_A5S_A1.h"   // STM32F1                                    env:JGAURORA_A5S_A1
+#elif MB(FYSETC_AIO_II)
+  #include "pins_FYSETC_AIO_II.h"     // STM32F1                                    env:fysetc_STM32F1
+#elif MB(FYSETC_CHEETAH)
+  #include "pins_FYSETC_CHEETAH.h"    // STM32F1                                    env:fysetc_STM32F1
 
 //
 // STM32 ARM Cortex-M4F
@@ -451,8 +461,6 @@
   #include "pins_BLACK_STM32F407VE.h" // STM32F4                                    env:black_stm32f407ve
 #elif MB(STEVAL)
   #include "pins_STEVAL.h"            // STM32F4                                    env:STM32F4
-
-
 
 //
 // ARM Cortex M7

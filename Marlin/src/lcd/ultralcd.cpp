@@ -104,7 +104,7 @@
   #endif
 #endif
 
-#if ENABLED(SDSUPPORT)
+#if ENABLED(INIT_SDCARD_ON_BOOT)
   uint8_t lcd_sd_status;
 #endif
 
@@ -319,7 +319,9 @@ void MarlinUI::init() {
     #if PIN_EXISTS(SD_DETECT)
       SET_INPUT_PULLUP(SD_DETECT_PIN);
     #endif
-    lcd_sd_status = 2; // UNKNOWN
+    #if ENABLED(INIT_SDCARD_ON_BOOT)
+      lcd_sd_status = 2; // UNKNOWN
+    #endif
   #endif
 
   #if HAS_ENCODER_ACTION && HAS_SLOW_BUTTONS
@@ -521,7 +523,9 @@ void MarlinUI::status_screen() {
         next_filament_display = millis() + 5000UL;  // Show status message for 5s
       #endif
       goto_screen(menu_main);
-      init_lcd(); // May revive the LCD if static electricity killed it
+      #if DISABLED(NO_LCD_REINIT)
+        init_lcd(); // May revive the LCD if static electricity killed it
+      #endif
       return;
     }
 
@@ -768,7 +772,7 @@ void MarlinUI::update() {
 
   #endif // HAS_LCD_MENU
 
-  #if ENABLED(SDSUPPORT)
+  #if ENABLED(INIT_SDCARD_ON_BOOT)
 
     const uint8_t sd_status = (uint8_t)IS_SD_INSERTED();
     if (sd_status != lcd_sd_status && detected()) {
@@ -793,7 +797,9 @@ void MarlinUI::update() {
           }
         }
 
-        init_lcd(); // May revive the LCD if static electricity killed it
+        #if DISABLED(NO_LCD_REINIT)
+          init_lcd(); // May revive the LCD if static electricity killed it
+        #endif
 
       #endif
 
@@ -807,7 +813,7 @@ void MarlinUI::update() {
       #endif
     }
 
-  #endif // SDSUPPORT
+  #endif // INIT_SDCARD_ON_BOOT
 
   if (ELAPSED(ms, next_lcd_update_ms)
     #if HAS_GRAPHICAL_LCD

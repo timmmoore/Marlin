@@ -63,6 +63,8 @@ uint8_t _getc();
 #include "HAL_timers.h"
 #include "serial.h"
 
+#define SHARED_SERVOS HAS_SERVOS
+
 extern HalSerial usb_serial;
 #define MYSERIAL0 usb_serial
 #define NUM_SERIAL 1
@@ -80,7 +82,9 @@ extern HalSerial usb_serial;
 #define ENABLE_ISRS()
 #define DISABLE_ISRS()
 
-//Utility functions
+inline void HAL_init(void) { }
+
+// Utility functions
 int freeMemory(void);
 
 // SPI: Extended functions which take a channel number (hardware SPI only)

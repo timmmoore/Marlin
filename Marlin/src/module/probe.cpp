@@ -376,13 +376,15 @@ FORCE_INLINE void probe_specific_action(const bool deploy) {
 
     dock_sled(!deploy);
 
-  #elif ENABLED(BLTOUCH)
-
-    deploy ? bltouch.deploy() : bltouch.stow();
-
   #elif HAS_Z_SERVO_PROBE
 
-    MOVE_SERVO(Z_PROBE_SERVO_NR, servo_angles[Z_PROBE_SERVO_NR][deploy ? 0 : 1]);
+    #if DISABLED(BLTOUCH)
+      MOVE_SERVO(Z_PROBE_SERVO_NR, servo_angles[Z_PROBE_SERVO_NR][deploy ? 0 : 1]);
+    #elif ENABLED(BLTOUCH_HS_MODE)
+      // In HIGH SPEED MODE, use the normal retractable probe logic in this code
+      // i.e. no intermediate STOWs and DEPLOYs in between individual probe actions
+      if (deploy) bltouch.deploy(); else bltouch.stow();
+    #endif
 
   #elif EITHER(TOUCH_MI_PROBE, Z_PROBE_ALLEN_KEY)
 
@@ -445,12 +447,14 @@ bool set_probe_deployed(const bool deploy) {
               oldYpos = current_position[Y_AXIS];
 
   #if ENABLED(PROBE_TRIGGERED_WHEN_STOWED_TEST)
-
     #if USES_Z_MIN_PROBE_ENDSTOP
       #define PROBE_STOWED() (READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING)
     #else
       #define PROBE_STOWED() (READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING)
     #endif
+  #endif
+
+  #ifdef PROBE_STOWED
 
     // Only deploy/stow if needed
     if (PROBE_STOWED() == deploy) {
@@ -663,14 +667,16 @@ static float run_z_probe() {
       #if EXTRA_PROBING
         // Insert Z measurement into probes[]. Keep it sorted ascending.
         for (uint8_t i = 0; i <= p; i++) {                            // Iterate the saved Zs to insert the new Z
-          if (i == p || probes[i] > z) {       // Last index or new Z is smaller than this Z
+          if (i == p || probes[i] > z) {                              // Last index or new Z is smaller than this Z
             for (int8_t m = p; --m >= i;) probes[m + 1] = probes[m];  // Shift items down after the insertion point
-            probes[i] = z;                     // Insert the new Z measurement
+            probes[i] = z;                                            // Insert the new Z measurement
             break;                                                    // Only one to insert. Done!
           }
         }
       #elif TOTAL_PROBING > 2
         probes_total += z;
+      #else
+        UNUSED(z);
       #endif
 
       #if TOTAL_PROBING > 2
