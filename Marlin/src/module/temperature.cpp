@@ -2945,19 +2945,12 @@ void Temperature::isr() {
 
     uint8_t Temperature::auto_report_temp_interval;
     millis_t Temperature::next_temp_report_ms;
-    #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-    bool Temperature::auto_report_temp_redundant;
-#endif
 
     void Temperature::auto_report_temperatures() {
       if (auto_report_temp_interval && ELAPSED(millis(), next_temp_report_ms)) {
         next_temp_report_ms = millis() + 1000UL * auto_report_temp_interval;
         PORT_REDIRECT(SERIAL_BOTH);
-        print_heater_states(active_extruder
-          #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-            , auto_report_temp_redundant
-          #endif
-        );
+        print_heater_states(active_extruder);
         SERIAL_EOL();
       }
     }

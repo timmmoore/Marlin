@@ -776,21 +776,11 @@ class Temperature {
       #if ENABLED(AUTO_REPORT_TEMPERATURES)
         static uint8_t auto_report_temp_interval;
         static millis_t next_temp_report_ms;
-        #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-          static bool auto_report_temp_redundant;
-        #endif
         static void auto_report_temperatures(void);
-        static inline void set_auto_report_interval(uint8_t v
-          #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-            , const bool include_r=false
-          #endif
-        ) {
+        static inline void set_auto_report_interval(uint8_t v) {
           NOMORE(v, 60);
           auto_report_temp_interval = v;
           next_temp_report_ms = millis() + 1000UL * v;
-          #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-            auto_report_temp_redundant = include_r;
-          #endif
         }
       #endif
     #endif
