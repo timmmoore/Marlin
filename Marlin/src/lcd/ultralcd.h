@@ -259,6 +259,8 @@ public:
       lcd.buzz(duration, freq);
     #elif PIN_EXISTS(BEEPER)
       buzzer.tone(duration, freq);
+    #elif ENABLED(PCA9632_BUZZER)
+      pca9632_buzz(LCD_FEEDBACK_FREQUENCY_DURATION_MS, LCD_FEEDBACK_FREQUENCY_HZ);
     #else
       UNUSED(duration); UNUSED(freq);
     #endif
