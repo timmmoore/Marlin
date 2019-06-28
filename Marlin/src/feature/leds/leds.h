@@ -174,11 +174,7 @@ public:
   }
 
   static inline void set_off()   {
-    #if ENABLED(LED_USER_PRESET_OFF_DEFAULT)
-      set_color(defaultLEDColor);
-    #else
-      set_color(LEDColorOff()); 
-    #endif
+    set_color(LEDColorOff()); 
   }
   static inline void set_green() { set_color(LEDColorGreen()); }
   static inline void set_white() { set_color(LEDColorWhite()); }
