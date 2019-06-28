@@ -512,14 +512,15 @@
  */
 /*
  * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
- * The original software had power management code to  only power either hotend or bed at any time
+ * The original software had power management code to only power either hotend or bed at any time
  * This code hasn't been ported over
  * Testing with both BANG_MAX and MAX_BED_POWER at 160 caused power supply to shutdown once steppers started moving
  * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
  * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
  * If both are on at the same time, then there is no power available for anything else
- * and power supply will shutdown if stepers are moving while both hotend and bed are on
- * So either disable the BED header or upgrade PSU
+ * and power supply will shutdown if steppers are moving while both hotend and bed are on
+ *  This will trigger an alert - "Input Voltage Too low"
+ * So either disable the Bed header or upgrade PSU
  *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
