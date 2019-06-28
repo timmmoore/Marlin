@@ -279,10 +279,10 @@
  */
 //#define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)
-  //#define CONTROLLER_FAN_PIN -1        // Set a custom pin for the controller fan
+  #define CONTROLLER_FAN_PIN -1          // Set a custom pin for the controller fan
+  #define CONTROLLERFAN_SECS 60          // Duration in seconds for the fan to run after all motors are disabled
+  #define CONTROLLERFAN_SPEED 255        // 255 == full speed
 #endif
-#define CONTROLLERFAN_SECS 60   // Duration in seconds for the fan to run after all motors are disabled
-#define CONTROLLERFAN_SPEED 255 // 255 == full speed
 
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
@@ -352,11 +352,12 @@
 #define E4_AUTO_FAN_PIN -1
 #define E5_AUTO_FAN_PIN -1
 #define CHAMBER_AUTO_FAN_PIN -1
+
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
 #define EXTRUDER_AUTO_FAN_SPEED 255   // 255 == full speed
 #define CHAMBER_AUTO_FAN_TEMPERATURE 30
 #define CHAMBER_AUTO_FAN_SPEED 255
-
+  
 /**
  * Part-Cooling Fan Multiplexer
  *
@@ -1036,18 +1037,26 @@
   // Add an optimized binary file transfer mode, initiated with 'M28 B1'
   //#define BINARY_FILE_TRANSFER
 
-  // LPC-based boards have on-board SD Card options. Override here or defaults apply.
   #ifdef TARGET_LPC1768
-    //#define LPC_SD_LCD          // Use the SD drive in the external LCD controller.
-    //#define LPC_SD_ONBOARD      // Use the SD drive on the control board. (No SD_DETECT_PIN. M21 to init.)
-    //#define LPC_SD_CUSTOM_CABLE // Use a custom cable to access the SD (as defined in a pins file).
-    //#define USB_SD_DISABLED     // Disable SD Card access over USB (for security).
-    #if ENABLED(LPC_SD_ONBOARD)
-      //#define USB_SD_ONBOARD    // Provide the onboard SD card to the host as a USB mass storage device.
-    #endif
+    /**
+     * Set this option to one of the following (or the board's defaults apply):
+     *
+     *           LCD - Use the SD drive in the external LCD controller.
+     *       ONBOARD - Use the SD drive on the control board. (No SD_DETECT_PIN. M21 to init.)
+     *  CUSTOM_CABLE - Use a custom cable to access the SD (as defined in a pins file).
+     *
+     * :[ 'LCD', 'ONBOARD', 'CUSTOM_CABLE' ]
+     */
+    //#define SDCARD_CONNECTION LCD
   #endif
 
 #endif // SDSUPPORT
+
+/**
+ * By default an onboard SD card reader will be shared as a USB mass-
+ * storage device. This option hides the SD card from the host PC.
+ */
+//#define NO_SD_HOST_DRIVE   // Disable SD Card access over USB (for security).
 
 /**
  * Additional options for Graphical Displays
@@ -2112,36 +2121,38 @@
  *
  * See http://marlinfw.org/docs/configuration/laser_spindle.html for more config details.
  */
-//#define SPINDLE_LASER_ENABLE
-#if ENABLED(SPINDLE_LASER_ENABLE)
-
-  #define SPINDLE_LASER_ENABLE_INVERT   false  // Set to "true" if the on/off function is reversed
-  #define SPINDLE_LASER_PWM             true   // Set to true if your controller supports setting the speed/power
+//#define SPINDLE_FEATURE
+//#define LASER_FEATURE
+#if EITHER(SPINDLE_FEATURE, LASER_FEATURE)
+  #define SPINDLE_LASER_ACTIVE_HIGH     false  // Set to "true" if the on/off function is active HIGH
+  #define SPINDLE_LASER_PWM             true   // Set to "true" if your controller supports setting the speed/power
   #define SPINDLE_LASER_PWM_INVERT      true   // Set to "true" if the speed/power goes up when you want it to go slower
   #define SPINDLE_LASER_POWERUP_DELAY   5000   // (ms) Delay to allow the spindle/laser to come up to speed/power
   #define SPINDLE_LASER_POWERDOWN_DELAY 5000   // (ms) Delay to allow the spindle to stop
-  #define SPINDLE_DIR_CHANGE            true   // Set to true if your spindle controller supports changing spindle direction
-  #define SPINDLE_INVERT_DIR            false
-  #define SPINDLE_STOP_ON_DIR_CHANGE    true   // Set to true if Marlin should stop the spindle before changing rotation direction
 
-  /**
-   *  The M3 & M4 commands use the following equation to convert PWM duty cycle to speed/power
-   *
-   *  SPEED/POWER = PWM duty cycle * SPEED_POWER_SLOPE + SPEED_POWER_INTERCEPT
-   *    where PWM duty cycle varies from 0 to 255
-   *
-   *  set the following for your controller (ALL MUST BE SET)
-   */
+  #if ENABLED(SPINDLE_FEATURE)
+    //#define SPINDLE_CHANGE_DIR               // Enable if your spindle controller can change spindle direction
+    #define SPINDLE_CHANGE_DIR_STOP            // Enable if the spindle should stop before changing spin direction
+    #define SPINDLE_INVERT_DIR          false  // Set to "true" if the spin direction is reversed
 
-  #define SPEED_POWER_SLOPE    118.4
-  #define SPEED_POWER_INTERCEPT  0
-  #define SPEED_POWER_MIN     5000
-  #define SPEED_POWER_MAX    30000    // SuperPID router controller 0 - 30,000 RPM
-
-  //#define SPEED_POWER_SLOPE      0.3922
-  //#define SPEED_POWER_INTERCEPT  0
-  //#define SPEED_POWER_MIN       10
-  //#define SPEED_POWER_MAX      100      // 0-100%
+    /**
+     *  The M3 & M4 commands use the following equation to convert PWM duty cycle to speed/power
+     *
+     *  SPEED/POWER = PWM duty cycle * SPEED_POWER_SLOPE + SPEED_POWER_INTERCEPT
+     *    where PWM duty cycle varies from 0 to 255
+     *
+     *  set the following for your controller (ALL MUST BE SET)
+     */
+    #define SPEED_POWER_SLOPE    118.4
+    #define SPEED_POWER_INTERCEPT  0
+    #define SPEED_POWER_MIN     5000
+    #define SPEED_POWER_MAX    30000    // SuperPID router controller 0 - 30,000 RPM
+  #else
+    #define SPEED_POWER_SLOPE      0.3922
+    #define SPEED_POWER_INTERCEPT  0
+    #define SPEED_POWER_MIN       10
+    #define SPEED_POWER_MAX      100    // 0-100%
+  #endif
 #endif
 
 /**
@@ -2194,21 +2205,29 @@
 
 /*
  * LEDs using PCA9632 but wired up differently
+ * 
+ * Overlord
+ *  PCA9632 implementation doesn't support auto-inc
+ *  Has Red and Green leds switched
+ *  Has Buzzer connected to PCA9632
 */
 #if ENABLED(PCA9632)
-  #define PCA9632_NO_AUTO_INC           // Overlord PCA9632 implementation doesn't support auto-inc
-  #define PCA9632_GRN 0x00              // Overlord has red and green leds switched
-  #define PCA9632_RED 0x02
-//  #define PCA9632_BLU 0x04
-  #define PCA9632_BUZZER                // Overlord: buzzer wired up to PCA9632
+  #define PCA9632_NO_AUTO_INC       // PCA9632 implementation doesn't support auto-inc
+  #define PCA9632_GRN         0x00  // Leds in different order
+  #define PCA9632_RED         0x02
+  //#define PCA9632_BLU         0x04
+  #define PCA9632_BUZZER            // Buzzer wired up to PCA9632
+  #define PCA9632_BUZZER_CMD  0     // I2C command used for buzzer
 #endif
 
 /*
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
  * Needs BATTERY_STATUS_PIN defined
+ * 
+ * Overlord Pro has internal rechargable battery
  */
-#define BATTERY_STATUS_AVAILABLE        // Overlord Pro has internal rechargable battery
+#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
   #define BATTERY_STATUS_CHARGED LOW
 #endif
@@ -2218,13 +2237,18 @@
  * Assumes a resistor divider network to lower voltage to something ADC can handle
  * Configure the total resistance and lower resistor
  * Needs VOLTAGE_DETECTION_PIN defined
+ * 
+ *  Overlord
+ *    Divider total is 240K + 47K, adjusted so matching measured voltage
+ *    Divider lower is 47K, adjusted so matching measured voltage
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  #define DIVIDER_TOTAL 288.0f          // Overlord is 240K + 47K, adjusted so matching measured voltage
-  #define DIVIDER_LOWER 48.84f          // Overlord is 47K, adjusted so matching measured voltage
+  #define DIVIDER_TOTAL 288.0f          // total resistance of divider network
+  #define DIVIDER_LOWER 48.84f          // lower resistance of divider network
   #define ADC_VREF 5.0f                 // Whatever the ADC AREF is, default is 5.0V
-  #define VOLTAGE_MINIMUM 625           // Alert if input voltage ADC reading goes lower than this (~21V)
+  #define VOLTAGE_MINIMUM 625           // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
 #endif
 
 /**

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -317,12 +317,14 @@
   // Power to steppers and heaters will need to be turned on with M80.
   #define PS_DEFAULT_OFF
 
-  #define AUTO_POWER_CONTROL // Enable automatic control of the PS_ON pin
+  #define AUTO_POWER_CONTROL            // Enable automatic control of the PS_ON pin
   #if ENABLED(AUTO_POWER_CONTROL)
-    #define AUTO_POWER_FANS // Turn on PSU if fans need power
+    #define AUTO_POWER_FANS             // Turn on PSU if fans need power
     #define AUTO_POWER_E_FANS
     #define AUTO_POWER_CONTROLLERFAN
-    //#define AUTO_POWER_CHAMBER_FAN
+    #define AUTO_POWER_CHAMBER_FAN
+    #define AUTO_POWER_E_TEMP        50 // (°C) Turn on PSU over this temperature
+    //#define AUTO_POWER_CHAMBER_TEMP  30 // (°C) Turn on PSU over this temperature
     #define POWER_TIMEOUT 30
   #endif
 
@@ -510,9 +512,16 @@
  */
 /*
  * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
- * The original software had power management code to manage the power and only power either hotend or bed at a time
- * This code hasn't been ported over so the default PSU needs upgrading - a Meanwell RSP-500-24 works
- * You could try reducing MAX_BED_POWER but testing with both BANG_MAX and MAX_BED_POWER at 160 wasn't enough once steppers started moving
+ * The original software had power management code to only power either hotend or bed at any time
+ * This code hasn't been ported over
+ * Testing with both BANG_MAX and MAX_BED_POWER at 160 caused power supply to shutdown once steppers started moving
+ * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
+ * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
+ * If both are on at the same time, then there is no power available for anything else
+ * and power supply will shutdown if steppers are moving while both hotend and bed are on
+ *  This will trigger an alert - "Input Voltage Too low"
+ * So either disable the Bed header or upgrade PSU
+ *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
@@ -520,7 +529,7 @@
 
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
-  //Overlord Pro heater into aluminium bed, update using M303
+  //Overlord Pro heater into 5.5mm aluminium bed, update using M303
   #define DEFAULT_bedKp 253.16
   #define DEFAULT_bedKi 24.14
   #define DEFAULT_bedKd 663.66
@@ -724,9 +733,9 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE  TMC2208_STANDALONE       // Note modified from standard Overlord Pro which has DRV8825
-#define Y_DRIVER_TYPE  TMC2208_STANDALONE
-#define Z_DRIVER_TYPE  TMC2208_STANDALONE
+#define X_DRIVER_TYPE DRV8825 // Note modified from standard Overlord Pro which has DRV8825
+#define Y_DRIVER_TYPE DRV8825
+#define Z_DRIVER_TYPE DRV8825
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
 //#define Z2_DRIVER_TYPE A4988
@@ -784,7 +793,7 @@
  */
 // variables to calculate steps
 #define XYZ_FULL_STEPS_PER_ROTATION 100
-#define XYZ_MICROSTEPS              16         // Modified from standard Overlord Pro which uses DRV8825 with 32 microsteps
+#define XYZ_MICROSTEPS              32
 #define XYZ_BELT_PITCH              2.03
 #define XYZ_PULLEY_TEETH            20
 // delta speeds must be the same on xyz
@@ -1073,9 +1082,9 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
-#define INVERT_Y_DIR false
-#define INVERT_Z_DIR false
+#define INVERT_X_DIR true
+#define INVERT_Y_DIR true
+#define INVERT_Z_DIR true
 
 // @section extruder
 
@@ -1153,7 +1162,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-#define FILAMENT_RUNOUT_SENSOR        // Not on Overlord by default
+//#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // Set to true to invert the logic of the sensor.
