@@ -2856,8 +2856,6 @@ void Temperature::isr() {
         #endif
       #elif HAS_HEATED_BED
         default: k = 'B'; break;
-      #else
-        default: break;
       #endif
     }
     SERIAL_CHAR(' ');
