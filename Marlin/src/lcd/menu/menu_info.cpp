@@ -188,15 +188,15 @@ void menu_info_board() {
     SET_INPUT(PCB_VERSION_PIN);
     delay(1);
     if (READ(PCB_VERSION_PIN))
-      STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true); // Overlord Motherboard version
+      STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true);
     else
       STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true);
   #endif
   #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
-      STATIC_ITEM("Battery" ": Charging", true);  // Power Supply Battery: Charging
+      STATIC_ITEM("Battery" ": Charging", true);
     else
-      STATIC_ITEM("Battery" ": Charged", true);   // Power Supply Battery: Charged
+      STATIC_ITEM("Battery" ": Charged", true);
   #endif
   #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
     #define ADC_RESOLUTION 1024.0f
