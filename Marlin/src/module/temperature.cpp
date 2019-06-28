@@ -127,10 +127,10 @@ hotend_info_t Temperature::temp_hotend[HOTENDS
 #endif
 
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  uint16_t voltage_level;
+  uint16_t Temperature::voltage_level;
   enum voltage_state_t { power_ok, power_timing_out, power_lost };
-  voltage_state_t voltage_out_of_power = power_ok;
-  millis_t voltage_millis;
+  static voltage_state_t voltage_out_of_power = power_ok;
+  static millis_t voltage_millis;
 #endif
 
 #if FAN_COUNT > 0

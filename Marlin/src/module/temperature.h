@@ -33,10 +33,6 @@
   #include "../feature/power.h"
 #endif
 
-#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  extern uint16_t voltage_level;
-#endif
-
 #ifndef SOFT_PWM_SCALE
   #define SOFT_PWM_SCALE 0
 #endif
@@ -294,6 +290,10 @@ class Temperature {
     #if ENABLED(FAN_SOFT_PWM)
       static uint8_t soft_pwm_amount_fan[FAN_COUNT],
                      soft_pwm_count_fan[FAN_COUNT];
+    #endif
+
+    #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+      static uint16_t voltage_level;
     #endif
 
     #if ENABLED(PREVENT_COLD_EXTRUSION)

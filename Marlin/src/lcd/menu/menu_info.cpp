@@ -203,7 +203,7 @@ void menu_info_board() {
     {
       char buffer[8];
       uint16_t volt;
-      volt = (uint16_t)(((((float)voltage_level * ADC_VREF * DIVIDER_TOTAL) / (ADC_RESOLUTION * DIVIDER_LOWER)) * 100.0f) + 0.5f);
+      volt = (uint16_t)(((((float)thermalManager.voltage_level * ADC_VREF * DIVIDER_TOTAL) / (ADC_RESOLUTION * DIVIDER_LOWER)) * 100.0f) + 0.5f);
       sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
       STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
     }
