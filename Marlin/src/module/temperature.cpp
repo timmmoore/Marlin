@@ -2792,9 +2792,7 @@ void Temperature::isr() {
               if(ELAPSED(millis(), voltage_millis)) {
                 voltage_out_of_power = power_lost;
                 SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
-                ui.set_alert_status_P(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
-                // Should we kill the machine?
-                // kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+                kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
               }
             }
           }
