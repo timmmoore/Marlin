@@ -148,4 +148,16 @@ void pca9632_set_led_color(const LEDColor &color) {
   PCA9632_WriteRegister(PCA9632_ADDRESS,PCA9632_LEDOUT, LEDOUT);
 }
 
+#if ENABLED(PCA9632_BUZZER)
+void pca9632_buzz(uint16_t const f, uint16_t d)
+{
+  UNUSED(f);
+  UNUSED(d);
+
+  Wire.beginTransmission(I2C_ADDRESS(PCA9632_ADDRESS));
+  Wire.write(PCA9632_SUBADR1);
+  Wire.write(PCA9632_BUZZER_CMD);
+  Wire.endTransmission();
+}
+#endif
 #endif // PCA9632

@@ -2189,6 +2189,18 @@
   //#define FILAMENT_LCD_DISPLAY
 #endif
 
+/*
+ * LEDs using PCA9632 but wired up differently
+*/
+#if ENABLED(PCA9632)
+  //#define PCA9632_NO_AUTO_INC       // PCA9632 implementation doesn't support auto-inc
+  //#define PCA9632_GRN         0x00  // Leds in different order
+  //#define PCA9632_RED         0x02
+  //#define PCA9632_BLU         0x04
+  //#define PCA9632_BUZZER            // Buzzer wired up to PCA9632
+  //#define PCA9632_BUZZER_CMD  0     // I2C command used for buzzer
+#endif
+
 /**
  * CNC Coordinate Systems
  *
