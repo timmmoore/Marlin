@@ -125,7 +125,7 @@
   #define LCD_PINS_D6           5
   #define LCD_PINS_D7           6
   #if DISABLED(LCD_RESET_PIN)
-    #define LCD_RESET_PIN       LCD_PINS_D6
+    #define LCD_RESET_PIN       5 // LCD_PINS_D6
   #endif
 
   #define PCB_VERSION_PIN 22
