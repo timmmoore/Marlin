@@ -94,12 +94,12 @@ bool Power::is_power_needed() {
     if (thermalManager.degTargetBed() > 0) return true;
   #endif
 
-  #if HOTENDS && ENABLED(AUTO_POWER_E_TEMP)
-    HOTEND_LOOP() if (thermalManager.degHotend(e) >= EXTRUDER_AUTO_FAN_TEMPERATURE) return true;
+  #if HOTENDS && AUTO_POWER_E_TEMP
+    HOTEND_LOOP() if (thermalManager.degHotend(e) >= AUTO_POWER_E_TEMP) return true;
   #endif
 
-  #if HAS_HEATED_CHAMBER && ENABLED(AUTO_POWER_CHAMBER_TEMP)
-    if (thermalManager.degChamber() >= CHAMBER_AUTO_FAN_TEMPERATURE) return true;
+  #if HAS_HEATED_CHAMBER && AUTO_POWER_CHAMBER_TEMP
+    if (thermalManager.degChamber() >= AUTO_POWER_CHAMBER_TEMP) return true;
   #endif
 
   return false;
