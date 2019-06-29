@@ -407,7 +407,7 @@ static void print_probe_state(const bool is_hit)
   serialprintPGM(PSTR(MSG_Z_PROBE));
   SERIAL_ECHOPGM(": ");
   serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));
-  SERIAL_EOL();
+  SERIAL_EOL(); 
 }
 #endif
 
