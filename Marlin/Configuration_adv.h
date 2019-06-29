@@ -890,7 +890,7 @@
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
     #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
     #define LED_USER_PRESET_OFF_DEFAULT     // Have the printer display the user preset color on end of print
-    #define LED_USER_PRESET_OFF_POWEROFF    // Have the printer turn on/off LEDS on menu power on/off
+    #define LED_USER_PRESET_M80_M81         // Have the printer turn on/off LEDS with M80/M81
   #endif
 #endif // LED_CONTROL_MENU
 
