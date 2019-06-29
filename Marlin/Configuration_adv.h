@@ -2218,7 +2218,7 @@
   #define PCA9632_RED         0x02
   //#define PCA9632_BLU         0x04
   #define PCA9632_BUZZER            // Buzzer wired up to PCA9632
-  #define PCA9632_BUZZER_CMD  0     // I2C command used for buzzer
+  #define PCA9632_BUZZER_CMD  2     // I2C command used for buzzer
 #endif
 
 /*
