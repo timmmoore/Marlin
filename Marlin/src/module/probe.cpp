@@ -401,12 +401,30 @@ FORCE_INLINE void probe_specific_action(const bool deploy) {
   #endif
 }
 
+#if ENABLED(DEBUG_LEVELING_FEATURE)
+static void print_probe_state(const bool is_hit)
+{
+  serialprintPGM(PSTR(MSG_Z_PROBE));
+  SERIAL_ECHOPGM(": ");
+  serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));
+  SERIAL_EOL();
+}
+#endif
+
 // returns false for ok and true for failure
 bool set_probe_deployed(const bool deploy) {
 
   if (DEBUGGING(LEVELING)) {
     DEBUG_POS("set_probe_deployed", current_position);
     DEBUG_ECHOLNPAIR("deploy: ", deploy);
+    const bool is_hit =
+    #if USES_Z_MIN_PROBE_ENDSTOP
+      (READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING);
+    #else
+      (READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING);
+    #endif
+    print_probe_state(is_hit);
+    if(is_hit) return true;
   }
 
   if (endstops.z_probe_enabled == deploy) return false;
@@ -587,16 +605,6 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
   return !probe_triggered;
 }
 
-#if ENABLED(DEBUG_LEVELING_FEATURE)
-static void print_probe_state(const bool is_hit)
-{
-  serialprintPGM(PSTR(MSG_Z_PROBE));
-  SERIAL_ECHOPGM(": ");
-  serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));
-  SERIAL_EOL();
-  }
-#endif
-
 /**
  * @brief Probe at the current XY (possibly more than once) to find the bed Z.
  *
@@ -616,11 +624,11 @@ static float run_z_probe() {
   if (DEBUGGING(LEVELING))
   {
     print_probe_state(
-#if USES_Z_MIN_PROBE_ENDSTOP
+    #if USES_Z_MIN_PROBE_ENDSTOP
       READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING
-#else
+    #else
       READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING
-#endif
+    #endif
     );
   }
   // Double-probing does a fast probe followed by a slow probe
