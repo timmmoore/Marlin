@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -889,6 +889,7 @@
     #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
     #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
+    #define LED_USER_PRESET_OFF_DEFAULT     // Have the printer display the user preset color on end of print
   #endif
 #endif // LED_CONTROL_MENU
 
@@ -2217,7 +2218,7 @@
   #define PCA9632_RED         0x02
   //#define PCA9632_BLU         0x04
   #define PCA9632_BUZZER            // Buzzer wired up to PCA9632
-  #define PCA9632_BUZZER_CMD  0     // I2C command used for buzzer
+  #define PCA9632_BUZZER_CMD  2     // I2C command used for buzzer
 #endif
 
 /*
