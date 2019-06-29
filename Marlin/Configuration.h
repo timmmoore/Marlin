@@ -637,7 +637,7 @@
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS 75.0                         // (mm) Overlord Pro
+    #define DELTA_CALIBRATION_RADIUS 80.0                         // (mm) Overlord Pro
     // Set the steprate for papertest probing
     #define PROBE_MANUALLY_STEP 0.05                              // (mm)
   #endif
@@ -649,17 +649,17 @@
   #define DELTA_DIAGONAL_ROD 206.0                                // (mm) Overlord Pro
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 286.2                                      // (mm) Overlord Pro - Update this value using G33 auto calibrate
+  #define DELTA_HEIGHT 286.14                                     // (mm) Overlord Pro - Update this value using G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, -0.13, -1.00 }                 // Update these values using G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { -0.33, 0.0, -0.85 }                 // Update these values using G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 99.81                                      // (mm) Overlord Pro - Update this value using G33 auto calibrate
+  #define DELTA_RADIUS 100.63                                     // (mm) Overlord Pro - Update this value using G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 }                // Update these values using G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { 0.69, 0.0, -0.70 }             // Update these values using G33 auto calibrate
 
   // Delta radius and diagonal rod adjustments (mm)
   #define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
