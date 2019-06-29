@@ -34,6 +34,7 @@
 #include "../../module/printcounter.h"
 #include "../../module/stepper.h"
 #include "../../sd/cardreader.h"
+#include "../../feature/leds/leds.h"
 
 #if HAS_GAMES && DISABLED(LCD_INFO_MENU)
   #include "game/game.h"
@@ -202,9 +203,21 @@ void menu_main() {
   //
   #if HAS_POWER_SWITCH
     if (powersupply_on)
-      MENU_ITEM(gcode, MSG_SWITCH_PS_OFF, PSTR("M81"));
+      MENU_ITEM(gcode, MSG_SWITCH_PS_OFF, 
+        #if ENABLED(LED_USER_PRESET_OFF_POWEROFF) 
+          PSTR("M81\nM150")
+        #else
+          PSTR("M81")
+        #endif
+      );
     else
-      MENU_ITEM(gcode, MSG_SWITCH_PS_ON, PSTR("M80"));
+      MENU_ITEM(gcode, MSG_SWITCH_PS_ON, 
+        #if ENABLED(LED_USER_PRESET_OFF_POWEROFF)
+          PSTR("M80\nM150 D")
+        #else
+          PSTR("M80")
+        #endif
+      );
   #endif
 
   #if HAS_ENCODER_WHEEL && ENABLED(SDSUPPORT)
