@@ -889,7 +889,7 @@
     #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
     #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
-    #define LDE_USER_PRESET_STARTUP_M80_M81
+    #define LED_USER_PRESET_M80_M81         // Have the printer turn on/off LEDS with M80/M81
   #endif
 #endif // LED_CONTROL_MENU
 
