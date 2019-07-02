@@ -1042,30 +1042,28 @@ void Temperature::manage_heater() {
 
   } // HOTEND_LOOP
 
-#if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
-  if (ELAPSED(ms, next_auto_fan_check_ms))
-  { // only need to check fan state very infrequently
-    checkExtruderAutoFans();
-    next_auto_fan_check_ms = ms + 2500UL;
-  }
-#endif
+  #if HAS_AUTO_FAN
+    if (ELAPSED(ms, next_auto_fan_check_ms)) { // only need to check fan state very infrequently
+      checkExtruderAutoFans();
+      next_auto_fan_check_ms = ms + 2500UL;
+    }
+  #endif
 
-#if ENABLED(FILAMENT_WIDTH_SENSOR)
-  /**
+  #if ENABLED(FILAMENT_WIDTH_SENSOR)
+    /**
      * Filament Width Sensor dynamically sets the volumetric multiplier
      * based on a delayed measurement of the filament diameter.
      */
-  if (filament_sensor)
-  {
-    meas_shift_index = filwidth_delay_index[0] - meas_delay_cm;
-    if (meas_shift_index < 0)
-      meas_shift_index += MAX_MEASUREMENT_DELAY + 1; //loop around buffer if needed
-    meas_shift_index = constrain(meas_shift_index, 0, MAX_MEASUREMENT_DELAY);
-    planner.calculate_volumetric_for_width_sensor(measurement_delay[meas_shift_index]);
-  }
-#endif // FILAMENT_WIDTH_SENSOR
+    if (filament_sensor)
+    {
+      meas_shift_index = filwidth_delay_index[0] - meas_delay_cm;
+      if (meas_shift_index < 0) meas_shift_index += MAX_MEASUREMENT_DELAY + 1; //loop around buffer if needed
+      meas_shift_index = constrain(meas_shift_index, 0, MAX_MEASUREMENT_DELAY);
+      planner.calculate_volumetric_for_width_sensor(measurement_delay[meas_shift_index]);
+    }
+  #endif // FILAMENT_WIDTH_SENSOR
 
-#if HAS_HEATED_BED
+  #if HAS_HEATED_BED
 
     #if ENABLED(THERMAL_PROTECTION_BED)
       if (!grace_period && degBed() > BED_MAXTEMP)
@@ -1082,73 +1080,68 @@ void Temperature::manage_heater() {
       }
     #endif // WATCH_BED
 
-  do
-  {
+    do
+    {
+      #if DISABLED(PIDTEMPBED)
+        if (PENDING(ms, next_bed_check_ms)
+          #if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
+            && paused == last_pause_state
+          #endif
+        ) break;
+        next_bed_check_ms = ms + BED_CHECK_INTERVAL;
+        #if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
+          last_pause_state = paused;
+        #endif
+      #endif
 
-#if DISABLED(PIDTEMPBED)
-    if (PENDING(ms, next_bed_check_ms)
-#if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
-        && paused == last_pause_state
-#endif
-    )
-      break;
-    next_bed_check_ms = ms + BED_CHECK_INTERVAL;
-#if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
-    last_pause_state = paused;
-#endif
-#endif
-
-#if HEATER_IDLE_HANDLER
-    bed_idle.update(ms);
-#endif
+      #if HEATER_IDLE_HANDLER
+        bed_idle.update(ms);
+      #endif
 
       #if HAS_THERMALLY_PROTECTED_BED
         thermal_runaway_protection(tr_state_machine_bed, temp_bed.current, temp_bed.target, H_BED, THERMAL_PROTECTION_BED_PERIOD, THERMAL_PROTECTION_BED_HYSTERESIS);
       #endif
 
-#if HEATER_IDLE_HANDLER
-    if (bed_idle.timed_out)
-    {
-      temp_bed.soft_pwm_amount = 0;
-#if DISABLED(PIDTEMPBED)
-      WRITE_HEATER_BED(LOW);
-#endif
-    }
-    else
-#endif
-    {
-#if ENABLED(PIDTEMPBED)
-      temp_bed.soft_pwm_amount = WITHIN(temp_bed.current, BED_MINTEMP, BED_MAXTEMP) ? (int)get_pid_output_bed() >> 1 : 0;
-#else
-      // Check if temperature is within the correct band
-      if (WITHIN(temp_bed.current, BED_MINTEMP, BED_MAXTEMP))
-      {
-#if ENABLED(BED_LIMIT_SWITCHING)
-        if (temp_bed.current >= temp_bed.target + BED_HYSTERESIS)
+      #if HEATER_IDLE_HANDLER
+        if (bed_idle.timed_out) {
           temp_bed.soft_pwm_amount = 0;
-        else if (temp_bed.current <= temp_bed.target - (BED_HYSTERESIS))
-          temp_bed.soft_pwm_amount = MAX_BED_POWER >> 1;
-#else // !PIDTEMPBED && !BED_LIMIT_SWITCHING
-        temp_bed.soft_pwm_amount = temp_bed.current < temp_bed.target ? MAX_BED_POWER >> 1 : 0;
-#endif
-      }
-      else
+          #if DISABLED(PIDTEMPBED)
+            WRITE_HEATER_BED(LOW);
+          #endif
+        }
+        else
+      #endif
       {
-        temp_bed.soft_pwm_amount = 0;
-        WRITE_HEATER_BED(LOW);
+        #if ENABLED(PIDTEMPBED)
+          temp_bed.soft_pwm_amount = WITHIN(temp_bed.current, BED_MINTEMP, BED_MAXTEMP) ? (int)get_pid_output_bed() >> 1 : 0;
+        #else
+          // Check if temperature is within the correct band
+          if (WITHIN(temp_bed.current, BED_MINTEMP, BED_MAXTEMP)) {
+            #if ENABLED(BED_LIMIT_SWITCHING)
+              if (temp_bed.current >= temp_bed.target + BED_HYSTERESIS)
+                temp_bed.soft_pwm_amount = 0;
+              else if (temp_bed.current <= temp_bed.target - (BED_HYSTERESIS))
+                temp_bed.soft_pwm_amount = MAX_BED_POWER >> 1;
+            #else // !PIDTEMPBED && !BED_LIMIT_SWITCHING
+              temp_bed.soft_pwm_amount = temp_bed.current < temp_bed.target ? MAX_BED_POWER >> 1 : 0;
+            #endif
+          }
+          else {
+            temp_bed.soft_pwm_amount = 0;
+            WRITE_HEATER_BED(LOW);
+          }
+        #endif
       }
-#endif
-    }
 
-  } while (false);
+    } while (false);
 
-#endif // HAS_HEATED_BED
+  #endif // HAS_HEATED_BED
 
-#if HAS_HEATED_CHAMBER
+  #if HAS_HEATED_CHAMBER
 
-#ifndef CHAMBER_CHECK_INTERVAL
-#define CHAMBER_CHECK_INTERVAL 1000UL
-#endif
+    #ifndef CHAMBER_CHECK_INTERVAL
+      #define CHAMBER_CHECK_INTERVAL 1000UL
+    #endif
 
     #if ENABLED(THERMAL_PROTECTION_CHAMBER)
       if (!grace_period && degChamber() > CHAMBER_MAXTEMP)
@@ -1165,14 +1158,20 @@ void Temperature::manage_heater() {
       }
     #endif
 
-  if (ELAPSED(ms, next_chamber_check_ms))
-  {
-    next_chamber_check_ms = ms + CHAMBER_CHECK_INTERVAL;
+    if (ELAPSED(ms, next_chamber_check_ms)) {
+      next_chamber_check_ms = ms + CHAMBER_CHECK_INTERVAL;
 
-    if (WITHIN(temp_chamber.current, CHAMBER_MINTEMP, CHAMBER_MAXTEMP))
-    {
-#if ENABLED(CHAMBER_LIMIT_SWITCHING)
-      if (temp_chamber.current >= temp_chamber.target + TEMP_CHAMBER_HYSTERESIS)
+      if (WITHIN(temp_chamber.current, CHAMBER_MINTEMP, CHAMBER_MAXTEMP)) {
+        #if ENABLED(CHAMBER_LIMIT_SWITCHING)
+          if (temp_chamber.current >= temp_chamber.target + TEMP_CHAMBER_HYSTERESIS)
+            temp_chamber.soft_pwm_amount = 0;
+          else if (temp_chamber.current <= temp_chamber.target - (TEMP_CHAMBER_HYSTERESIS))
+            temp_chamber.soft_pwm_amount = MAX_CHAMBER_POWER >> 1;
+        #else
+          temp_chamber.soft_pwm_amount = temp_chamber.current < temp_chamber.target ? MAX_CHAMBER_POWER >> 1 : 0;
+        #endif
+      }
+      else {
         temp_chamber.soft_pwm_amount = 0;
         WRITE_HEATER_CHAMBER(LOW);
       }
@@ -1181,21 +1180,11 @@ void Temperature::manage_heater() {
         thermal_runaway_protection(tr_state_machine_chamber, temp_chamber.current, temp_chamber.target, H_CHAMBER, THERMAL_PROTECTION_CHAMBER_PERIOD, THERMAL_PROTECTION_CHAMBER_HYSTERESIS);
       #endif
     }
-    else
-    {
-      temp_chamber.soft_pwm_amount = 0;
-      WRITE_HEATER_CHAMBER(LOW);
-    }
 
-#if ENABLED(THERMAL_PROTECTION_CHAMBER)
-    thermal_runaway_protection(tr_state_machine_chamber, temp_chamber.current, temp_chamber.target, -2, THERMAL_PROTECTION_CHAMBER_PERIOD, THERMAL_PROTECTION_CHAMBER_HYSTERESIS);
-#endif
-  }
+    // TODO: Implement true PID pwm
+    //temp_bed.soft_pwm_amount = WITHIN(temp_chamber.current, CHAMBER_MINTEMP, CHAMBER_MAXTEMP) ? (int)get_pid_output_chamber() >> 1 : 0;
 
-  // TODO: Implement true PID pwm
-  //temp_bed.soft_pwm_amount = WITHIN(temp_chamber.current, CHAMBER_MINTEMP, CHAMBER_MAXTEMP) ? (int)get_pid_output_chamber() >> 1 : 0;
-
-#endif // HAS_HEATED_CHAMBER
+  #endif // HAS_HEATED_CHAMBER
 }
 
 #define TEMP_AD595(RAW)  ((RAW) * 5.0 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET)
