@@ -319,11 +319,12 @@
  * 2 = X-Box 360 203Watts (the blue wire connected to PS_ON and the red wire to VCC)
  * 3 = Overlord: internal relay to switch 24V to steppers, heaters and fans
  *
- * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360', 3:'Overlord' }
+ * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
  */
-#define POWER_SUPPLY 3
+#define POWER_SUPPLY 2
 
 #if POWER_SUPPLY > 0
+  #define POWER_SUPPLY_NAME "OVERLORD"
   // Enable this option to leave the PSU off at startup.
   // Power to steppers and heaters will need to be turned on with M80.
   #define PS_DEFAULT_OFF

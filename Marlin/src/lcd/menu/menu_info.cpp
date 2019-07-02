@@ -180,17 +180,17 @@ void menu_info_board() {
   #if POWER_SUPPLY == 0
     STATIC_ITEM(MSG_INFO_PSU ": Generic", true);
   #elif POWER_SUPPLY == 1
-    STATIC_ITEM(MSG_INFO_PSU ": ATX", true);  // Power Supply: ATX
+    #if defined(POWER_SUPPLY_NAME)
+      STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);
+    #else
+      STATIC_ITEM(MSG_INFO_PSU ": ATX", true);  // Power Supply: ATX
+    #endif
   #elif POWER_SUPPLY == 2
-    STATIC_ITEM(MSG_INFO_PSU ": XBox", true);     // Power Supply: XBox
-  #elif POWER_SUPPLY == 3
-    WRITE(PCB_VERSION_PIN, HIGH);
-    SET_INPUT(PCB_VERSION_PIN);
-    delay(1);
-    if (READ(PCB_VERSION_PIN))
-      STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.0", true);
-    else
-      STATIC_ITEM(MSG_INFO_PSU ": Overlord V1.1", true);
+    #if defined(POWER_SUPPLY_NAME)
+      STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);
+    #else
+      STATIC_ITEM(MSG_INFO_PSU ": XBox", true);     // Power Supply: XBox
+    #endif
   #endif
   #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
