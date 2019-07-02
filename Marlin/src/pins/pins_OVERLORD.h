@@ -32,18 +32,22 @@
  *    
  */
 
-#ifndef __AVR_ATmega2560__
-  #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
+#if ENABLED(TARGET_LPC1768)
+  #error "Oops! Set MOTHERBOARD to an LPC1768-based board when building for LPC1768."
+#elif defined(__STM32F1__)
+  #error "Oops! Set MOTHERBOARD to an STM32F1-based board when building for STM32F1."
+#endif
+
+#if DISABLED(IS_RAMPS_SMART, IS_RAMPS_DUO, IS_RAMPS4DUE, TARGET_LPC1768)
+  #if !defined(__AVR_ATmega1280__) && !defined(__AVR_ATmega2560__)
+    #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
+  #endif
 #endif
 
 #define DEFAULT_MACHINE_NAME    "OVERLORD"
 #define DEFAULT_SOURCE_CODE_URL "https://github.com/timmmoore/Marlin"
-#ifndef BOARD_NAME
-  #define BOARD_NAME "OVERLORD"
-#endif
+#define BOARD_NAME "OVERLORD"
 
-#if MOTHERBOARD == 1225
-  #define KNOWN_BOARD
 /*****************************************************************
  * Overlord pin assignment
  ******************************************************************/
@@ -138,4 +142,3 @@
   //#define TEMP_3_PIN            14
   //#define APPROACH_PIN          11  // JP7, Tpd
   //#define GATE_PIN              36  // Threshold, JP6, Tg
-#endif
