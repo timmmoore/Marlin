@@ -323,6 +323,8 @@
 #define POWER_SUPPLY 1
 
 #if POWER_SUPPLY > 0
+  // Lerdge 3d Printer Power Monitor
+  // Control as if it is an ATX, note dont connect red wire to 5V on RAMPs board, leave disconnected
   #define POWER_SUPPLY_NAME "Lerdge PPM"
   // Enable this option to leave the PSU off at startup.
   // Power to steppers and heaters will need to be turned on with M80.
