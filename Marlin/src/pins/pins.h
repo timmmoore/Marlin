@@ -224,7 +224,7 @@
 #elif MB(EINSTART_S)
   #include "pins_EINSTART-S.h"        // ATmega1280, ATmega2560                     env:megaatmega1280 env:megaatmega2560
 #elif MB(OVERLORD)
-  #include "pins_OVERLORD.h"          // ATmega2560                                 env:env:megaatmega2560
+  #include "pins_OVERLORD.h"          // ATmega2560                                 env:megaatmega2560
 
 //
 // ATmega1281, ATmega2561
