@@ -38,7 +38,9 @@
 
 #define DEFAULT_MACHINE_NAME    "OVERLORD"
 #define DEFAULT_SOURCE_CODE_URL "https://github.com/timmmoore/Marlin"
-#define BOARD_NAME              "OVERLORD"
+#ifndef BOARD_NAME
+  #define BOARD_NAME "OVERLORD"
+#endif
 
 #if MOTHERBOARD == 1225
   #define KNOWN_BOARD
