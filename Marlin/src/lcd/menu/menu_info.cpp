@@ -181,7 +181,7 @@ void menu_info_board() {
   #elif POWER_SUPPLY == 0
     STATIC_ITEM(MSG_INFO_PSU ": Generic", true);                 // Power Supply: Generic
   #elif POWER_SUPPLY == 1
-      STATIC_ITEM(MSG_INFO_PSU ": ATX", true);                   // Power Supply: ATX
+    STATIC_ITEM(MSG_INFO_PSU ": ATX", true);                     // Power Supply: ATX
   #elif POWER_SUPPLY == 2
     STATIC_ITEM(MSG_INFO_PSU ": XBox", true);                    // Power Supply: XBox
   #endif
