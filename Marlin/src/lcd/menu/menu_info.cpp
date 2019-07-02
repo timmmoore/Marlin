@@ -179,9 +179,17 @@ void menu_info_board() {
   #if POWER_SUPPLY == 0
     STATIC_ITEM(MSG_INFO_PSU ": Generic", true);
   #elif POWER_SUPPLY == 1
-    STATIC_ITEM(MSG_INFO_PSU ": ATX", true);  // Power Supply: ATX
+    #if defined(POWER_SUPPLY_NAME)
+      STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);  // Power Supply: ATX
+    #else
+      STATIC_ITEM(MSG_INFO_PSU ": ATX", true);  // Power Supply: ATX
+    #endif
   #elif POWER_SUPPLY == 2
-    STATIC_ITEM(MSG_INFO_PSU ": XBox", true); // Power Supply: XBox
+    #if defined(POWER_SUPPLY_NAME)
+      STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);  // Power Supply: ATX
+    #else
+      STATIC_ITEM(MSG_INFO_PSU ": XBox", true); // Power Supply: XBox
+    #endif
   #endif
   END_SCREEN();
 }
