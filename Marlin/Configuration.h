@@ -912,8 +912,8 @@
  *     O-- FRONT --+
  *   (0,0)
  */
-#define X_PROBE_OFFSET_FROM_EXTRUDER 0  // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 20  // Y offset: -front +behind [the nozzle]
+#define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 53  // Y offset: -front +behind [the nozzle]
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
@@ -1165,7 +1165,7 @@
  * Normally G28 leaves leveling disabled on completion. Enable
  * this option to have G28 restore the prior leveling state.
  */
-//#define RESTORE_LEVELING_AFTER_G28
+#define RESTORE_LEVELING_AFTER_G28 false
 
 /**
  * Enable detailed logging of G28, G29, M48, etc.
