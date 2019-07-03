@@ -126,7 +126,7 @@ hotend_info_t Temperature::temp_hotend[HOTENDS
   uint8_t Temperature::chamberfan_speed; // = 0
 #endif
 
-#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+#if HAS_VOLTAGE_AVAILABLE
   uint16_t Temperature::voltage_level;
   enum voltage_state_t { power_ok, power_timing_out, power_lost };
   static voltage_state_t voltage_out_of_power = power_ok;
@@ -1663,7 +1663,7 @@ void Temperature::init() {
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     HAL_ANALOG_SELECT(FILWIDTH_PIN);
   #endif
-#if ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)
+  #if HAS_VOLTAGE_AVAILABLE
     HAL_ANALOG_SELECT(VOLTAGE_DETECTION_PIN);
   #endif
 
@@ -2762,7 +2762,7 @@ void Temperature::isr() {
         break;
     #endif // ADC_KEYPAD
 
-    #if ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)
+    #if HAS_VOLTAGE_AVAILABLE
       case Prepare_VOLTAGE_DETECTION:
         HAL_START_ADC(VOLTAGE_DETECTION_PIN);
         break;
@@ -2781,7 +2781,9 @@ void Temperature::isr() {
               if(ELAPSED(millis(), voltage_millis)) {
                 voltage_out_of_power = power_lost;
                 SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
-                kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+                #if DISABLED(VOLTAGE_WARNING)
+                  kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+                #endif
               }
             }
           }

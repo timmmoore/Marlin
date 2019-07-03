@@ -178,13 +178,13 @@ void menu_info_board() {
   STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
   STATIC_ITEM(MSG_INFO_PROTOCOL ": " PROTOCOL_VERSION, true);    // Protocol: 1.0
   STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);
-  #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
+  #if HAS_BATTERY_STATUS
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
       STATIC_ITEM("Battery" ": Charging", true);
     else
       STATIC_ITEM("Battery" ": Charged", true);
   #endif
-  #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+  #if HAS_VOLTAGE_AVAILABLE
     #define ADC_RESOLUTION 1024.0f
     {
       char buffer[8];

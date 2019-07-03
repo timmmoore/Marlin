@@ -293,6 +293,12 @@
 #endif
 #define HAS_POWER_SWITCH (POWER_SUPPLY > 0 && PIN_EXISTS(PS_ON))
 
+// Input power voltage available on an ADC
+#define HAS_VOLTAGE_AVAILABLE ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)
+
+// Rechargable battery status for power loss handling
+#define HAS_BATTERY_STATUS ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
+
 /**
  * Temp Sensor defines
  */
