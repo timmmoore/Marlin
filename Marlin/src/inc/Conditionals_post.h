@@ -271,27 +271,26 @@
 
 // Power Signal Control Definitions
 // By default use ATX definition
-#ifndef POWER_SUPPLY
-  #define POWER_SUPPLY 1
-#endif
-#if (POWER_SUPPLY == 1)     // 1 = ATX
-  #define PS_ON_AWAKE  LOW
-  #define PS_ON_ASLEEP HIGH
-  #ifndef POWER_SUPPLY_NAME
-    #define POWER_SUPPLY_NAME "ATX"
-  #endif
-#elif (POWER_SUPPLY == 2)   // 2 = X-Box 360 203W
-  #define PS_ON_AWAKE  HIGH
-  #define PS_ON_ASLEEP LOW
-  #ifndef POWER_SUPPLY_NAME
-    #define POWER_SUPPLY_NAME "XBox"
+#if ENABLED(POWER_SUPPLY_CONTROL_FEATURE)
+  #if ENABLED(POWER_SUPPLY_PIN_INVERTED)     // 1 = ATX
+    #define PS_ON_AWAKE  LOW
+    #define PS_ON_ASLEEP HIGH
+    #ifndef POWER_SUPPLY_NAME
+      #define POWER_SUPPLY_NAME "ATX"
+    #endif
+  #else                                     // 2 = X-Box 360 203W
+    #define PS_ON_AWAKE  HIGH
+    #define PS_ON_ASLEEP LOW
+    #ifndef POWER_SUPPLY_NAME
+      #define POWER_SUPPLY_NAME "XBox"
+    #endif
   #endif
 #else
   #ifndef POWER_SUPPLY_NAME
     #define POWER_SUPPLY_NAME "Generic"
   #endif
 #endif
-#define HAS_POWER_SWITCH (POWER_SUPPLY > 0 && PIN_EXISTS(PS_ON))
+#define HAS_POWER_SWITCH (ENABLED(POWER_SUPPLY_CONTROL_FEATURE) && PIN_EXISTS(PS_ON))
 
 /**
  * Temp Sensor defines
