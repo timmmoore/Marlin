@@ -177,15 +177,7 @@ void menu_info_board() {
   STATIC_ITEM(BOARD_NAME, true, true);                           // MyPrinterController
   STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
   STATIC_ITEM(MSG_INFO_PROTOCOL ": " PROTOCOL_VERSION, true);    // Protocol: 1.0
-  #if defined(POWER_SUPPLY_NAME)
-    STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);
-  #elif POWER_SUPPLY == 0
-    STATIC_ITEM(MSG_INFO_PSU ": Generic", true);
-  #elif POWER_SUPPLY == 1
-    STATIC_ITEM(MSG_INFO_PSU ": ATX", true);  // Power Supply: ATX
-  #elif POWER_SUPPLY == 2
-    STATIC_ITEM(MSG_INFO_PSU ": XBox", true);     // Power Supply: XBox
-  #endif
+  STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);
   #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
       STATIC_ITEM("Battery" ": Charging", true);
