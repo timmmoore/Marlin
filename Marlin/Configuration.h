@@ -312,19 +312,20 @@
 // @section machine
 
 /**
- * Select your power supply here. Use 0 if you haven't connected the PS_ON_PIN
+ * Select your power supply here. Comment out if you haven't connected the PS_ON_PIN
  *
- * 0 = No Power Switch
- * 1 = ATX
- * 2 = X-Box 360 203Watts (the blue wire connected to PS_ON and the red wire to VCC)
- * 3 = Overlord: internal relay to switch 24V to steppers, heaters and fans
+ * No POWER_SUPPLY_CONTROL_FEATURE = No Power supply control
+ * POWER_SUPPLY_CONTROL_FEATURE and POWER_SUPPLY_PIN_INVERTED = PS_ON_PIN LOW to wake up (e.g. ATX)
+ * POWER_SUPPLY_CONTROL_FEATURE and no POWER_SUPPLY_PIN_INVERTED = PS_ON_PIN HIGH to wake up (e.g. XBox)
+ *  X-Box 360 203Watts (the blue wire connected to PS_ON and the red wire to VCC)
  *
- * :{ 0:'No power switch', 1:'ATX', 2:'X-Box 360' }
  */
-#define POWER_SUPPLY 2
+#define POWER_SUPPLY_CONTROL_FEATURE
 
-#if POWER_SUPPLY > 0
-  #define POWER_SUPPLY_NAME "OVERLORD"
+#if ENABLED(POWER_SUPPLY_CONTROL_FEATURE)
+  //#define POWER_SUPPLY_PIN_INVERTED     // PS_ON_PIN LOW to enable
+  #define POWER_SUPPLY_NAME "OVERLORD"  // Actual PSU name
+
   // Enable this option to leave the PSU off at startup.
   // Power to steppers and heaters will need to be turned on with M80.
   #define PS_DEFAULT_OFF
