@@ -277,9 +277,19 @@
 #if (POWER_SUPPLY == 1)     // 1 = ATX
   #define PS_ON_AWAKE  LOW
   #define PS_ON_ASLEEP HIGH
+  #ifndef POWER_SUPPLY_NAME
+    #define POWER_SUPPLY_NAME "ATX"
+  #endif
 #elif (POWER_SUPPLY == 2)   // 2 = X-Box 360 203W
   #define PS_ON_AWAKE  HIGH
   #define PS_ON_ASLEEP LOW
+  #ifndef POWER_SUPPLY_NAME
+    #define POWER_SUPPLY_NAME "XBox"
+  #endif
+#else
+  #ifndef POWER_SUPPLY_NAME
+    #define POWER_SUPPLY_NAME "Generic"
+  #endif
 #endif
 #define HAS_POWER_SWITCH (POWER_SUPPLY > 0 && PIN_EXISTS(PS_ON))
 
