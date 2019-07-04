@@ -1134,6 +1134,9 @@
 #ifndef MSG_INFO_BOARD_MENU
   #define MSG_INFO_BOARD_MENU                 _UxGT("Board Info")
 #endif
+#ifndef MSG_INFO_POWER_MENU
+  #define MSG_INFO_POWER_MENU                 _UxGT("Power Info")
+#endif
 #ifndef MSG_INFO_POWER_LOSS
   #define MSG_INFO_POWER_LOSS                 _UxGT("Power Loss detection")
 #endif
