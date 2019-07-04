@@ -171,8 +171,7 @@ void menu_info_thermistors() {
 // About Printer > Board Info
 //
 void menu_info_board() {
-  if (ui.use_click())
-    return ui.goto_previous_screen();
+  if (ui.use_click()) return ui.goto_previous_screen();
   START_SCREEN();
   STATIC_ITEM(BOARD_NAME, true, true);                           // MyPrinterController
   STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
@@ -222,17 +221,17 @@ void menu_info_printer() {
   STATIC_ITEM(MACHINE_NAME, true);                                 // My3DPrinter
   STATIC_ITEM(WEBSITE_URL, true);                                  // www.my3dprinter.com
   STATIC_ITEM(MSG_INFO_EXTRUDERS ": " STRINGIFY(EXTRUDERS), true); // Extruders: 2
-#if ENABLED(AUTO_BED_LEVELING_3POINT)
+  #if ENABLED(AUTO_BED_LEVELING_3POINT)
     STATIC_ITEM(MSG_3POINT_LEVELING, true);                        // 3-Point Leveling
-#elif ENABLED(AUTO_BED_LEVELING_LINEAR)
+  #elif ENABLED(AUTO_BED_LEVELING_LINEAR)
     STATIC_ITEM(MSG_LINEAR_LEVELING, true);                        // Linear Leveling
-#elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  #elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
     STATIC_ITEM(MSG_BILINEAR_LEVELING, true);                      // Bi-linear Leveling
-#elif ENABLED(AUTO_BED_LEVELING_UBL)
+  #elif ENABLED(AUTO_BED_LEVELING_UBL)
     STATIC_ITEM(MSG_UBL_LEVELING, true);                           // Unified Bed Leveling
-#elif ENABLED(MESH_BED_LEVELING)
+  #elif ENABLED(MESH_BED_LEVELING)
     STATIC_ITEM(MSG_MESH_LEVELING, true);                          // Mesh Leveling
-#endif
+  #endif
   END_SCREEN();
 }
 
@@ -244,25 +243,26 @@ void menu_info() {
   MENU_BACK(MSG_MAIN);
   MENU_ITEM(submenu, MSG_INFO_PRINTER_MENU, menu_info_printer);        // Printer Info >
   MENU_ITEM(submenu, MSG_INFO_BOARD_MENU, menu_info_board);            // Board Info >
+  MENU_ITEM(submenu, MSG_INFO_POWER_MENU, menu_info_power);            // Power Info >
   MENU_ITEM(submenu, MSG_INFO_THERMISTOR_MENU, menu_info_thermistors); // Thermistors >
-#if ENABLED(PRINTCOUNTER)
+  #if ENABLED(PRINTCOUNTER)
     MENU_ITEM(submenu, MSG_INFO_STATS_MENU, menu_info_stats);          // Printer Stats >
-#endif
-#if HAS_GAMES
+  #endif
+  #if HAS_GAMES
     MENU_ITEM(submenu, "Game", (
-#if HAS_GAME_MENU
+      #if HAS_GAME_MENU
         menu_game
-#elif ENABLED(MARLIN_BRICKOUT)
+      #elif ENABLED(MARLIN_BRICKOUT)
         brickout.enter_game
-#elif ENABLED(MARLIN_INVADERS)
+      #elif ENABLED(MARLIN_INVADERS)
         invaders.enter_game
-#elif ENABLED(MARLIN_SNAKE)
+      #elif ENABLED(MARLIN_SNAKE)
         snake.enter_game
-#elif ENABLED(MARLIN_MAZE)
+      #elif ENABLED(MARLIN_MAZE)
         maze.enter_game
-#endif
+      #endif
     ));
-#endif
+  #endif
   END_MENU();
 }
 
