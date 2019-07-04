@@ -295,6 +295,10 @@ class Temperature {
                      soft_pwm_count_fan[FAN_COUNT];
     #endif
 
+    #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+      static uint16_t voltage_level;
+    #endif
+
     #if ENABLED(PREVENT_COLD_EXTRUSION)
       static bool allow_cold_extrude;
       static int16_t extrude_min_temp;
