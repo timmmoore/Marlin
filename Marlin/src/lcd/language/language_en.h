@@ -1516,3 +1516,7 @@
 #ifndef MSG_BACKLASH_SMOOTHING
   #define MSG_BACKLASH_SMOOTHING              _UxGT("Smoothing")
 #endif
+
+#ifndef MSG_INPUT_VOLTAGE_TOO_LOW
+  #define MSG_INPUT_VOLTAGE_TOO_LOW _UxGT("Input Voltage Too low")
+#endif
