@@ -2253,8 +2253,10 @@
   #define VOLTAGE_DETECTION_PIN 3       // use if not in your pins .h file
   #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
   #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
-  #define DIVIDER_TOTAL         (DIVIDER_UPPER + DIVIDER_LOWER)
+  #define DIVIDER_RATIO         (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
   #define ADC_VREF              5.0f    // Whatever the ADC AREF is, default is 5.0V
+  #define ADC_RESOLUTION 1024.0f
+
   #define VOLTAGE_MINIMUM       625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
   #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
   #define VOLTAGE_WARNING               // input voltage low warning only
