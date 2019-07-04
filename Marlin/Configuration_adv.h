@@ -2250,7 +2250,7 @@
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  #define INPUT_VOLTAGE_PIN     3       // use if not in your pins .h file
+  #define VOLTAGE_DETECTION_PIN 3       // use if not in your pins .h file
   #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
   #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
   #define DIVIDER_TOTAL         (DIVIDER_UPPER + DIVIDER_LOWER)
