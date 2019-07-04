@@ -2204,6 +2204,62 @@
   //#define FILAMENT_LCD_DISPLAY
 #endif
 
+/*
+ * LEDs using PCA9632 but wired up differently
+ * 
+ * Overlord
+ *  PCA9632 implementation doesn't support auto-inc
+ *  Has Red and Green leds switched
+ *  Has Buzzer connected to PCA9632
+*/
+#if ENABLED(PCA9632)
+  //#define PCA9632_NO_AUTO_INC       // PCA9632 implementation doesn't support auto-inc
+  //#define PCA9632_GRN         0x00  // Leds in different order
+  //#define PCA9632_RED         0x02
+  //#define PCA9632_BLU         0x04
+  //#define PCA9632_BUZZER            // Buzzer wired up to PCA9632
+  //#define PCA9632_BUZZER_CMD  2     // I2C command used for buzzer
+#endif
+
+/*
+ * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
+ * If a pin is available to see if charged will show in menu info
+ * Needs BATTERY_STATUS_PIN defined
+ * 
+ * Overlord Pro has internal rechargable battery
+ */
+//#define BATTERY_STATUS_AVAILABLE
+#if ENABLED(BATTERY_STATUS_AVAILABLE)
+  #define BATTERY_STATUS_PIN      -1    // use if not in your pins .h file
+  #define BATTERY_STATUS_CHARGED  LOW
+#endif
+
+/*
+ * An ADC measuring input voltage is, display in Board info menu page
+ * Assumes a resistor divider network to lower voltage to something ADC can handle
+ * Configure the total resistance and lower resistor
+ * Needs VOLTAGE_DETECTION_PIN defined
+ * 
+ *  E.g. for 12V
+ *    Divider total is 180K + 91K, adjusted so matching measured voltage
+ *    Divider lower is 91K, adjusted so matching measured voltage
+ *
+ *  E.g. for 24V
+ *    Divider total is 240K + 47K, adjusted so matching measured voltage
+ *    Divider lower is 47K, adjusted so matching measured voltage
+ */
+#define INPUT_VOLTAGE_AVAILABLE
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+  #define INPUT_VOLTAGE_PIN     3       // use if not in your pins .h file
+  #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
+  #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
+  #define DIVIDER_TOTAL         (DIVIDER_UPPER + DIVIDER_LOWER)
+  #define ADC_VREF              5.0f    // Whatever the ADC AREF is, default is 5.0V
+  #define VOLTAGE_MINIMUM       625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
+  #define VOLTAGE_WARNING               // input voltage low warning only
+#endif
+
 /**
  * CNC Coordinate Systems
  *
