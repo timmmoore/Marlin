@@ -2230,7 +2230,7 @@
  */
 #define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
-  //#define BATTERY_STATUS_PIN    -1
+  #define BATTERY_STATUS_PIN    -1
   #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
@@ -2250,7 +2250,7 @@
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  //#define VOLTAGE_DETECTION_PIN       -1  // if not in pins .h file
+  #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
   #define DIVIDER_UPPER           239.16f // total resistance of divider network
   #define DIVIDER_LOWER           48.84f  // lower resistance of divider network
   #define DIVIDER_TOTAL           (DIVIDER_UPPER + DIVIDER_LOWER)
