@@ -47,10 +47,6 @@
   #if HAS_TRINAMIC
     #include "../../feature/tmc_util.h"
   #endif
-
-  #if ENABLED(LED_USER_PRESET_M80_M81)
-    #include "../../feature/leds/leds.h"
-  #endif
   
   /**
    * M80   : Turn on the Power Supply
@@ -83,10 +79,6 @@
     #if HAS_LCD_MENU
       ui.reset_status();
     #endif
-
-    #if ENABLED(LED_USER_PRESET_M80_M81)
-      leds.set_default();
-    #endif
   }
 
 #endif // HAS_POWER_SWITCH
@@ -97,9 +89,6 @@
  *      This code should ALWAYS be available for EMERGENCY SHUTDOWN!
  */
 void GcodeSuite::M81() {
-  #if ENABLED(LED_USER_PRESET_M80_M81)
-    leds.set_off();
-  #endif
   thermalManager.disable_all_heaters();
   print_job_timer.stop();
   planner.finish_and_disable();
