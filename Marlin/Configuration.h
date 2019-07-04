@@ -321,10 +321,10 @@
  *
  */
 #define POWER_SUPPLY_CONTROL_FEATURE
+#define POWER_SUPPLY_NAME "OVERLORD"    // Actual PSU name
 
 #if ENABLED(POWER_SUPPLY_CONTROL_FEATURE)
   //#define POWER_SUPPLY_PIN_INVERTED     // PS_ON_PIN LOW to enable
-  #define POWER_SUPPLY_NAME "OVERLORD"  // Actual PSU name
 
   // Enable this option to leave the PSU off at startup.
   // Power to steppers and heaters will need to be turned on with M80.
