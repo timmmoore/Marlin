@@ -177,7 +177,21 @@ void menu_info_board() {
   STATIC_ITEM(BOARD_NAME, true, true);                           // MyPrinterController
   STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
   STATIC_ITEM(MSG_INFO_PROTOCOL ": " PROTOCOL_VERSION, true);    // Protocol: 1.0
-  STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);
+  END_SCREEN();
+}
+
+//
+// About Printer > Power Info
+//
+void menu_info_power() {
+  if (ui.use_click()) return ui.goto_previous_screen();
+  START_SCREEN();
+  STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);        // Power Supply: "Name"
+  #if PIN_EXISTS(POWER_LOSS) && ENABLED(POWER_LOSS_RECOVERY)
+    STATIC_ITEM(MSG_INFO_POWER_LOSS ": Enabled", true);
+  #else
+    STATIC_ITEM(MSG_INFO_POWER_LOSS ": Disabled", true);
+  #endif
   #if HAS_BATTERY_STATUS
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
       STATIC_ITEM("Battery" ": Charging", true);
@@ -185,14 +199,13 @@ void menu_info_board() {
       STATIC_ITEM("Battery" ": Charged", true);
   #endif
   #if HAS_VOLTAGE_AVAILABLE
-    #define ADC_RESOLUTION 1024.0f
-    {
-      char buffer[8];
-      uint16_t volt;
-      volt = (uint16_t)(((((float)thermalManager.voltage_level * ADC_VREF * DIVIDER_TOTAL) / (ADC_RESOLUTION * DIVIDER_LOWER)) * 100.0f) + 0.5f);
-      sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
-      STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
-    }
+  {
+    char buffer[8];
+    uint16_t volt;
+    volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
+    sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
+    STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
+  }
   #endif
   END_SCREEN();
 }
