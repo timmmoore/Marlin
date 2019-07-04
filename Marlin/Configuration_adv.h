@@ -2230,7 +2230,8 @@
  */
 #define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
-  #define BATTERY_STATUS_CHARGED LOW
+  //#define BATTERY_STATUS_PIN    -1
+  #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
 /*
@@ -2239,18 +2240,24 @@
  * Configure the total resistance and lower resistor
  * Needs VOLTAGE_DETECTION_PIN defined
  * 
- *  Overlord
- *    Divider total is 240K + 47K, adjusted so matching measured voltage
+ *  E.g. for 12V
+ *    Divider upper is 180K, adjusted so matching measured voltage
+ *    Divider lower is 91K, adjusted so matching measured voltage
+ *
+ *  E.g. for 24V
+ *    Divider upper is 240K, adjusted so matching measured voltage
  *    Divider lower is 47K, adjusted so matching measured voltage
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  #define DIVIDER_TOTAL 288.0f          // total resistance of divider network
-  #define DIVIDER_LOWER 48.84f          // lower resistance of divider network
-  #define ADC_VREF 5.0f                 // Whatever the ADC AREF is, default is 5.0V
-  #define VOLTAGE_MINIMUM 625           // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
-  #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
-  #define VOLTAGE_WARNING               // input voltage low warning only
+  //#define VOLTAGE_DETECTION_PIN       -1  // if not in pins .h file
+  #define DIVIDER_UPPER           239.16f // total resistance of divider network
+  #define DIVIDER_LOWER           48.84f  // lower resistance of divider network
+  #define DIVIDER_TOTAL           (DIVIDER_UPPER + DIVIDER_LOWER)
+  #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
+  #define VOLTAGE_MINIMUM         625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this timeout
+  #define VOLTAGE_WARNING                 // input voltage low warning only
 #endif
 
 /**
