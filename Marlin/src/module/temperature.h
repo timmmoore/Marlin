@@ -131,6 +131,10 @@ enum ADCSensorState : char {
     Prepare_ADC_KEY,
     Measure_ADC_KEY,
   #endif
+  #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+    Prepare_VOLTAGE_DETECTION,
+    Measure_VOLTAGE_DETECTION,
+  #endif
   SensorsReady, // Temperatures ready. Delay the next round of readings to let ADC pins settle.
   StartupDelay  // Startup, delay initial temp reading a tiny bit so the hardware can settle
 };
