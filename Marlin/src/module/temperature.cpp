@@ -2740,7 +2740,11 @@ void Temperature::isr() {
           next_sensor_state = adc_sensor_state; // redo this state
         else
           voltage_level = HAL_READ_ADC();
-          if(powersupply_on && (voltage_level < VOLTAGE_MINIMUM)) {
+          if(
+            #if DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
+              powersupply_on && 
+            #endif
+          (voltage_level < VOLTAGE_MINIMUM)) {
             // Input voltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
             if(voltage_out_of_power == power_ok) {
               voltage_out_of_power = power_timing_out;
