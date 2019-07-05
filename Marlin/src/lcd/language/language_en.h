@@ -1138,7 +1138,7 @@
   #define MSG_INFO_POWER_MENU                 _UxGT("Power Info")
 #endif
 #ifndef MSG_INFO_POWER_LOSS
-  #define MSG_INFO_POWER_LOSS                 _UxGT("Power Loss detection")
+  #define MSG_INFO_POWER_LOSS                 _UxGT("Power Loss")
 #endif
 #ifndef MSG_INFO_THERMISTOR_MENU
   #define MSG_INFO_THERMISTOR_MENU            _UxGT("Thermistors")
