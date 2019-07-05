@@ -200,22 +200,22 @@ void menu_info_power() {
       STATIC_ITEM("Battery" ": Charged", true);
   #endif
   #if HAS_VOLTAGE_AVAILABLE
-#if HAS_POWER_SWITCH AND DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-    if (powersupply_on)
-#endif
-    {
-      char buffer[8];
-      uint16_t volt;
-      volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
-      sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
-      STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
-    }
-#if HAS_POWER_SWITCH
-    else
-      STATIC_ITEM_P(PSTR("Power Voltage: OFF"), true);
-#endif
-#endif
-    END_SCREEN();
+    #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
+      if (powersupply_on)
+    #endif
+      {
+        char buffer[8];
+        uint16_t volt;
+        volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
+        sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
+        STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
+      }
+    #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
+      else
+        STATIC_ITEM_P(PSTR("Power Voltage: OFF"), true);
+    #endif
+  #endif
+  END_SCREEN();
 }
 
 //
