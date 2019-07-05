@@ -269,28 +269,22 @@
   #define DISABLE_INACTIVE_E DISABLE_E
 #endif
 
-// Power Signal Control Definitions
-// By default use ATX definition
-#if ENABLED(POWER_SUPPLY_CONTROL_FEATURE)
-  #if ENABLED(POWER_SUPPLY_PIN_INVERTED)     // 1 = ATX
-    #define PS_ON_AWAKE  LOW
-    #define PS_ON_ASLEEP HIGH
-    #ifndef POWER_SUPPLY_NAME
-      #define POWER_SUPPLY_NAME "ATX"
+/**
+ * Power Supply Control
+ */
+#ifndef PSU_NAME
+  #if ENABLED(PSU_CONTROL)
+    #if PSU_ACTIVE_HIGH
+      #define PSU_NAME "XBox"     // X-Box 360 (203W)
+    #else
+      #define PSU_NAME "ATX"      // ATX style
     #endif
-  #else                                     // 2 = X-Box 360 203W
-    #define PS_ON_AWAKE  HIGH
-    #define PS_ON_ASLEEP LOW
-    #ifndef POWER_SUPPLY_NAME
-      #define POWER_SUPPLY_NAME "XBox"
-    #endif
-  #endif
-#else
-  #ifndef POWER_SUPPLY_NAME
-    #define POWER_SUPPLY_NAME "Generic"
+  #else
+    #define PSU_NAME "Generic"    // No control
   #endif
 #endif
-#define HAS_POWER_SWITCH (ENABLED(POWER_SUPPLY_CONTROL_FEATURE) && PIN_EXISTS(PS_ON))
+
+#define HAS_POWER_SWITCH (ENABLED(PSU_CONTROL) && PIN_EXISTS(PS_ON))
 
 // Input power voltage available on an ADC
 #define HAS_VOLTAGE_AVAILABLE ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)

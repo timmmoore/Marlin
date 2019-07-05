@@ -741,7 +741,7 @@
 #ifndef LED_PIN
   #define LED_PIN -1
 #endif
-#if DISABLED(POWER_SUPPLY_CONTROL_FEATURE) || !defined(PS_ON_PIN)
+#if DISABLED(PSU_CONTROL) || !defined(PS_ON_PIN)
   #undef PS_ON_PIN
   #define PS_ON_PIN -1
 #endif

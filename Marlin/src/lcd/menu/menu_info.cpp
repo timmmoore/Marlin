@@ -185,7 +185,7 @@ void menu_info_board() {
 void menu_info_power() {
   if (ui.use_click()) return ui.goto_previous_screen();
   START_SCREEN();
-  STATIC_ITEM(MSG_INFO_PSU ": " POWER_SUPPLY_NAME, true);        // Power Supply: "Name"
+  STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
   #if ENABLED(POWER_LOSS_RECOVERY)
     #if PIN_EXISTS(POWER_LOSS)
       STATIC_ITEM(MSG_INFO_POWER_LOSS ": Power", true);
