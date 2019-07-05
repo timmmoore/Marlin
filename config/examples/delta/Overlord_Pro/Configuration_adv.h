@@ -287,7 +287,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value. (Does not work with software PWM for fan on Sanguinololu)
-//#define FAN_KICKSTART_TIME 100
+#define FAN_KICKSTART_TIME 100
 
 /**
  * PWM Fan Scaling
@@ -890,7 +890,6 @@
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
     #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
     #define LED_USER_PRESET_OFF_DEFAULT     // Have the printer display the user preset color on end of print
-    #define LED_USER_PRESET_M80_M81         // Have the printer turn on/off LEDS with M80/M81
   #endif
 #endif // LED_CONTROL_MENU
 
@@ -2231,7 +2230,8 @@
  */
 #define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
-  #define BATTERY_STATUS_CHARGED LOW
+  #define BATTERY_STATUS_PIN    -1
+  #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
 /*
@@ -2240,17 +2240,26 @@
  * Configure the total resistance and lower resistor
  * Needs VOLTAGE_DETECTION_PIN defined
  * 
- *  Overlord
- *    Divider total is 240K + 47K, adjusted so matching measured voltage
+ *  E.g. for 12V
+ *    Divider upper is 180K, adjusted so matching measured voltage
+ *    Divider lower is 91K, adjusted so matching measured voltage
+ *
+ *  E.g. for 24V
+ *    Divider upper is 240K, adjusted so matching measured voltage
  *    Divider lower is 47K, adjusted so matching measured voltage
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  #define DIVIDER_TOTAL 288.0f          // total resistance of divider network
-  #define DIVIDER_LOWER 48.84f          // lower resistance of divider network
-  #define ADC_VREF 5.0f                 // Whatever the ADC AREF is, default is 5.0V
-  #define VOLTAGE_MINIMUM 625           // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
-  #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
+  #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
+  #define DIVIDER_UPPER           239.16f // total resistance of divider network
+  #define DIVIDER_LOWER           48.84f  // lower resistance of divider network
+  #define DIVIDER_RATIO           (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
+  #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
+  #define ADC_RESOLUTION          1024
+  #define VOLTAGE_MINIMUM         625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this timeout
+  #define VOLTAGE_ALWAYS_AVAILABLE        // input voltage always available
+  //#define VOLTAGE_WARNING                 // input voltage low warning only
 #endif
 
 /**
