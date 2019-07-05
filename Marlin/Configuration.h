@@ -319,7 +319,7 @@
  */
 #define PSU_CONTROL
  // Lerdge 3d Printer Power Monitor
- // Control as if it is an ATX, note dont connect red wire to 5V on RAMPs board, leave disconnected
+ // PS_ON_PIN acts as an ATX, note dont connect red wire to 5V on RAMPs board, leave disconnected
 #define PSU_NAME "Lerdge PPM"
 
 #if ENABLED(PSU_CONTROL)
