@@ -2225,12 +2225,10 @@
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
  * Needs BATTERY_STATUS_PIN defined
- * 
- * Overlord Pro has internal rechargable battery
  */
 //#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
-  #define BATTERY_STATUS_PIN      -1    // use if not in your pins .h file
+  #define BATTERY_STATUS_PIN      -1    // If not in your pins .h file
   #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
@@ -2250,7 +2248,7 @@
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  #define VOLTAGE_DETECTION_PIN 3       // use if not in your pins .h file
+  #define VOLTAGE_DETECTION_PIN 3       // If not in your pins .h file
   #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
   #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
   #define DIVIDER_RATIO         (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
