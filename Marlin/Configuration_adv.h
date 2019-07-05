@@ -2233,24 +2233,17 @@
 #endif
 
 /*
- * An ADC measuring input voltage is, display in Power info menu page
+ * An ADC measuring the input voltage
  * Assumes a resistor divider network to lower voltage to something the ADC can handle
- * Configure the upper and lower resistor values
- * 
- *  E.g. for 12V
- *    Divider upper 180K
- *    Divider lower 91K
- *
- *  E.g. for 24V
- *    Divider upper 240K
- *    Divider lower 47K
+ *  E.g. 12V: Divider upper 180K, Divider lower 91K
+ *  E.g. 24V: Divider upper 240K, Divider lower 47K
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   #define VOLTAGE_DETECTION_PIN 3       // If not in your pins .h file
   #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
   #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
-  #define ADC_VREF              5.0f    // Whatever the ADC AREF is, default is 5.0V
+  #define ADC_VREF              5.0f    // ADC AREF
   #define ADC_RESOLUTION        1024.0f
   #define DIVIDER_RATIO         (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
   #define VOLTAGE_MINIMUM       625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
