@@ -2753,7 +2753,7 @@ void Temperature::isr() {
             else if(voltage_out_of_power == power_timing_out) {
               if(ELAPSED(millis(), voltage_millis)) {
                 voltage_out_of_power = power_lost;
-                //SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
+                SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
                 #if DISABLED(VOLTAGE_WARNING)
                   kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
                 #endif

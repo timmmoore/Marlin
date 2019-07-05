@@ -2258,7 +2258,7 @@
   #define VOLTAGE_MINIMUM       625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
   #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
   //#define VOLTAGE_ALWAYS_AVAILABLE      // input voltage always available
-  #define VOLTAGE_WARNING               // input voltage low warning only
+  //#define VOLTAGE_WARNING               // input voltage low warning only
 #endif
 
 /**
