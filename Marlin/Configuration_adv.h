@@ -2233,31 +2233,29 @@
 #endif
 
 /*
- * An ADC measuring input voltage is, display in Board info menu page
- * Assumes a resistor divider network to lower voltage to something ADC can handle
- * Configure the total resistance and lower resistor
- * Needs VOLTAGE_DETECTION_PIN defined
+ * An ADC measuring input voltage is, display in Power info menu page
+ * Assumes a resistor divider network to lower voltage to something the ADC can handle
+ * Configure the upper and lower resistor values
  * 
  *  E.g. for 12V
- *    Divider total is 180K + 91K, adjusted so matching measured voltage
- *    Divider lower is 91K, adjusted so matching measured voltage
+ *    Divider upper 180K
+ *    Divider lower 91K
  *
  *  E.g. for 24V
- *    Divider total is 240K + 47K, adjusted so matching measured voltage
- *    Divider lower is 47K, adjusted so matching measured voltage
+ *    Divider upper 240K
+ *    Divider lower 47K
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   #define VOLTAGE_DETECTION_PIN 3       // If not in your pins .h file
   #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
   #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
-  #define DIVIDER_RATIO         (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
   #define ADC_VREF              5.0f    // Whatever the ADC AREF is, default is 5.0V
-  #define ADC_RESOLUTION 1024.0f
-
+  #define ADC_RESOLUTION        1024.0f
+  #define DIVIDER_RATIO         (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
   #define VOLTAGE_MINIMUM       625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
   #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
-  //#define VOLTAGE_ALWAYS_AVAILABLE      // input voltage always available
+  //#define VOLTAGE_ALWAYS_AVAILABLE      // input voltage always available, even when PSU off using M81
   //#define VOLTAGE_WARNING               // input voltage low warning only
 #endif
 
