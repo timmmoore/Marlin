@@ -144,7 +144,7 @@ enum ADCSensorState : char {
 // get all oversampled sensor readings
 #define MIN_ADC_ISR_LOOPS 10
 
-#define ACTUAL_ADC_SAMPLES MAX(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
+#define ACTUAL_ADC_SAMPLES _MAX(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
 
 #if HAS_PID_HEATING
   #define PID_K2 (1-float(PID_K1))
@@ -504,7 +504,7 @@ class Temperature {
 
         static uint8_t lcd_tmpfan_speed[
           #if ENABLED(SINGLENOZZLE)
-            MAX(EXTRUDERS, FAN_COUNT)
+            _MAX(EXTRUDERS, FAN_COUNT)
           #else
             FAN_COUNT
           #endif
@@ -621,7 +621,7 @@ class Temperature {
       #if ENABLED(AUTO_POWER_CONTROL)
         powerManager.power_on();
       #endif
-      temp_hotend[ee].target = MIN(celsius, temp_range[ee].maxtemp - 15);
+      temp_hotend[ee].target = _MIN(celsius, temp_range[ee].maxtemp - 15);
       start_watching_hotend(ee);
     }
 
@@ -635,7 +635,7 @@ class Temperature {
       static void setTargetChamber(const int16_t celsius) {
         temp_chamber.target =
           #ifdef CHAMBER_MAXTEMP
-            MIN(celsius, CHAMBER_MAXTEMP)
+            _MIN(celsius, CHAMBER_MAXTEMP)
           #else
             celsius
           #endif
@@ -684,7 +684,7 @@ class Temperature {
         #endif
         temp_bed.target =
           #ifdef BED_MAXTEMP
-            MIN(celsius, BED_MAXTEMP - 10)
+            _MIN(celsius, BED_MAXTEMP - 10)
           #else
             celsius
           #endif
