@@ -1168,7 +1168,7 @@
   //#define BABYSTEP_WITHOUT_HOMING
   //#define BABYSTEP_XY                     // Also enable X/Y Babystepping. Not supported on DELTA!
   #define BABYSTEP_INVERT_Z false           // Change if Z babysteps should go the other way
-  #define BABYSTEP_MULTIPLICATOR  5         // Babysteps are very small. Increase for faster motion.
+  #define BABYSTEP_MULTIPLICATOR  10        // Babysteps are very small. Increase for faster motion.
 
   #define DOUBLECLICK_FOR_Z_BABYSTEPPING    // Double-click on the Status Screen for Z Babystepping.
   #if ENABLED(DOUBLECLICK_FOR_Z_BABYSTEPPING)
@@ -2205,11 +2205,7 @@
 
 /*
  * LEDs using PCA9632 but wired up differently
- * 
- * Overlord
- *  PCA9632 implementation doesn't support auto-inc
- *  Has Red and Green leds switched
- *  Has Buzzer connected to PCA9632
+ *  or has buzzer connected to PCA9632
 */
 #if ENABLED(PCA9632)
   //#define PCA9632_NO_AUTO_INC       // PCA9632 implementation doesn't support auto-inc
