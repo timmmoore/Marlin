@@ -43,6 +43,14 @@ private:
     #endif
   }
 
+  static inline void set_done() {
+    #if ENABLED(LED_COLOR_PRESETS)
+      leds.set_default();
+    #else
+      leds.set_off();
+    #endif
+  }
+
 public:
   #if HAS_TEMP_HOTEND
     static inline LEDColor onHotendHeatingStart() { old_intensity = 0; return leds.get_color(); }
