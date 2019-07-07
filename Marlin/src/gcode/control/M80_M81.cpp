@@ -47,6 +47,7 @@
   #if HAS_TRINAMIC
     #include "../../feature/tmc_util.h"
   #endif
+  
   /**
    * M80   : Turn on the Power Supply
    * M80 S : Report the current state and exit
