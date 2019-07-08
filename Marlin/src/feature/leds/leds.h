@@ -173,9 +173,7 @@ public:
     );
   }
 
-  static inline void set_off()   {
-    set_color(LEDColorOff()); 
-  }
+  static inline void set_off()   { set_color(LEDColorOff()); }
   static inline void set_green() { set_color(LEDColorGreen()); }
   static inline void set_white() { set_color(LEDColorWhite()); }
 

@@ -438,7 +438,7 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 245            //lower max temp since updated nozzle is a E3D V6 lite clone
+#define HEATER_0_MAXTEMP 245            // lower max temp since updated nozzle is a E3D V6 lite clone
 #define HEATER_1_MAXTEMP 245
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
@@ -783,8 +783,7 @@
  *
  * These settings can be reset by M502
  *
- * Note that if EEPROM is enabled,
-   saved values will override these.
+ * Note that if EEPROM is enabled, saved values will override these.
 */
 
 /**
@@ -1792,6 +1791,7 @@
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
 //#define SPEAKER
+
 //
 // The duration and frequency for the UI feedback sound.
 // Set these to 0 to disable audio feedback in the LCD menus.
@@ -2149,7 +2149,7 @@
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
 // :[0,1,2,3,4,5,6,7]
-#define SOFT_PWM_SCALE 1
+#define SOFT_PWM_SCALE 0
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
@@ -2259,8 +2259,8 @@
 // If the servo can't reach the requested position, increase it.
 #define SERVO_DELAY { 300 }
 
-    // Only power servos during movement, otherwise leave off to prevent jitter
-    //#define DEACTIVATE_SERVOS_AFTER_MOVE
+// Only power servos during movement, otherwise leave off to prevent jitter
+//#define DEACTIVATE_SERVOS_AFTER_MOVE
 
-    // Allow servo angle to be edited and saved to EEPROM
-    //#define EDITABLE_SERVO_ANGLES
+// Allow servo angle to be edited and saved to EEPROM
+//#define EDITABLE_SERVO_ANGLES

@@ -27,9 +27,9 @@
 /**
  * Rev A   12 JAN 2019
  *
- *  
- *   
- *    
+ *
+ *
+ *
  */
 
 #if ENABLED(TARGET_LPC1768)
