@@ -423,7 +423,7 @@ static void print_probe_state(const bool is_hit)
   serialprintPGM(PSTR(MSG_Z_PROBE));
   SERIAL_ECHOPGM(": ");
   serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));
-  SERIAL_EOL(); 
+  SERIAL_EOL();
 }
 #endif
 
@@ -637,8 +637,7 @@ static float run_z_probe() {
   // If Z isn't known then probe to -10mm.
   const float z_probe_low_point = TEST(axis_known_position, Z_AXIS) ? -zprobe_zoffset + Z_PROBE_LOW_POINT : -10.0;
 
-  if (DEBUGGING(LEVELING))
-  {
+  if (DEBUGGING(LEVELING)) {
     print_probe_state(
     #if USES_Z_MIN_PROBE_ENDSTOP
       READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING
@@ -703,8 +702,7 @@ static float run_z_probe() {
     )
   #endif
     {
-      if (DEBUGGING(LEVELING))
-      {
+      if (DEBUGGING(LEVELING)) {
         print_probe_state(
         #if USES_Z_MIN_PROBE_ENDSTOP
           READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING
@@ -714,10 +712,8 @@ static float run_z_probe() {
         );
       }
       // Probe downward slowly to find the bed
-      if (do_probe_move(z_probe_low_point, MMM_TO_MMS(Z_PROBE_SPEED_SLOW)))
-      {
-        if (DEBUGGING(LEVELING))
-        {
+      if (do_probe_move(z_probe_low_point, MMM_TO_MMS(Z_PROBE_SPEED_SLOW))) {
+        if (DEBUGGING(LEVELING)) {
           DEBUG_ECHOLNPGM("SLOW Probe fail!");
           DEBUG_POS("<<< run_z_probe", current_position);
         }
