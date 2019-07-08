@@ -87,38 +87,25 @@ static void PCA9632_WriteRegister(const byte addr, const byte regadd, const byte
 }
 
 static void PCA9632_WriteAllRegisters(const byte addr, const byte regadd, const byte value1, const byte value2, const byte value3) {
+  uint8_t data[6], len;
+  #if DISABLED(PCA9632_NO_AUTO_INC)           // auto inc supported
+    len = 4;
+    data[0] = PCA9632_AUTO_IND | regadd;
+    data[1 + (PCA9632_RED >> 1)] = value1;
+    data[1 + (PCA9632_GRN >> 1)] = value2;
+    data[1 + (PCA9632_BLU >> 1)] = value3;
+  #else                                       // auto inc not supported
+    UNUSED(regadd);
+    len = 6;
+    data[0] = PCA9632_PWM0 + (PCA9632_RED >> 1);
+    data[1] = value1;
+    data[2] = PCA9632_PWM0 + (PCA9632_GRN >> 1);
+    data[3] = value2;
+    data[4] = PCA9632_PWM0 + (PCA9632_BLU >> 1);
+    data[5] = value3;
+  #endif
   Wire.beginTransmission(I2C_ADDRESS(addr));
-#if DISABLED(PCA9632_NO_AUTO_INC)             // auto inc supported
-  Wire.write(PCA9632_AUTO_IND | regadd);
-  #if PCA9632_RED == 0x00
-    Wire.write(value1);                       // output led values in correct order
-  #elif PCA9632_GRN== 0x00
-    Wire.write(value2);
-  #else
-    Wire.write(value3);
-  #endif
-  #if PCA9632_RED == 0x02
-    Wire.write(value1);
-  #elif PCA9632_GRN == 0x02
-    Wire.write(value2);
-  #else
-    Wire.write(value3);
-  #endif
-  #if PCA9632_RED == 0x04
-    Wire.write(value1);
-  #elif PCA9632_GRN == 0x04
-    Wire.write(value2);
-  #else
-    Wire.write(value3);
-  #endif
-#else                                       // auto inc not supported
-  Wire.write(PCA9632_PWM0 + (PCA9632_RED >> 1));
-  Wire.write(value1);
-  Wire.write(PCA9632_PWM0 + (PCA9632_GRN >> 1));
-  Wire.write(value2);
-  Wire.write(PCA9632_PWM0 + (PCA9632_BLU >> 1));
-  Wire.write(value3);
-#endif
+  Wire.write(data, len);
   Wire.endTransmission();
 }
 
