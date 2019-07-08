@@ -43,21 +43,15 @@
  *   M150 W          ; Turn LED white using a white LED
  *   M150 P127       ; Set LED 50% brightness
  *   M150 P          ; Set LED full brightness
- *   M150 D          ; Set LED to default preset
  */
 void GcodeSuite::M150() {
-#if ENABLED(LED_COLOR_PRESETS)
-  if(parser.seen('D'))
-    leds.set_default();
-  else
-#endif
-    leds.set_color(MakeLEDColor(
-      parser.seen('R') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
-      parser.seen('U') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
-      parser.seen('B') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
-      parser.seen('W') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
-      parser.seen('P') ? (parser.has_value() ? parser.value_byte() : 255) : pixels.getBrightness()
-    ));
+  leds.set_color(MakeLEDColor(
+    parser.seen('R') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
+    parser.seen('U') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
+    parser.seen('B') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
+    parser.seen('W') ? (parser.has_value() ? parser.value_byte() : 255) : 0,
+    parser.seen('P') ? (parser.has_value() ? parser.value_byte() : 255) : pixels.getBrightness()
+  ));
 }
 
 #endif // HAS_COLOR_LEDS
