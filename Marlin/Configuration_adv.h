@@ -2205,7 +2205,7 @@
 
 /*
  * LEDs using PCA9632 but wired up differently
- * 
+ *
  * Overlord
  *  PCA9632 implementation doesn't support auto-inc
  *  Has Red and Green leds switched
@@ -2224,7 +2224,7 @@
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
  * Needs BATTERY_STATUS_PIN defined
- * 
+ *
  * Overlord Pro has internal rechargable battery
  */
 #define BATTERY_STATUS_AVAILABLE
@@ -2238,7 +2238,7 @@
  * Assumes a resistor divider network to lower voltage to something ADC can handle
  * Configure the total resistance and lower resistor
  * Needs VOLTAGE_DETECTION_PIN defined
- * 
+ *
  *  E.g. for 12V
  *    Divider upper is 180K, adjusted so matching measured voltage
  *    Divider lower is 91K, adjusted so matching measured voltage
@@ -2602,7 +2602,7 @@
 /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-//  #define PINS_DEBUGGING
+//#define PINS_DEBUGGING
 
 // Enable Marlin dev mode which adds some special commands
 //#define MARLIN_DEV_MODE

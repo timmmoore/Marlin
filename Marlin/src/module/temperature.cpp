@@ -400,7 +400,7 @@ temp_range_t Temperature::temp_range[HOTENDS] = ARRAY_BY_HOTENDS(sensor_heater_0
       bool heated = false;
     #endif
 
-#if HAS_AUTO_FAN
+    #if HAS_AUTO_FAN
       next_auto_fan_check_ms = next_temp_ms + 2500UL;
     #endif
 
@@ -2771,7 +2771,7 @@ void Temperature::isr() {
           voltage_level = HAL_READ_ADC();
           if(
             #if DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-              powersupply_on && 
+              powersupply_on &&
             #endif
           (voltage_level < VOLTAGE_MINIMUM)) {
             // Input voltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
@@ -2802,7 +2802,7 @@ void Temperature::isr() {
     case StartupDelay:
       break;
 
-    } // switch(adc_sensor_state)
+  } // switch(adc_sensor_state)
 
   // Go to the next state
   adc_sensor_state = next_sensor_state;
@@ -2905,7 +2905,6 @@ void Temperature::isr() {
         , H_CHAMBER
       );
     #endif // HAS_TEMP_CHAMBER
-
     #if HOTENDS > 1
       HOTEND_LOOP() print_heater_state(degHotend(e), degTargetHotend(e)
         #if ENABLED(SHOW_TEMP_ADC_VALUES)
@@ -2968,7 +2967,7 @@ void Temperature::isr() {
 
     bool Temperature::wait_for_hotend(const uint8_t target_extruder, const bool no_wait_for_cooling/*=true*/
       #if G26_CLICK_CAN_CANCEL
-        , const bool click_to_cancel /*=false*/
+        , const bool click_to_cancel/*=false*/
       #endif
     ) {
       #if TEMP_RESIDENCY_TIME > 0
