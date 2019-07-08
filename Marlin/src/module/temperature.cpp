@@ -244,7 +244,7 @@ hotend_info_t Temperature::temp_hotend[HOTENDS
   #endif
 #endif // HAS_HEATED_BED
 
-#if HAS_TEMP_CHAMBER || ENABLED(AUTO_POWER_CHAMBER_FAN)
+#if HAS_TEMP_CHAMBER
   chamber_info_t Temperature::temp_chamber; // = { 0 }
   #if HAS_HEATED_CHAMBER
     #ifdef CHAMBER_MINTEMP
@@ -312,7 +312,7 @@ temp_range_t Temperature::temp_range[HOTENDS] = ARRAY_BY_HOTENDS(sensor_heater_0
   int8_t Temperature::meas_shift_index;  // Index of a delayed sample in buffer
 #endif
 
-#if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
+#if HAS_AUTO_FAN
   millis_t Temperature::next_auto_fan_check_ms = 0;
 #endif
 
@@ -400,7 +400,7 @@ temp_range_t Temperature::temp_range[HOTENDS] = ARRAY_BY_HOTENDS(sensor_heater_0
       bool heated = false;
     #endif
 
-#if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
+#if HAS_AUTO_FAN
       next_auto_fan_check_ms = next_temp_ms + 2500UL;
     #endif
 
@@ -442,7 +442,7 @@ temp_range_t Temperature::temp_range[HOTENDS] = ARRAY_BY_HOTENDS(sensor_heater_0
           ONHEATING(start_temp, current, target);
         #endif
 
-        #if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
+        #if HAS_AUTO_FAN
           if (ELAPSED(ms, next_auto_fan_check_ms)) {
             checkExtruderAutoFans();
             next_auto_fan_check_ms = ms + 2500UL;
@@ -1054,10 +1054,9 @@ void Temperature::manage_heater() {
      * Filament Width Sensor dynamically sets the volumetric multiplier
      * based on a delayed measurement of the filament diameter.
      */
-    if (filament_sensor)
-    {
+    if (filament_sensor) {
       meas_shift_index = filwidth_delay_index[0] - meas_delay_cm;
-      if (meas_shift_index < 0) meas_shift_index += MAX_MEASUREMENT_DELAY + 1; //loop around buffer if needed
+      if (meas_shift_index < 0) meas_shift_index += MAX_MEASUREMENT_DELAY + 1;  //loop around buffer if needed
       meas_shift_index = constrain(meas_shift_index, 0, MAX_MEASUREMENT_DELAY);
       planner.calculate_volumetric_for_width_sensor(measurement_delay[meas_shift_index]);
     }
@@ -1080,8 +1079,7 @@ void Temperature::manage_heater() {
       }
     #endif // WATCH_BED
 
-    do
-    {
+    do {
       #if DISABLED(PIDTEMPBED)
         if (PENDING(ms, next_bed_check_ms)
           #if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
@@ -1613,7 +1611,7 @@ void Temperature::init() {
   #if HAS_FAN2
     INIT_FAN_PIN(FAN2_PIN);
   #endif
-  #if HAS_CONTROLLER_FAN
+  #if ENABLED(USE_CONTROLLER_FAN)
     INIT_FAN_PIN(CONTROLLER_FAN_PIN);
   #endif
 
@@ -2801,27 +2799,27 @@ void Temperature::isr() {
         break;
     #endif
 
-      case StartupDelay:
-        break;
+    case StartupDelay:
+      break;
 
-      } // switch(adc_sensor_state)
+    } // switch(adc_sensor_state)
 
-      // Go to the next state
-      adc_sensor_state = next_sensor_state;
+  // Go to the next state
+  adc_sensor_state = next_sensor_state;
 
-      //
-      // Additional ~1KHz Tasks
-      //
+  //
+  // Additional ~1KHz Tasks
+  //
 
-#if ENABLED(BABYSTEPPING)
-      babystep.task();
-#endif
+  #if ENABLED(BABYSTEPPING)
+    babystep.task();
+  #endif
 
-      // Poll endstops state, if required
-      endstops.poll();
+  // Poll endstops state, if required
+  endstops.poll();
 
-      // Periodically call the planner timer
-      planner.tick();
+  // Periodically call the planner timer
+  planner.tick();
 }
 
 #if HAS_TEMP_SENSOR
@@ -2886,7 +2884,6 @@ void Temperature::isr() {
         );
       #endif
     #endif
-
     #if HAS_HEATED_BED
       print_heater_state(degBed(), degTargetBed()
         #if ENABLED(SHOW_TEMP_ADC_VALUES)
@@ -2895,7 +2892,6 @@ void Temperature::isr() {
         , H_BED
       );
     #endif
-
     #if HAS_TEMP_CHAMBER
       print_heater_state(degChamber()
         #if HAS_HEATED_CHAMBER
@@ -2908,7 +2904,7 @@ void Temperature::isr() {
         #endif
         , H_CHAMBER
       );
-    #endif
+    #endif // HAS_TEMP_CHAMBER
 
     #if HOTENDS > 1
       HOTEND_LOOP() print_heater_state(degHotend(e), degTargetHotend(e)
@@ -2971,11 +2967,10 @@ void Temperature::isr() {
     #endif
 
     bool Temperature::wait_for_hotend(const uint8_t target_extruder, const bool no_wait_for_cooling/*=true*/
-#if G26_CLICK_CAN_CANCEL
-                                                                         ,
-                                                                         const bool click_to_cancel /*=false*/
+      #if G26_CLICK_CAN_CANCEL
+        , const bool click_to_cancel /*=false*/
       #endif
-                                                                        ) {
+    ) {
       #if TEMP_RESIDENCY_TIME > 0
         millis_t residency_start_ms = 0;
         // Loop until the temperature has stabilized

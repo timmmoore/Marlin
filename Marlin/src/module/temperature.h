@@ -190,7 +190,7 @@ struct PIDHeaterInfo : public HeaterInfo {
     typedef heater_info_t bed_info_t;
   #endif
 #endif
-#if HAS_HEATED_CHAMBER || ENABLED(AUTO_POWER_CHAMBER_FAN)
+#if HAS_HEATED_CHAMBER
   typedef heater_info_t chamber_info_t;
 #elif HAS_TEMP_CHAMBER
   typedef temp_info_t chamber_info_t;
@@ -397,7 +397,7 @@ class Temperature {
       static int8_t meas_shift_index;  // Index of a delayed sample in buffer
     #endif
 
-    #if HAS_AUTO_FAN || ENABLED(AUTO_POWER_E_FANS)
+    #if HAS_AUTO_FAN
       static millis_t next_auto_fan_check_ms;
     #endif
 
