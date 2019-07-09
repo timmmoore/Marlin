@@ -92,13 +92,13 @@ static void PCA9632_WriteRegister(const byte addr, const byte regadd, const byte
 
 static void PCA9632_WriteAllRegisters(const byte addr, const byte regadd, const byte value1, const byte value2, const byte value3) {
   uint8_t data[6], len;
-  #if DISABLED(PCA9632_NO_AUTO_INC)           // auto inc supported
+  #if DISABLED(PCA9632_NO_AUTO_INC)
     len = 4;
     data[0] = PCA9632_AUTO_IND | regadd;
     data[1 + (PCA9632_RED >> 1)] = value1;
     data[1 + (PCA9632_GRN >> 1)] = value2;
     data[1 + (PCA9632_BLU >> 1)] = value3;
-  #else                                       // auto inc not supported
+  #else
     len = 6;
     data[0] = regadd + (PCA9632_RED >> 1);
     data[1] = value1;
