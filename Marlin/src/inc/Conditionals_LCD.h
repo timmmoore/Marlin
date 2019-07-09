@@ -187,6 +187,24 @@
   #define ENCODER_STEPS_PER_MENU_ITEM 2
 #endif
 
+#if ENABLED(OVERLORD_OLED)
+  #define ULTIMAKERCONTROLLER
+  #define U8GLIB_SH1106
+  /*
+   * Display has PCA9632 for buzzer and LEDs
+   *
+   * Overlord
+   *  PCA9632 implementation doesn't support auto-inc
+   *  Has Red and Green leds switched
+   *  Has Buzzer connected to reg 9
+   */
+  #define PCA9632_NO_AUTO_INC                 // If can't use auto-inc
+  #define PCA9632_GRN         0x00            // If leds at a non-standard index
+  #define PCA9632_RED         0x02
+  #define PCA9632_BUZZER
+  #define PCA9632_BUZZER_DATA { 0x09, 0x02 }  // cmd for buzzer
+#endif
+
 // 128x64 I2C OLED LCDs - SSD1306/SSD1309/SH1106
 #define HAS_SSD1306_OLED_I2C ANY(U8GLIB_SSD1306, U8GLIB_SSD1309, U8GLIB_SH1106)
 #if HAS_SSD1306_OLED_I2C

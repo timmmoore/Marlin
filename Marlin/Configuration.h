@@ -1829,8 +1829,7 @@
 //
 // ULTIPANEL as seen on Thingiverse.
 //
-#define ULTIPANEL
-#define U8GLIB_SH1106
+//#define ULTIPANEL
 
 //
 // PanelOne from T3P3 (via RAMPS 1.4 AUX2/AUX3)
@@ -1865,6 +1864,10 @@
                                   // This LCD is known to be susceptible to electrical interference
                                   // which scrambles the display.  Pressing any button clears it up.
                                   // This is a LCD2004 display with 5 analog buttons.
+//
+// Overlord OLED display + buttons
+//
+#define OVERLORD_OLED
 
 //
 // Generic 16x2, 16x4, 20x2, or 20x4 character-based LCD.
@@ -2182,7 +2185,7 @@
 //#define BLINKM
 
 // Support for PCA9632 PWM LED driver
-#define PCA9632                               // Leds in top of Overlord case
+#define PCA9632
 
 // Support for PCA9533 PWM LED driver
 // https://github.com/mikeshub/SailfishRGB_LED
