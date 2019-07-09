@@ -70,6 +70,10 @@
 #if !defined(PCA9632_BLU)
 #define PCA9632_BLU 0x04
 #endif
+// If any of the color indexs are greater than 0x04 then can't use auto increment
+#if !defined(PCA9632_NO_AUTO_INC) && ((PCA9632_RED > 0x04) || (PCA9632_GRN > 0x04) || (PCA9632_BLU > 0x04))
+#define PCA9632_NO_AUTO_INC
+#endif
 
 #define LED_OFF   0x00
 #define LED_ON    0x01
