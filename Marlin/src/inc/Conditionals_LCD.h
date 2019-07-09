@@ -192,11 +192,7 @@
   #define U8GLIB_SH1106
   /*
    * Display has PCA9632 for buzzer and LEDs
-   *
-   * Overlord
-   *  PCA9632 implementation doesn't support auto-inc
-   *  Has Red and Green leds switched
-   *  Has Buzzer connected to reg 9
+   *  No auto-inc, red and green leds switched, buzzer
    */
   #define PCA9632_NO_AUTO_INC                 // If can't use auto-inc
   #define PCA9632_GRN         0x00            // If leds at a non-standard index
