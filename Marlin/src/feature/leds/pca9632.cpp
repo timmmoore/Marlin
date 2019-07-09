@@ -99,13 +99,12 @@ static void PCA9632_WriteAllRegisters(const byte addr, const byte regadd, const 
     data[1 + (PCA9632_GRN >> 1)] = value2;
     data[1 + (PCA9632_BLU >> 1)] = value3;
   #else                                       // auto inc not supported
-    UNUSED(regadd);
     len = 6;
-    data[0] = PCA9632_PWM0 + (PCA9632_RED >> 1);
+    data[0] = regadd + (PCA9632_RED >> 1);
     data[1] = value1;
-    data[2] = PCA9632_PWM0 + (PCA9632_GRN >> 1);
+    data[2] = regadd + (PCA9632_GRN >> 1);
     data[3] = value2;
-    data[4] = PCA9632_PWM0 + (PCA9632_BLU >> 1);
+    data[4] = regadd + (PCA9632_BLU >> 1);
     data[5] = value3;
   #endif
   Wire.beginTransmission(I2C_ADDRESS(addr));
