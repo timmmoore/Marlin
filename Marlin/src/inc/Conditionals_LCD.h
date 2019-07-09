@@ -194,11 +194,11 @@
    * Display has PCA9632 for buzzer and LEDs
    *  No auto-inc, red and green leds switched, buzzer
    */
-  #define PCA9632_NO_AUTO_INC                 // If can't use auto-inc
-  #define PCA9632_GRN         0x00            // If leds at a non-standard index
+  #define PCA9632_NO_AUTO_INC
+  #define PCA9632_GRN         0x00
   #define PCA9632_RED         0x02
   #define PCA9632_BUZZER
-  #define PCA9632_BUZZER_DATA { 0x09, 0x02 }  // cmd for buzzer
+  #define PCA9632_BUZZER_DATA { 0x09, 0x02 }
 #endif
 
 // 128x64 I2C OLED LCDs - SSD1306/SSD1309/SH1106
