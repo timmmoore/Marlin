@@ -142,10 +142,10 @@ void pca9632_set_led_color(const LEDColor &color) {
   void pca9632_buzz(uint16_t const f, uint16_t d)
   {
     UNUSED(f); UNUSED(d);
+    uint8_t data[] = PCA9632_BUZZER_DATA;
 
     Wire.beginTransmission(I2C_ADDRESS(PCA9632_ADDRESS));
-    Wire.write(PCA9632_SUBADR1);
-    Wire.write(PCA9632_BUZZER_CMD);
+    Wire.write(data, sizeof(data));
     Wire.endTransmission();
   }
 #endif
