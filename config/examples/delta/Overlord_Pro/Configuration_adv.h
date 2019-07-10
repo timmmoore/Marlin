@@ -865,7 +865,7 @@
 #define LCD_SET_PROGRESS_MANUALLY
 
 #if HAS_CHARACTER_LCD && HAS_PRINT_PROGRESS
-  #define LCD_PROGRESS_BAR              // Show a progress bar on HD44780 LCDs for SD printing
+  #define LCD_PROGRESS_BAR                // Show a progress bar on HD44780 LCDs for SD printing
   #if ENABLED(LCD_PROGRESS_BAR)
     #define PROGRESS_BAR_BAR_TIME 2000    // (ms) Amount of time to show the bar
     #define PROGRESS_BAR_MSG_TIME 3000    // (ms) Amount of time to show the status message
@@ -883,13 +883,12 @@
 #if ENABLED(LED_CONTROL_MENU)
   #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
   #if ENABLED(LED_COLOR_PRESETS)
-    #define LED_USER_PRESET_RED          5  // User defined RED value
-    #define LED_USER_PRESET_GREEN        5  // User defined GREEN value
-    #define LED_USER_PRESET_BLUE         5  // User defined BLUE value
+    #define LED_USER_PRESET_RED         35  // User defined RED value
+    #define LED_USER_PRESET_GREEN       35  // User defined GREEN value
+    #define LED_USER_PRESET_BLUE        35  // User defined BLUE value
     #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
     #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
-    #define LED_USER_PRESET_OFF_DEFAULT     // Have the printer display the user preset color on end of print
   #endif
 #endif // LED_CONTROL_MENU
 
@@ -2205,27 +2204,10 @@
 #endif
 
 /*
- * LEDs using PCA9632 but wired up differently
- * 
- * Overlord
- *  PCA9632 implementation doesn't support auto-inc
- *  Has Red and Green leds switched
- *  Has Buzzer connected to PCA9632
-*/
-#if ENABLED(PCA9632)
-  #define PCA9632_NO_AUTO_INC       // PCA9632 implementation doesn't support auto-inc
-  #define PCA9632_GRN         0x00  // Leds in different order
-  #define PCA9632_RED         0x02
-  //#define PCA9632_BLU         0x04
-  #define PCA9632_BUZZER            // Buzzer wired up to PCA9632
-  #define PCA9632_BUZZER_CMD  2     // I2C command used for buzzer
-#endif
-
-/*
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
  * Needs BATTERY_STATUS_PIN defined
- * 
+ *
  * Overlord Pro has internal rechargable battery
  */
 #define BATTERY_STATUS_AVAILABLE
@@ -2239,7 +2221,7 @@
  * Assumes a resistor divider network to lower voltage to something ADC can handle
  * Configure the total resistance and lower resistor
  * Needs VOLTAGE_DETECTION_PIN defined
- * 
+ *
  *  E.g. for 12V
  *    Divider upper is 180K, adjusted so matching measured voltage
  *    Divider lower is 91K, adjusted so matching measured voltage
@@ -2598,12 +2580,12 @@
   //#define SERVICE_INTERVAL_3    1 // print hours
 #endif
 
-    // @section develop
+// @section develop
 
-    /**
+/**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-//  #define PINS_DEBUGGING
+//#define PINS_DEBUGGING
 
-    // Enable Marlin dev mode which adds some special commands
-    //#define MARLIN_DEV_MODE
+// Enable Marlin dev mode which adds some special commands
+//#define MARLIN_DEV_MODE
