@@ -1865,7 +1865,7 @@
                                   // which scrambles the display.  Pressing any button clears it up.
                                   // This is a LCD2004 display with 5 analog buttons.
 //
-// Overlord OLED display + buttons + LEDs
+// Overlord OLED display + buttons + LEDs + buzzer
 //
 #define OVERLORD_OLED
 
@@ -2035,7 +2035,7 @@
 //
 // This is RAMPS-compatible using a single 10-pin connector.
 // (For CR-10 owners who want to replace the Melzi Creality board but retain the display)
-//U8GLIB_SSD1306
+//
 //#define CR10_STOCKDISPLAY
 
 //
