@@ -44,9 +44,9 @@
   #endif
 #endif
 
-#define DEFAULT_MACHINE_NAME    "OVERLORD"
-#define DEFAULT_SOURCE_CODE_URL "https://github.com/timmmoore/Marlin"
 #define BOARD_NAME "OVERLORD"
+#define DEFAULT_MACHINE_NAME BOARD_NAME
+#define DEFAULT_SOURCE_CODE_URL "https://github.com/timmmoore/Marlin"
 
 /*****************************************************************
  * Overlord pin assignment
