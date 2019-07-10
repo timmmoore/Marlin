@@ -194,6 +194,7 @@
    * Display has PCA9632 for buzzer and LEDs
    *  No auto-inc, red and green leds switched, buzzer
    */
+  #define PCA9632
   #define PCA9632_NO_AUTO_INC
   #define PCA9632_GRN         0x00
   #define PCA9632_RED         0x02

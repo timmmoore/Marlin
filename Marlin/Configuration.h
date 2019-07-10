@@ -1865,7 +1865,7 @@
                                   // which scrambles the display.  Pressing any button clears it up.
                                   // This is a LCD2004 display with 5 analog buttons.
 //
-// Overlord OLED display + buttons
+// Overlord OLED display + buttons + LEDs
 //
 #define OVERLORD_OLED
 
