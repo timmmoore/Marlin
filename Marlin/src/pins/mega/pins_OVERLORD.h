@@ -19,29 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 /**
  * Dreammaker Overlord v1.1 pin assignments
  */
 
-/**
- * Rev A   12 JAN 2019
- *
- *
- *
- *
- */
-
-#if ENABLED(TARGET_LPC1768)
-  #error "Oops! Set MOTHERBOARD to an LPC1768-based board when building for LPC1768."
-#elif defined(__STM32F1__)
-  #error "Oops! Set MOTHERBOARD to an STM32F1-based board when building for STM32F1."
-#endif
-
-#if DISABLED(IS_RAMPS_SMART, IS_RAMPS_DUO, IS_RAMPS4DUE, TARGET_LPC1768)
-  #if !defined(__AVR_ATmega1280__) && !defined(__AVR_ATmega2560__)
-    #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
-  #endif
+#if !defined(__AVR_ATmega2560__)
+  #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
 #endif
 
 #define BOARD_NAME "OVERLORD"
@@ -82,6 +67,10 @@
   #define TEMP_0_PIN            8
   #define TEMP_1_PIN            9   // Redundant temp sensor
 
+  #define HEATER_1_PIN          3
+  #define TEMP_2_PIN            12
+  #define TEMP_3_PIN            14
+
   #define E0_STEP_PIN           43
   #define E0_DIR_PIN            45
   #define E0_ENABLE_PIN         41
@@ -96,6 +85,7 @@
 
   #define PS_ON_PIN             12  // take high to power steppers/heaters/fans
   #define POWER_LOSS_PIN        34  // power check - whether hotend/steppers/fans have power
+
   #if ENABLED(BATTERY_STATUS_AVAILABLE)
     #undef BATTERY_STATUS_PIN
     #define BATTERY_STATUS_PIN  26  // Status of power loss battery, whether it is charged (low) or charging (high)
@@ -119,7 +109,7 @@
 
   #define SD_DETECT_PIN         38
 
-// ULTI LCD PINS
+  // OVERLORD OLED PINS
   #define LCD_PINS_RS           20
   #define LCD_PINS_D5           21
   #define LCD_PINS_ENABLE       15
@@ -130,11 +120,7 @@
     #define LCD_RESET_PIN       5 // LCD_PINS_D6
   #endif
 
-  #define PCB_VERSION_PIN 22
-
   // Additional connectors/pins on the Overlord V1.X board
-  //#define HEATER_1_PIN          3
-  //#define TEMP_2_PIN            12
-  //#define TEMP_3_PIN            14
-  //#define APPROACH_PIN          11  // JP7, Tpd
-  //#define GATE_PIN              36  // Threshold, JP6, Tg
+  #define PCB_VERSION_PIN       22
+  #define APPROACH_PIN          11  // JP7, Tpd
+  #define GATE_PIN              36  // Threshold, JP6, Tg
