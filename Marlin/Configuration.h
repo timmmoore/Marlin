@@ -531,6 +531,7 @@
  *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+#define BED_ALT           // Alternative with hotend so both are not on at the same time
 
 #if ENABLED(PIDTEMPBED)
 
