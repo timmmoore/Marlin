@@ -537,6 +537,7 @@
  *  Very limited:
  *    Only with 1 hotend
  *    Only with hotend PID and Bed PID
+ *    Not with SLOW_PWM_HEATERS   
  *    Only with SOFT_PWM_SCALE 0
  */
 #define BED_ALT
