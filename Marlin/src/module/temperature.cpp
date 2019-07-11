@@ -2376,6 +2376,10 @@ void Temperature::isr() {
     static SoftPWM soft_pwm_bed;
   #endif
 
+  #if ENABLED(ALT_BED)
+    static bool bed_on;
+  #endif
+
   #if HAS_HEATED_CHAMBER
     static SoftPWM soft_pwm_chamber;
   #endif
@@ -2394,7 +2398,6 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-      #define _PWM_LOW(N,S) do{ if (S.count <= pwm_count_tmp) WRITE_HEATER_##N(LOW); }while(0)
       #define _PWM_MOD(N,S,T) do{                           \
         const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
         WRITE_HEATER_##N(on);                               \
@@ -2418,11 +2421,7 @@ void Temperature::isr() {
       #endif // HOTENDS > 1
 
       #if HAS_HEATED_BED
-        #if DISABLED(BED_ALT)
-          _PWM_MOD(BED,soft_pwm_bed,temp_bed);
-        #else
-          _PWM_LOW(BED, soft_pwm_bed);
-        #endif
+        _PWM_MOD(BED,soft_pwm_bed,temp_bed);
       #endif
 
       #if HAS_HEATED_CHAMBER
@@ -2447,6 +2446,7 @@ void Temperature::isr() {
       #endif
     }
     else {
+      #define _PWM_LOW(N,S) do{ if (S.count <= pwm_count_tmp) WRITE_HEATER_##N(LOW); }while(0)
       #if HOTENDS
         #define _PWM_LOW_E(N) _PWM_LOW(N, soft_pwm_hotend[N])
         _PWM_LOW_E(0);
@@ -2468,11 +2468,7 @@ void Temperature::isr() {
       #endif // HOTENDS
 
       #if HAS_HEATED_BED
-        #if DISABLED(BED_ALT)
-          _PWM_LOW(BED, soft_pwm_bed);
-        #else
-          _PWM_MOD(BED,soft_pwm_bed,temp_bed);
-        #endif
+        _PWM_LOW(BED, soft_pwm_bed);
       #endif
 
       #if HAS_HEATED_CHAMBER
