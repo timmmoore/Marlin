@@ -534,9 +534,10 @@
 
 /**
  * Alternative hotend and bed so both are not on at the same time
- * Only with 1 hotend
- * Only with hotend PID and Bed PID
- * Only with SOFT_PWM_SCALE 0
+ *  Very limited:
+ *    Only with 1 hotend
+ *    Only with hotend PID and Bed PID
+ *    Only with SOFT_PWM_SCALE 0
  */
 #define BED_ALT
 
