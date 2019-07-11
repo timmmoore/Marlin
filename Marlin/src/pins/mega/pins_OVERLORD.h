@@ -52,12 +52,6 @@
  * Overlord pin assignment
  ******************************************************************/
 
-  #ifndef __AVR_ATmega1280__
-    #ifndef __AVR_ATmega2560__
-      #error Oops!  Make sure you have 'Arduino Mega' selected from the 'Tools -> Boards' menu.
-    #endif
-  #endif
-
   #define LARGE_FLASH true
 
   #define X_STEP_PIN            25
