@@ -2361,7 +2361,7 @@ void Temperature::isr() {
   // avoid multiple loads of pwm_count
   uint8_t pwm_count_tmp = pwm_count;
   #if ENABLED(BED_HOTEND_ONE)
-    bool stop_bed = false;
+    bool hotend_on = false;
   #endif
 
   #if HAS_ADC_BUTTONS
@@ -2402,8 +2402,8 @@ void Temperature::isr() {
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
       #if ENABLED(BED_HOTEND_ONE)
-        #define _PWM_EXTRA_E if(on) { WRITE_HEATER_BED(LOW); stop_bed = true; }
-        #define _PWM_EXTRA_BED if(stop_bed) WRITE_HEATER_BED(LOW); else
+        #define _PWM_EXTRA_E if(on) { WRITE_HEATER_BED(LOW); hotend_on = true; }
+        #define _PWM_EXTRA_BED if(hotend_on) WRITE_HEATER_BED(LOW); else
         #define _PWM_EXTRA_CHAMBER
         #define _PWM_EXTRA(V) _PWM_EXTRA_##V
       #else
