@@ -2360,7 +2360,9 @@ void Temperature::isr() {
   static uint8_t pwm_count = _BV(SOFT_PWM_SCALE);
   // avoid multiple loads of pwm_count
   uint8_t pwm_count_tmp = pwm_count;
-  bool stop_bed = false;
+  #if ENABLED(BED_HOTEND_ONE)
+    bool stop_bed = false;
+  #endif
 
   #if HAS_ADC_BUTTONS
     static unsigned int raw_ADCKey_value = 0;
@@ -2400,25 +2402,19 @@ void Temperature::isr() {
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
       #if ENABLED(BED_HOTEND_ONE)
-        #define _PWM_MOD_B(N,S,T) do{                         \
-          const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-          if(!stop_bed) WRITE_HEATER_##N(on);                 \
-          else WRITE_HEATER_##N(LOW);                         \
-        }while(0)
-        #define _PWM_MOD_EE(N,S,T) do{                        \
-          const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-          if(on) { WRITE_HEATER_BED(LOW); stop_bed = true; }  \
-          WRITE_HEATER_##N(on);                               \
-        }while(0)
-        #define _PWM_MOD_E(N) _PWM_MOD_EE(N,soft_pwm_hotend[N],temp_hotend[N])
-        #define _PWM_MOD(N,S,T) _PWM_MOD_B(N,S,T)
+        #define _PWM_EXTRA_E if(on) { WRITE_HEATER_BED(LOW); stop_bed = true; }
+        #define _PWM_EXTRA_BED if(stop_bed) WRITE_HEATER_BED(LOW); else
+        #define _PWM_EXTRA_CHAMBER
+        #define _PWM_EXTRA(V) _PWM_EXTRA_##V
       #else
-        #define _PWM_MOD(N,S,T) do{                           \
-          const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-          WRITE_HEATER_##N(on);                               \
-        }while(0)
-        #define _PWM_MOD_E(N) _PWM_MOD(N,soft_pwm_hotend[N],temp_hotend[N])
+        #define _PWM_EXTRA(V)
       #endif
+      #define _PWM_MOD_V(V,N,S,T) do{                       \
+        const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
+        _PWM_EXTRA(V) WRITE_HEATER_##N(on);                 \
+      }while(0)
+      #define _PWM_MOD(N,S,T) _PWM_MOD_V(N,N,S,T)
+      #define _PWM_MOD_E(N) _PWM_MOD_V(E,N,soft_pwm_hotend[N],temp_hotend[N])
       _PWM_MOD_E(0);
       #if HOTENDS > 1
         _PWM_MOD_E(1);
