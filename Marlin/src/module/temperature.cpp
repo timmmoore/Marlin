@@ -2403,6 +2403,7 @@ void Temperature::isr() {
         #define _PWM_MOD_B(N,S,T) do{                         \
           const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
           if(!stop_bed) WRITE_HEATER_##N(on);                 \
+          else WRITE_HEATER_##N(LOW);                         \
         }while(0)
         #define _PWM_MOD_EE(N,S,T) do{                        \
           const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
