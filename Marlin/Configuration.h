@@ -529,6 +529,7 @@
  *  Very limited:
  *    Only works with hotend PID and Bed PID
  *    Only works without SLOW_PWM_HEATERS
+ *    Does not work if have heated chamber
  * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
  * Works because hotend doesn't to be powered for as long as bed does, so bed gets some power
  * But will heat up slower
