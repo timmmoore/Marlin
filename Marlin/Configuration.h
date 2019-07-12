@@ -525,18 +525,15 @@
  *  This will trigger an alert - "Input Voltage Too low"
  * Recommend upgrade PSU
  *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
- * Or uncomment BED_HOTEND_ONE, this is a hack to force hotend and bed so both are not powered at the same time
+ * Or uncomment BED_HOTEND_ONE, this is a hack to force hotend and bed not to be turned on at the same time
  *  Very limited:
- *    Only works with 1 hotend
  *    Only works with hotend PID and Bed PID
- *    Only works without SLOW_PWM_HEATERS   
- *    Only works with SOFT_PWM_SCALE 0
+ *    Only works without SLOW_PWM_HEATERS
  * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
  * Works because hotend doesn't to be powered for as long as bed does, so bed gets some power
  * But will heat up slower
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-
 #define BED_HOTEND_ONE
 
 #if ENABLED(PIDTEMPBED)
