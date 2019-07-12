@@ -2398,10 +2398,18 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-      #define _PWM_MOD(N,S,T) do{                           \
-        const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-        WRITE_HEATER_##N(on);                               \
-      }while(0)
+      #if ENABLED(BED_HOTEND_ONE)
+        #define _PWM_MOD(N,S,T) do{                           \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
+          if(on) WRITE_HEATER_BED(LOW);                       \
+          WRITE_HEATER_##N(on);                               \
+        }while(0)
+      #else
+        #define _PWM_MOD(N,S,T) do{                           \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
+          WRITE_HEATER_##N(on);                               \
+        }while(0)
+      #endif
       #define _PWM_MOD_E(N) _PWM_MOD(N,soft_pwm_hotend[N],temp_hotend[N])
       _PWM_MOD_E(0);
       #if HOTENDS > 1

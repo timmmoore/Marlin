@@ -533,14 +533,15 @@
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 /**
- * Alternative hotend and bed so both are not on at the same time
+ * Hack to force hotend and bed so both are not powered at the same time
  *  Very limited:
- *    Only with 1 hotend
- *    Only with hotend PID and Bed PID
- *    Not with SLOW_PWM_HEATERS   
- *    Only with SOFT_PWM_SCALE 0
+ *    Only works with 1 hotend
+ *    Only works with hotend PID and Bed PID
+ *    Only works without SLOW_PWM_HEATERS   
+ *    Only works with SOFT_PWM_SCALE 0
+ * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
  */
-#define BED_ALT
+#define BED_HOTEND_ONE
 
 #if ENABLED(PIDTEMPBED)
 
