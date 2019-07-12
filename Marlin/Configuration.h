@@ -540,6 +540,7 @@
  *    Only works without SLOW_PWM_HEATERS   
  *    Only works with SOFT_PWM_SCALE 0
  * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
+ * Works because hotend doesn't to be powered for as long as bed does
  */
 #define BED_HOTEND_ONE
 
