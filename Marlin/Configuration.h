@@ -516,32 +516,27 @@
  * Applies to all forms of bed control (PID, bang-bang, and bang-bang with hysteresis).
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
- */
-/*
+ *
  * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
- * The original software had power management code to only power either hotend or bed at any time
- * This code hasn't been ported over
- * Testing with both BANG_MAX and MAX_BED_POWER at 160 caused power supply to shutdown once steppers started moving
  * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
  * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
  * If both are on at the same time, then there is no power available for anything else
  * and power supply will shutdown if steppers are moving while both hotend and bed are on
  *  This will trigger an alert - "Input Voltage Too low"
- * So either disable the Bed header or upgrade PSU
+ * Recommend upgrade PSU
  *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
- */
-#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-
-/**
- * Hack to force hotend and bed so both are not powered at the same time
+ * Or uncomment BED_HOTEND_ONE, this is a hack to force hotend and bed so both are not powered at the same time
  *  Very limited:
  *    Only works with 1 hotend
  *    Only works with hotend PID and Bed PID
  *    Only works without SLOW_PWM_HEATERS   
  *    Only works with SOFT_PWM_SCALE 0
  * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
- * Works because hotend doesn't to be powered for as long as bed does
+ * Works because hotend doesn't to be powered for as long as bed does, so bed gets some power
+ * But will heat up slower
  */
+#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+
 #define BED_HOTEND_ONE
 
 #if ENABLED(PIDTEMPBED)
