@@ -2410,13 +2410,13 @@ void Temperature::isr() {
         #define _PWM_EXTRA_BED if(!on) hotend_last = false; if(hotend_last) on = false;
         #define _PWM_EXTRA_CHAMBER
         #define _PWM_EXTRA(V) _PWM_EXTRA_##V
-        #define _PWM_DEF
+        #define _PWM_DEF(V)
       #else
         #define _PWM_EXTRA(V)
-        #define _PWM_DEF const
+        #define _PWM_DEF(V) const
       #endif
       #define _PWM_MOD_V(V,N,S,T) do{                               \
-        _PWM_DEF bool on = S.add(pwm_mask, T.soft_pwm_amount);      \
+        _PWM_DEF(V) bool on = S.add(pwm_mask, T.soft_pwm_amount);      \
         _PWM_EXTRA(V) WRITE_HEATER_##N(on);                         \
       }while(0)
       #define _PWM_MOD(N,S,T) _PWM_MOD_V(N,N,S,T)
