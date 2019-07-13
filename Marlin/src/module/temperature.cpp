@@ -2410,8 +2410,8 @@ void Temperature::isr() {
         }while(0)
         #define _PWM_MOD_V_BED(V,N,S,T) do{                     \
           const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
-          if(!hotend_last)                                      \
-            WRITE_HEATER_##N(on);                               \
+          if(!hotend_last && on) WRITE_HEATER_##N(on);          \
+          else WRITE_HEATER_##N(LOW);                           \
         }while(0)
         #define _PWM_MOD_V_E(V,N,S,T) do{                       \
           const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
@@ -2420,6 +2420,7 @@ void Temperature::isr() {
             hotend_last = true;                                 \
             WRITE_HEATER_##N(on);                               \
           }                                                     \
+          else WRITE_HEATER_##N(LOW);                           \
         }while(0)
         #define _PWM_MOD_V(V,N,S,T) _PWM_MOD_V_##V(V,N,S,T)
       #else
