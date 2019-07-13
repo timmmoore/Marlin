@@ -535,7 +535,7 @@
  * But will heat up hotend and bed slower so WATCH_(BED)_TEMP_PERIOD needs to be increased
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-#define BED_HOTEND_ONE
+//#define BED_HOTEND_ONE
 
 #if ENABLED(PIDTEMPBED)
 
