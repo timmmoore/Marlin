@@ -2363,6 +2363,7 @@ void Temperature::isr() {
   #if ENABLED(BED_HOTEND_ONE)
     static bool hotend_last = false;
     bool hotend_current = hotend_last;
+    hotend_last = false;
   #endif
 
   #if HAS_ADC_BUTTONS
@@ -2406,7 +2407,7 @@ void Temperature::isr() {
         #define _PWM_EXTRA_E if(on) {       \
           if(hotend_current) on = false;    \
           else WRITE_HEATER_BED(LOW);       \
-        } hotend_last = on;
+        } hotend_last |= on;
         #define _PWM_EXTRA_BED if(!on) hotend_last = false; if(hotend_last) on = false;
         #define _PWM_EXTRA_CHAMBER
         #define _PWM_EXTRA(V) _PWM_EXTRA_##V
