@@ -2363,7 +2363,6 @@ void Temperature::isr() {
   #if ENABLED(BED_HOTEND_ONE)
     static bool hotend_last = false;
     bool hotend_current = hotend_last;
-    hotend_last = false;
   #endif
 
   #if HAS_ADC_BUTTONS
@@ -2404,22 +2403,31 @@ void Temperature::isr() {
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
       #if ENABLED(BED_HOTEND_ONE)
-        #define _PWM_EXTRA_E if(on) {       \
-          if(hotend_current) on = false;    \
-          else WRITE_HEATER_BED(LOW);       \
-        } hotend_last |= on;
-        #define _PWM_EXTRA_BED if(!on) hotend_last = false; if(hotend_last) on = false;
-        #define _PWM_EXTRA_CHAMBER
-        #define _PWM_EXTRA(V) _PWM_EXTRA_##V
-        #define _PWM_DEF(V)
+        hotend_last = false;
+        #define _PWM_MOD_V_CHAMBER(V,N,S,T) do{                 \
+          bool on = S.add(pwm_mask, T.soft_pwm_amount);         \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+        #define _PWM_MOD_V_BED(V,N,S,T) do{                     \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(!hotend_last)                                      \
+            WRITE_HEATER_##N(on);                               \
+        }while(0)
+        #define _PWM_MOD_V_E(V,N,S,T) do{                       \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(on && !hotend_current) {                           \
+            WRITE_HEATER_BED(LOW);                              \
+            hotend_last = true;                                 \
+            WRITE_HEATER_##N(on);                               \
+          }                                                     \
+        }while(0)
+        #define _PWM_MOD_V(V,N,S,T) _PWM_MOD_V_##V(V,N,S,T)
       #else
-        #define _PWM_EXTRA(V)
-        #define _PWM_DEF(V) const
+        #define _PWM_MOD_V(V,N,S,T) do{                         \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
       #endif
-      #define _PWM_MOD_V(V,N,S,T) do{                               \
-        _PWM_DEF(V) bool on = S.add(pwm_mask, T.soft_pwm_amount);      \
-        _PWM_EXTRA(V) WRITE_HEATER_##N(on);                         \
-      }while(0)
       #define _PWM_MOD(N,S,T) _PWM_MOD_V(N,N,S,T)
       #define _PWM_MOD_E(N) _PWM_MOD_V(E,N,soft_pwm_hotend[N],temp_hotend[N])
       _PWM_MOD_E(0);
