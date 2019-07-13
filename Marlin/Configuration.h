@@ -533,7 +533,7 @@
  *    If chamber, PSU must be able to power it with hotends or with bed
  * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
  * Works because hotend doesn't need to be powered for as long as bed does, so bed gets some power
- * But will heat up slower
+ * But will heat up slower so WATCH_(BED)_TEMP_PERIOD needs to be increased
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 #define BED_HOTEND_ONE
