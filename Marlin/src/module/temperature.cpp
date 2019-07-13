@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -1684,6 +1684,9 @@ void Temperature::init() {
   #endif
   #if HAS_VOLTAGE_AVAILABLE
     HAL_ANALOG_SELECT(VOLTAGE_DETECTION_PIN);
+  #endif
+  #if HAS_ADC_BUTTONS
+    HAL_ANALOG_SELECT(ADC_KEYPAD_PIN);
   #endif
 
   HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
