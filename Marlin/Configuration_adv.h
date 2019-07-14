@@ -2214,7 +2214,6 @@
 /*
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
- * Needs BATTERY_STATUS_PIN defined
  *
  * Overlord Pro has internal rechargable battery
  */
@@ -2227,16 +2226,8 @@
 /*
  * An ADC measuring input voltage is, display in Board info menu page
  * Assumes a resistor divider network to lower voltage to something ADC can handle
- * Configure the total resistance and lower resistor
- * Needs VOLTAGE_DETECTION_PIN defined
- *
- *  E.g. for 12V
- *    Divider upper is 180K, adjusted so matching measured voltage
- *    Divider lower is 91K, adjusted so matching measured voltage
- *
- *  E.g. for 24V
- *    Divider upper is 240K, adjusted so matching measured voltage
- *    Divider lower is 47K, adjusted so matching measured voltage
+ *  E.g. 12V: Divider upper 180K, Divider lower 91K
+ *  E.g. 24V: Divider upper 240K, Divider lower 47K
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
@@ -2249,7 +2240,7 @@
   #define VOLTAGE_MINIMUM         625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
   #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this timeout
   #define VOLTAGE_ALWAYS_AVAILABLE        // input voltage always available
-  //#define VOLTAGE_WARNING                 // input voltage low warning only
+  //#define VOLTAGE_WARNING               // input voltage low warning only
 #endif
 
 /**
