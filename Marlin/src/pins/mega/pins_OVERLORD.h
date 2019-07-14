@@ -27,7 +27,9 @@
 
 #if !defined(__AVR_ATmega2560__)
   #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
-#endif
+#elif HOTENDS > 2 || E_STEPPERS > 2
+  #error "Overlord Controller supports up to 2 hotends / E-steppers. Comment out this line to continue."
+#endif#endif
 
 #define BOARD_NAME "OVERLORD"
 #define DEFAULT_MACHINE_NAME BOARD_NAME
