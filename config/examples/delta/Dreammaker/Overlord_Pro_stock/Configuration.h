@@ -508,7 +508,6 @@
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
 #define PIDTEMPBED
-#define BED_HOTEND_ONE
 
 //#define BED_LIMIT_SWITCHING
 
@@ -528,10 +527,15 @@
  * If both are on at the same time, then there is no power available for anything else
  * and power supply will shutdown if steppers are moving while both hotend and bed are on
  *  This will trigger an alert - "Input Voltage Too low"
- * So either disable the Bed header or upgrade PSU
+ * Recommend upgrade PSU
  *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
+ * Or uncomment ALT_BED_HOTEND, this forces alternating turning on hotend and bed
+ *    Only works with hotend PID and Bed PID without SLOW_PWM_HEATERS
+ * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
+ * But will heat up hotend and bed slower so WATCH_(BED)_TEMP_PERIOD needs to be increased
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+#define ALT_BED_HOTEND
 
 #if ENABLED(PIDTEMPBED)
 

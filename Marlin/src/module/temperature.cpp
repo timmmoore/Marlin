@@ -2360,7 +2360,7 @@ void Temperature::isr() {
   static uint8_t pwm_count = _BV(SOFT_PWM_SCALE);
   // avoid multiple loads of pwm_count
   uint8_t pwm_count_tmp = pwm_count;
-  #if ENABLED(BED_HOTEND_ONE)
+  #if ENABLED(ALT_BED_HOTEND)
     static bool hotend_last = false;
     bool hotend_current = hotend_last;
   #endif
@@ -2402,7 +2402,7 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-      #if ENABLED(BED_HOTEND_ONE)
+      #if ENABLED(ALT_BED_HOTEND)
         hotend_last = false;
         #define _PWM_MOD_V_CHAMBER(V,N,S,T) do{                 \
           bool on = S.add(pwm_mask, T.soft_pwm_amount);         \
