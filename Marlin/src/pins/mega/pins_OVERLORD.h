@@ -31,7 +31,7 @@
 
 #define BOARD_NAME "OVERLORD"
 #define DEFAULT_MACHINE_NAME BOARD_NAME
-#define DEFAULT_SOURCE_CODE_URL "https://github.com/timmmoore/Marlin"
+#define DEFAULT_SOURCE_CODE_URL "https://github.com/timmmoore/Marlin/tree/Overlord-Pro"
 
 /*****************************************************************
  * Overlord pin assignment
