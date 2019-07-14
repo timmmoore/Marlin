@@ -2204,19 +2204,6 @@
 #endif
 
 /*
- * LEDs using PCA9632 but wired up differently
- *  or has buzzer connected to PCA9632
-*/
-#if ENABLED(PCA9632)
-  //#define PCA9632_NO_AUTO_INC       // PCA9632 implementation doesn't support auto-inc
-  //#define PCA9632_GRN         0x00  // Leds in different order
-  //#define PCA9632_RED         0x02
-  //#define PCA9632_BLU         0x04
-  //#define PCA9632_BUZZER            // Buzzer wired up to PCA9632
-  //#define PCA9632_BUZZER_CMD  2     // I2C command used for buzzer
-#endif
-
-/*
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
  * Needs BATTERY_STATUS_PIN defined
