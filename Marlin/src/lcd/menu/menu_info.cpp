@@ -190,7 +190,7 @@ void menu_info_power() {
     #if PIN_EXISTS(POWER_LOSS)
       STATIC_ITEM(MSG_INFO_POWER_LOSS ": Power", true);
     #else
-      STATIC_ITEM(MSG_INFO_POWER_LOSS ": Height", true);
+      STATIC_ITEM(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", true);
     #endif
   #endif
   #if HAS_BATTERY_STATUS
@@ -201,7 +201,9 @@ void menu_info_power() {
   #endif
   #if HAS_VOLTAGE_AVAILABLE
     #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-      if (powersupply_on)
+      if (!powersupply_on)
+        STATIC_ITEM_P(PSTR("Power Voltage: OFF"), true);
+      else
     #endif
       {
         char buffer[8];
@@ -210,10 +212,6 @@ void menu_info_power() {
         sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
         STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
       }
-    #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-      else
-        STATIC_ITEM_P(PSTR("Power Voltage: OFF"), true);
-    #endif
   #endif
   END_SCREEN();
 }
