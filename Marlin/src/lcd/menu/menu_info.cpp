@@ -190,7 +190,7 @@ void menu_info_power() {
     #if PIN_EXISTS(POWER_LOSS)
       STATIC_ITEM(MSG_INFO_POWER_LOSS ": Power", true);
     #else
-      STATIC_ITEM(MSG_INFO_POWER_LOSS ": Height", true);
+      STATIC_ITEM(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", true);
     #endif
   #endif
   #if HAS_BATTERY_STATUS
