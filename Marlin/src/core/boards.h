@@ -93,7 +93,8 @@
 #define BOARD_VORON                   1139  // VORON Design
 #define BOARD_TRONXY_V3_1_0           1140  // Tronxy TRONXY-V3-1.0
 #define BOARD_Z_BOLT_X_SERIES         1141  // Z-Bolt X Series
-#define BOARD_OVERLORD                1142  // Overlord/Overlord Pro
+#define BOARD_TT_OSCAR                1142  // TT OSCAR
+#define BOARD_OVERLORD                1143  // Overlord/Overlord Pro
 
 //
 // RAMBo and derivatives
