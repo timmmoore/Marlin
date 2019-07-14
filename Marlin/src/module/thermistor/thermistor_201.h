@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 // PT100 with LMV324 amp on Overlord v1.1 electronics
 //
