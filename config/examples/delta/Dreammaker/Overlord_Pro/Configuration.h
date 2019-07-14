@@ -140,7 +140,7 @@
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
-#define MACHINE_UUID "cbb82bbc-4e3c-4e6d-aad6-c1fa3fcedb14"
+//#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 // @section extruder
 
@@ -745,7 +745,7 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE TMC2208_STANDALONE       // Note modified from standard Overlord Pro which has DRV8825
+#define X_DRIVER_TYPE TMC2208_STANDALONE
 #define Y_DRIVER_TYPE TMC2208_STANDALONE
 #define Z_DRIVER_TYPE TMC2208_STANDALONE
 //#define X2_DRIVER_TYPE A4988
@@ -804,7 +804,7 @@
  */
 // variables to calculate steps
 #define XYZ_FULL_STEPS_PER_ROTATION 100
-#define XYZ_MICROSTEPS              16         // Modified from standard Overlord Pro which uses DRV8825 with 32 microsteps
+#define XYZ_MICROSTEPS              16
 #define XYZ_BELT_PITCH              2.03
 #define XYZ_PULLEY_TEETH            20
 // delta speeds must be the same on xyz
@@ -1180,7 +1180,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-#define FILAMENT_RUNOUT_SENSOR        // Not on Overlord by default
+//#define FILAMENT_RUNOUT_SENSOR        // Not on Overlord by default
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // Set to true to invert the logic of the sensor.
