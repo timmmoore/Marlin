@@ -201,7 +201,9 @@ void menu_info_power() {
   #endif
   #if HAS_VOLTAGE_AVAILABLE
     #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-      if (powersupply_on)
+      if (!powersupply_on)
+        STATIC_ITEM_P(PSTR("Power Voltage: OFF"), true);
+      else
     #endif
       {
         char buffer[8];
@@ -210,10 +212,6 @@ void menu_info_power() {
         sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
         STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
       }
-    #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-      else
-        STATIC_ITEM_P(PSTR("Power Voltage: OFF"), true);
-    #endif
   #endif
   END_SCREEN();
 }
