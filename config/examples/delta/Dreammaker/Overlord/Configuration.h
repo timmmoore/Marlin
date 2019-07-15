@@ -136,7 +136,7 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "Overlord Pro"
+#define CUSTOM_MACHINE_NAME "Overlord"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -468,7 +468,7 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-// Overlord Pro with new nozzle with integrated probe, update using M303
+// Overlord with new nozzle with integrated probe, update using M303
 #define DEFAULT_Kp 8.62
 #define DEFAULT_Ki 0.55
 #define DEFAULT_Kd 33.89
@@ -631,24 +631,24 @@
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS 70.0                         // (mm) Overlord Pro
+    #define DELTA_CALIBRATION_RADIUS DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)  // (mm) Overlord 70mm
     // Set the steprate for papertest probing
     #define PROBE_MANUALLY_STEP 0.05                              // (mm)
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS 75.0                             // (mm) Overlord Pro
+  #define DELTA_PRINTABLE_RADIUS 75.0                             // (mm) Overlord
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 206.0                                // (mm) Overlord Pro
+  #define DELTA_DIAGONAL_ROD 206.0                                // (mm) Overlord
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 186.14                                     // (mm) Overlord Pro - Update this value using G33 auto calibrate
+  #define DELTA_HEIGHT 186.14                                     // (mm) Overlord - Update this value using G33 auto calibrate
 
   #define DELTA_ENDSTOP_ADJ { -0.33, 0.0, -0.85 }                 // Update these values using G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 100.63                                     // (mm) Overlord Pro - Update this value using G33 auto calibrate
+  #define DELTA_RADIUS 100.63                                     // (mm) Overlord - Update this value using G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
@@ -875,7 +875,7 @@
  *
  * Enable this option for a probe connected to the Z Min endstop pin.
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN                          // Overlord Pro with Nozzle upgrade with integrated probe
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN                          // Overlord with Nozzle upgrade with integrated probe
 
 /**
  * Z_MIN_PROBE_PIN
@@ -986,7 +986,7 @@
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0.65 // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 10
+#define MIN_PROBE_EDGE 5
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 4000
@@ -1276,10 +1276,10 @@
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
-  //#define LEFT_PROBE_BED_POSITION MIN_PROBE_EDGE
-  //#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - (MIN_PROBE_EDGE))
-  //#define FRONT_PROBE_BED_POSITION MIN_PROBE_EDGE
-  //#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - (MIN_PROBE_EDGE))
+  #define LEFT_PROBE_BED_POSITION -(DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE))
+  #define RIGHT_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)
+  #define FRONT_PROBE_BED_POSITION -(DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE))
+  #define BACK_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
