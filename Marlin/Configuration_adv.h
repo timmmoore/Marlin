@@ -157,7 +157,7 @@
    * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
    * below 2.
    */
-  #if ENABLED(BED_HOTEND_ONE)
+  #if ENABLED(ALT_BED_HOTEND)
     #define WATCH_TEMP_PERIOD 40              // Seconds
   #else
     #define WATCH_TEMP_PERIOD 20              // Seconds
@@ -175,7 +175,7 @@
   /**
    * As described above, except for the bed (M140/M190/M303).
    */
-  #if ENABLED(BED_HOTEND_ONE)
+  #if ENABLED(ALT_BED_HOTEND)
     #define WATCH_BED_TEMP_PERIOD 100             // Seconds
   #else
     #define WATCH_BED_TEMP_PERIOD 60              // Seconds
