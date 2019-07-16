@@ -156,7 +156,7 @@ void menu_info_thermistors() {
     STATIC_ITEM(MSG_INFO_MAX_TEMP ": " STRINGIFY(HEATER_5_MAXTEMP), false);
   #endif
   #if WATCH_HOTENDS
-    STATIC_ITEM("Thermal Protect On", false, true);
+    STATIC_ITEM_P(PSTR(MSG_THERMAL_RUNAWAY_ON), false, true);
   #endif
 
   #if HAS_HEATED_BED
@@ -168,7 +168,7 @@ void menu_info_thermistors() {
     STATIC_ITEM(MSG_INFO_MAX_TEMP ": " STRINGIFY(BED_MAXTEMP), false);
   #endif
   #if WATCH_BED
-    STATIC_ITEM("Thermal Protect On", false, true);
+    STATIC_ITEM_P(PSTR(MSG_THERMAL_RUNAWAY_BED_ON), false, true);
   #endif
 
   #if HAS_HEATED_CHAMBER
@@ -180,7 +180,7 @@ void menu_info_thermistors() {
     STATIC_ITEM(MSG_INFO_MAX_TEMP ": " STRINGIFY(CHAMBER_MAXTEMP), false);
   #endif
   #if WATCH_CHAMBER
-    STATIC_ITEM("Thermal Protect On", false, true);
+    STATIC_ITEM_P(PSTR(MSG_THERMAL_RUNAWAY_CHAMBER_ON), false, true);
   #endif
   END_SCREEN();
 }
