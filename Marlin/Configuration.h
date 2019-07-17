@@ -388,7 +388,7 @@
  *  1010 : Pt1000 with 1k pullup (non standard)
  *   147 : Pt100 with 4k7 pullup
  *   110 : Pt100 with 1k pullup (non standard)
- *   201 : Pt100 with circuit in Overlord
+ *   201 : Pt100 with circuit in Overlord, similar to Ultimainboard V2.x
  *
  *  1000 : Custom - Specify parameters in Configuration_adv.h
  *
