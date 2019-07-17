@@ -2553,6 +2553,7 @@ void Temperature::isr() {
     #else
       #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
       #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _SLOW_PWM_V(V,NR,PWM,SRC) _SLOW_PWM(NR,PWM,SRC)
       #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
     #endif
 
