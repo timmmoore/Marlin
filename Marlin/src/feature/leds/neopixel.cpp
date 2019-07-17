@@ -53,20 +53,20 @@ void set_neopixel_color(const uint32_t color) {
     #endif
     pixels.setPixelColor(i, color);
   }
-  pixels.show();
+  NEOPIXELSHOW;
 }
 
 void set_neopixel_color_startup(const uint32_t color) {
   for (uint16_t i = 0; i < pixels.numPixels(); ++i)
     pixels.setPixelColor(i, color);
-  pixels.show();
+  NEOPIXELSHOW;
 }
 
 void setup_neopixel() {
   SET_OUTPUT(NEOPIXEL_PIN);
   pixels.setBrightness(NEOPIXEL_BRIGHTNESS); // 0 - 255 range
   pixels.begin();
-  pixels.show(); // initialize to all off
+  NEOPIXELSHOW; // initialize to all off
 
   #if ENABLED(NEOPIXEL_STARTUP_TEST)
     safe_delay(1000);
@@ -99,7 +99,7 @@ bool neopixel_set_led_color(const uint8_t r, const uint8_t g, const uint8_t b, c
   #else
     static uint16_t nextLed = 0;
     pixels.setPixelColor(nextLed, color);
-    pixels.show();
+    NEOPIXELSHOW;
     if (++nextLed >= pixels.numPixels()) nextLed = 0;
     return true;
   #endif
