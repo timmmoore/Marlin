@@ -2542,14 +2542,27 @@ void Temperature::isr() {
      *
      * For relay-driven heaters
      */
-    #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
-    #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
-    #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #if ENABLED(ALT_BED_HOTEND)
+      #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
+      #define _SLOW_SET_E(NR,PWM,V) do{ if (!hotend_current && PWM.ready(V)) { \
+        WRITE_HEATER_BED(LOW); hotend_last = true; WRITE_HEATER_##NR(V); } else WRITE_HEATER_##NR(LOW); }while(0)
+      #define _SLOW_SET_BED(NR,PWM,V) do{ if (!hotend_last && PWM.ready(V)) WRITE_HEATER_##NR(V); else WRITE_HEATER_##NR(LOW); }while(0)
+      #define _SLOW_PWM_V(V,NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET_##V(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _SLOW_PWM(NR,PWM,SRC) _SLOW_PWM_V(NR,NR,PWM,SRC)
+      #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #else
+      #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
+      #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #endif
 
     if (slow_pwm_count == 0) {
 
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+      #endif
       #if HOTENDS
-        #define _SLOW_PWM_E(N) _SLOW_PWM(N, soft_pwm_hotend[N], temp_hotend[N])
+        #define _SLOW_PWM_E(N) _SLOW_PWM_V(E, N, soft_pwm_hotend[N], temp_hotend[N])
         _SLOW_PWM_E(0);
         #if HOTENDS > 1
           _SLOW_PWM_E(1);
