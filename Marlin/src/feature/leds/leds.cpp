@@ -100,7 +100,7 @@ void LEDLights::set_color(const LEDColor &incol
       set_neopixel_color(neocolor);
     else {
       pixels.setPixelColor(nextLed, neocolor);
-      pixels.show();
+      NEOPIXELSHOW;
       if (++nextLed >= pixels.numPixels()) nextLed = 0;
       return;
     }
