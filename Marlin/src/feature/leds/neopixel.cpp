@@ -39,6 +39,16 @@ Adafruit_NeoPixel pixels(NEOPIXEL_PIXELS, NEOPIXEL_PIN, NEOPIXEL_TYPE + NEO_KHZ8
   Adafruit_NeoPixel pixels2(NEOPIXEL_PIXELS, NEOPIXEL2_PIN, NEOPIXEL2_TYPE + NEO_KHZ800);
 #endif
 
+#if PIN_EXISTS(NEOPIXEL2)
+  #if HAS_TWO_NEOPIXEL
+    #define NEOPIXELSHOW pixels.show(); pixels2.show()
+  #else
+    #define NEOPIXELSHOW pixels.show(); pixels.setPin(NEOPIXEL2_PIN); pixels.show(); pixels.setPin(NEOPIXEL_PIN)
+  #endif
+#else
+  #define NEOPIXELSHOW pixels.show()
+#endif
+
 #ifdef NEOPIXEL_BKGD_LED_INDEX
   void set_neopixel_color_background() {
     uint8_t background_color[4] = NEOPIXEL_BKGD_COLOR;
