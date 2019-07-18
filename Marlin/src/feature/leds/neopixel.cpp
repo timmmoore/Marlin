@@ -106,24 +106,29 @@ void setup_neopixel() {
   #endif
 }
 
-#if 0
-bool neopixel_set_led_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t w, const uint8_t p) {
-  const uint32_t color = pixels.Color(r, g, b, w);
+bool neopixel_set_led_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t w, const uint8_t p, bool isSequence) {
+  const uint32_t neocolor = (r == 0) && (g == 0) && (b==0) && (w == 255) ? pixels.Color(NEO_WHITE) : pixels.Color(r, g, b, w);
+  static uint16_t nextLed = 0;
+
+  #ifdef NEOPIXEL_BKGD_LED_INDEX
+    if (NEOPIXEL_BKGD_LED_INDEX == nextLed) { nextLed++; return true; }
+  #endif
   pixels.setBrightness(p);
-  #if DISABLED(NEOPIXEL_IS_SEQUENTIAL)
-    set_neopixel_color(color);
-    return false;
-  #else
-    static uint16_t nextLed = 0;
-    pixels.setPixelColor(nextLed, color);
+  #if HAS_TWO_NEOPIXEL
+    pixels2.setBrightness(p);
+  #endif
+  if (!isSequence)
+    set_neopixel_color(neocolor);
+  else {
+    pixels.setPixelColor(nextLed, neocolor);
     #if HAS_TWO_NEOPIXEL
-      pixels2.setPixelColor(nextLed, color);
+      pixels2.setPixelColor(nextLed, neocolor);
     #endif
     NEOPIXELSHOW;
     if (++nextLed >= pixels.numPixels()) nextLed = 0;
     return true;
-  #endif
+  }
+  return false;
 }
-#endif
 
 #endif // NEOPIXEL_LED

@@ -86,31 +86,7 @@ void LEDLights::set_color(const LEDColor &incol
 ) {
 
   #if ENABLED(NEOPIXEL_LED)
-
-    const uint32_t neocolor = LEDColorWhite() == incol
-                            ? pixels.Color(NEO_WHITE)
-                            : pixels.Color(incol.r, incol.g, incol.b, incol.w);
-    static uint16_t nextLed = 0;
-
-    #ifdef NEOPIXEL_BKGD_LED_INDEX
-      if (NEOPIXEL_BKGD_LED_INDEX == nextLed) { nextLed++; return; }
-    #endif
-    pixels.setBrightness(incol.i);
-    #if HAS_TWO_NEOPIXEL
-      pixels2.setBrightness(incol.i);
-    #endif
-    if (!isSequence)
-      set_neopixel_color(neocolor);
-    else {
-      pixels.setPixelColor(nextLed, neocolor);
-      #if HAS_TWO_NEOPIXEL
-        pixels2.setPixelColor(nextLed, neocolor);
-      #endif
-      NEOPIXELSHOW;
-      if (++nextLed >= pixels.numPixels()) nextLed = 0;
-      return;
-    }
-
+    if(neopixel_set_led_color(incol.r, incol.g, incol.g, incol.w, incol.i, isSequence)) return;
   #endif
 
   #if ENABLED(BLINKM)
