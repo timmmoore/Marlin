@@ -437,13 +437,13 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 245            // lower max temp since updated nozzle is a E3D V6 lite clone
-#define HEATER_1_MAXTEMP 245
+#define HEATER_0_MAXTEMP 250            // lower max temp since updated nozzle is a E3D V6 lite clone
+#define HEATER_1_MAXTEMP 250
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
 #define HEATER_4_MAXTEMP 275
 #define HEATER_5_MAXTEMP 275
-#define BED_MAXTEMP      115
+#define BED_MAXTEMP      100
 
 //===========================================================================
 //============================= PID Settings ================================
