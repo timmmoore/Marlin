@@ -79,6 +79,10 @@ void setup_neopixel() {
   SET_OUTPUT(NEOPIXEL_PIN);
   pixels.setBrightness(NEOPIXEL_BRIGHTNESS); // 0 - 255 range
   pixels.begin();
+  #if HAS_TWO_NEOPIXEL
+    pixels2.setBrightness(NEOPIXEL_BRIGHTNESS); // 0 - 255 range
+    pixels2.begin();
+  #endif
   NEOPIXELSHOW; // initialize to all off
 
   #if ENABLED(NEOPIXEL_STARTUP_TEST)
