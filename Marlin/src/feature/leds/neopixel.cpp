@@ -35,6 +35,19 @@
 #endif
 
 Adafruit_NeoPixel pixels(NEOPIXEL_PIXELS, NEOPIXEL_PIN, NEOPIXEL_TYPE + NEO_KHZ800);
+#if HAS_TWO_NEOPIXEL
+  Adafruit_NeoPixel pixels2(NEOPIXEL_PIXELS, NEOPIXEL2_PIN, NEOPIXEL2_TYPE + NEO_KHZ800);
+#endif
+
+#if PIN_EXISTS(NEOPIXEL2)
+  #if HAS_TWO_NEOPIXEL
+    #define NEOPIXELSHOW pixels.show(); pixels2.show()
+  #else
+    #define NEOPIXELSHOW pixels.show(); pixels.setPin(NEOPIXEL2_PIN); pixels.show(); pixels.setPin(NEOPIXEL_PIN)
+  #endif
+#else
+  #define NEOPIXELSHOW pixels.show()
+#endif
 
 #ifdef NEOPIXEL_BKGD_LED_INDEX
   void set_neopixel_color_background() {
@@ -89,21 +102,31 @@ void setup_neopixel() {
   #endif
 }
 
-#if 0
-bool neopixel_set_led_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t w, const uint8_t p) {
-  const uint32_t color = pixels.Color(r, g, b, w);
+bool neopixel_set_led_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t w, const uint8_t p, bool isSequence) {
+  const uint32_t neocolor = (r == 0) && (g == 0) && (b==0) && (w == 255) ? pixels.Color(NEO_WHITE) : pixels.Color(r, g, b, w);
+  static uint16_t nextLed = 0;
+
   pixels.setBrightness(p);
-  #if DISABLED(NEOPIXEL_IS_SEQUENTIAL)
-    set_neopixel_color(color);
-    return false;
-  #else
-    static uint16_t nextLed = 0;
-    pixels.setPixelColor(nextLed, color);
-    NEOPIXELSHOW;
+  #if HAS_TWO_NEOPIXEL
+    pixels2.setBrightness(p);
+  #endif
+  if (!isSequence)
+    set_neopixel_color(neocolor);
+  else {
+    #ifdef NEOPIXEL_BKGD_LED_INDEX
+      if (NEOPIXEL_BKGD_LED_INDEX != nextLed)
+    #endif
+    {
+      pixels.setPixelColor(nextLed, neocolor);
+      #if HAS_TWO_NEOPIXEL
+        pixels2.setPixelColor(nextLed, neocolor);
+      #endif
+      NEOPIXELSHOW;
+    }
     if (++nextLed >= pixels.numPixels()) nextLed = 0;
     return true;
-  #endif
+  }
+  return false;
 }
-#endif
 
 #endif // NEOPIXEL_LED
