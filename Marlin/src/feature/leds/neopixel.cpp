@@ -30,6 +30,8 @@
 
 #include "neopixel.h"
 
+#define HAS_TWO_NEOPIXEL  defined(NEOPIXEL2_TYPE) && (NEOPIXEL2_TYPE != NEOPIXEL_TYPE)
+
 #if ENABLED(NEOPIXEL_STARTUP_TEST)
   #include "../../core/utility.h"
 #endif
