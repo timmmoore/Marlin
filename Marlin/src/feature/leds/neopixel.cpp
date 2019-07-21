@@ -112,8 +112,8 @@ bool Marlin_NeoPixel::set_led_color(const uint8_t r, const uint8_t g, const uint
     show();
     if (++nextLed >= pixels()) nextLed = 0;
     return true;
-  }
-  return false;
+  #endif
 }
+#endif
 
 #endif // NEOPIXEL_LED
