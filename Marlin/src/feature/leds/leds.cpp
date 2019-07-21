@@ -39,7 +39,7 @@
 #endif
 
 #if ENABLED(PCA9533)
-  #include "SailfishRGB_LED.h"
+  #include <SailfishRGB_LED.h>
 #endif
 
 #if ENABLED(LED_COLOR_PRESETS)
@@ -69,7 +69,7 @@ void LEDLights::setup() {
     #endif
   #endif
   #if ENABLED(NEOPIXEL_LED)
-    setup_neopixel();
+    neo.init();
   #endif
   #if ENABLED(PCA9533)
     RGBinit();
@@ -86,7 +86,30 @@ void LEDLights::set_color(const LEDColor &incol
 ) {
 
   #if ENABLED(NEOPIXEL_LED)
-    if(neopixel_set_led_color(incol.r, incol.g, incol.g, incol.w, incol.i, isSequence)) return;
+
+    const uint32_t neocolor = LEDColorWhite() == incol
+                            ? neo.Color(NEO_WHITE)
+                            : neo.Color(incol.r, incol.g, incol.b, incol.w);
+    static uint16_t nextLed = 0;
+
+    #ifdef NEOPIXEL_BKGD_LED_INDEX
+      if (NEOPIXEL_BKGD_LED_INDEX == nextLed) {
+        if (++nextLed >= neo.pixels()) nextLed = 0;
+        return;
+      }
+    #endif
+
+    neo.set_brightness(incol.i);
+
+    if (isSequence) {
+      neo.set_pixel_color(nextLed, neocolor);
+      neo.show();
+      if (++nextLed >= neo.pixels()) nextLed = 0;
+      return;
+    }
+
+    neo.set_color(neocolor);
+
   #endif
 
   #if ENABLED(BLINKM)
