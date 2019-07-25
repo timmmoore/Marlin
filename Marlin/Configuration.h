@@ -526,8 +526,7 @@
  *
  * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
  * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
- * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
- * If both are on at the same time, then there is no power available for anything else
+ * If both the hotend and bed are on at the same time, then there is no power available for anything else
  * and power supply will shutdown if steppers are moving while both hotend and bed are on
  *  This will trigger an alert - "Input Voltage Too low"
  * Recommend upgrade PSU
