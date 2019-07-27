@@ -211,6 +211,9 @@
   #define PCA9632_RED         0x02
   #define PCA9632_BUZZER
   #define PCA9632_BUZZER_DATA { 0x09, 0x02 }
+
+  #define STD_ENCODER_PULSES_PER_STEP 1                     // Overlord uses buttons rather than an encoder
+  #define STD_ENCODER_STEPS_PER_MENU_ITEM 1
 #endif
 
 // 128x64 I2C OLED LCDs - SSD1306/SSD1309/SH1106
