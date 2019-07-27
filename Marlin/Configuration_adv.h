@@ -2209,7 +2209,7 @@
  *
  * Overlord Pro has internal rechargable battery
  */
-#define BATTERY_STATUS_AVAILABLE
+//#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
   #define BATTERY_STATUS_PIN    -1
   #define BATTERY_STATUS_CHARGED  LOW
