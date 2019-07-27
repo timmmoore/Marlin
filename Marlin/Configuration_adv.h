@@ -2221,7 +2221,7 @@
  *  E.g. 12V: Divider upper 180K, Divider lower 91K
  *  E.g. 24V: Divider upper 240K, Divider lower 47K
  */
-#define INPUT_VOLTAGE_AVAILABLE
+//#define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
   #define DIVIDER_UPPER           180.0f  // total resistance of divider network
