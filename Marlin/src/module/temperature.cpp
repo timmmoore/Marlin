@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -124,6 +124,13 @@ hotend_info_t Temperature::temp_hotend[HOTENDS
 
 #if ENABLED(AUTO_POWER_CHAMBER_FAN)
   uint8_t Temperature::chamberfan_speed; // = 0
+#endif
+
+#if HAS_VOLTAGE_AVAILABLE
+  uint16_t Temperature::voltage_level;
+  enum voltage_state_t { power_ok, power_timing_out, power_lost };
+  static voltage_state_t voltage_out_of_power = power_ok;
+  static millis_t voltage_millis;
 #endif
 
 #if FAN_COUNT > 0
@@ -1687,6 +1694,9 @@ void Temperature::init() {
   #if HAS_ADC_BUTTONS
     HAL_ANALOG_SELECT(ADC_KEYPAD_PIN);
   #endif
+  #if HAS_VOLTAGE_AVAILABLE
+    HAL_ANALOG_SELECT(VOLTAGE_DETECTION_PIN);
+  #endif
 
   HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
   ENABLE_TEMPERATURE_INTERRUPT();
@@ -1873,10 +1883,12 @@ void Temperature::init() {
       if (heater_id == H_CHAMBER) SERIAL_ECHOPGM("chamber");
       if (heater_id < 0) SERIAL_ECHOPGM("bed"); else SERIAL_ECHO(heater_id);
       SERIAL_ECHOPAIR(" ;  State:", sm.state, " ;  Timer:", sm.timer, " ;  Temperature:", current, " ;  Target Temp:", target);
-      if (heater_id >= 0)
-        SERIAL_ECHOPAIR(" ;  Idle Timeout:", hotend_idle[heater_id].timed_out);
-      else
-        SERIAL_ECHOPAIR(" ;  Idle Timeout:", bed_idle.timed_out);
+      #if HEATER_IDLE_HANDLER
+        if (heater_id >= 0)
+          SERIAL_ECHOPAIR(" ;  Idle Timeout:", hotend_idle[heater_id].timed_out);
+        else
+          SERIAL_ECHOPAIR(" ;  Idle Timeout:", bed_idle.timed_out);
+      #endif
       SERIAL_EOL();
     //*/
 
@@ -2359,6 +2371,11 @@ void Temperature::isr() {
   // avoid multiple loads of pwm_count
   uint8_t pwm_count_tmp = pwm_count;
 
+  #if ENABLED(ALT_BED_HOTEND)
+    static bool hotend_last = false;
+    bool hotend_current = hotend_last;
+  #endif
+
   #if HAS_ADC_BUTTONS
     static unsigned int raw_ADCKey_value = 0;
     static bool ADCKey_pressed = false;
@@ -2392,11 +2409,35 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-      #define _PWM_MOD(N,S,T) do{                           \
-        const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-        WRITE_HEATER_##N(on);                               \
-      }while(0)
-      #define _PWM_MOD_E(N) _PWM_MOD(N,soft_pwm_hotend[N],temp_hotend[N])
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+        #define _PWM_MOD_V_CHAMBER(V,N,S,T) do{                 \
+          bool on = S.add(pwm_mask, T.soft_pwm_amount);         \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+        #define _PWM_MOD_V_BED(V,N,S,T) do{                     \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(!hotend_last && on) WRITE_HEATER_##N(on);          \
+          else WRITE_HEATER_##N(LOW);                           \
+        }while(0)
+        #define _PWM_MOD_V_E(V,N,S,T) do{                       \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(on && !hotend_current) {                           \
+            WRITE_HEATER_BED(LOW);                              \
+            hotend_last = true;                                 \
+            WRITE_HEATER_##N(on);                               \
+          }                                                     \
+          else WRITE_HEATER_##N(LOW);                           \
+        }while(0)
+        #define _PWM_MOD_V(V,N,S,T) _PWM_MOD_V_##V(V,N,S,T)
+      #else
+        #define _PWM_MOD_V(V,N,S,T) do{                         \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+      #endif
+      #define _PWM_MOD(N,S,T) _PWM_MOD_V(N,N,S,T)
+      #define _PWM_MOD_E(N) _PWM_MOD_V(E,N,soft_pwm_hotend[N],temp_hotend[N])
       _PWM_MOD_E(0);
       #if HOTENDS > 1
         _PWM_MOD_E(1);
@@ -2499,14 +2540,28 @@ void Temperature::isr() {
      *
      * For relay-driven heaters
      */
-    #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
-    #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
-    #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #if ENABLED(ALT_BED_HOTEND)
+      #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
+      #define _SLOW_SET_E(NR,PWM,V) do{ if (!hotend_current && PWM.ready(V)) { \
+        WRITE_HEATER_BED(LOW); hotend_last = true; WRITE_HEATER_##NR(V); } else WRITE_HEATER_##NR(LOW); }while(0)
+      #define _SLOW_SET_BED(NR,PWM,V) do{ if (!hotend_last && PWM.ready(V)) WRITE_HEATER_##NR(V); else WRITE_HEATER_##NR(LOW); }while(0)
+      #define _SLOW_PWM_V(V,NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET_##V(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _SLOW_PWM(NR,PWM,SRC) _SLOW_PWM_V(NR,NR,PWM,SRC)
+      #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #else
+      #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
+      #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _SLOW_PWM_V(V,NR,PWM,SRC) _SLOW_PWM(NR,PWM,SRC)
+      #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #endif
 
     if (slow_pwm_count == 0) {
 
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+      #endif
       #if HOTENDS
-        #define _SLOW_PWM_E(N) _SLOW_PWM(N, soft_pwm_hotend[N], temp_hotend[N])
+        #define _SLOW_PWM_E(N) _SLOW_PWM_V(E, N, soft_pwm_hotend[N], temp_hotend[N])
         _SLOW_PWM_E(0);
         #if HOTENDS > 1
           _SLOW_PWM_E(1);
@@ -2781,7 +2836,47 @@ void Temperature::isr() {
         break;
     #endif // ADC_KEYPAD
 
-    case StartupDelay: break;
+    #if HAS_VOLTAGE_AVAILABLE
+      case Prepare_VOLTAGE_DETECTION:
+        HAL_START_ADC(VOLTAGE_DETECTION_PIN);
+        break;
+      case Measure_VOLTAGE_DETECTION:
+        if (!HAL_ADC_READY())
+          next_sensor_state = adc_sensor_state; // redo this state
+        else
+          voltage_level = HAL_READ_ADC();
+          if(
+            #if DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
+              powersupply_on &&
+            #endif
+          (voltage_level < VOLTAGE_MINIMUM)) {
+            // Input voltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
+            if(voltage_out_of_power == power_ok) {
+              voltage_out_of_power = power_timing_out;
+              voltage_millis = millis() + VOLTAGE_LEVEL_TIMEOUT;
+            }
+            else if(voltage_out_of_power == power_timing_out) {
+              if(ELAPSED(millis(), voltage_millis)) {
+                voltage_out_of_power = power_lost;
+                SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
+                #if DISABLED(VOLTAGE_WARNING)
+                  kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+                #endif
+              }
+            }
+          }
+          else
+          {
+            if(voltage_out_of_power == power_lost) {
+              ui.reset_status();
+            }
+            voltage_out_of_power = power_ok;
+          }
+        break;
+    #endif
+
+    case StartupDelay:
+      break;
 
   } // switch(adc_sensor_state)
 
