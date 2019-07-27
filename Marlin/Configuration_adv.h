@@ -922,7 +922,7 @@
    * an option on the LCD screen to continue the print from the last-known
    * point in the file.
    */
-  //#define POWER_LOSS_RECOVERY
+  #define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
     #define POWER_LOSS_PIN            2 // Pin to detect power loss
     #define POWER_LOSS_STATE        LOW // State of pin indicating power loss
