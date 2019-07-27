@@ -2814,45 +2814,6 @@ void Temperature::isr() {
       break;
     #endif
 
-    #if HAS_VOLTAGE_AVAILABLE
-      case Prepare_VOLTAGE_DETECTION:
-        HAL_START_ADC(VOLTAGE_DETECTION_PIN);
-        break;
-      case Measure_VOLTAGE_DETECTION:
-        if (!HAL_ADC_READY())
-          next_sensor_state = adc_sensor_state; // redo this state
-        else
-          voltage_level = HAL_READ_ADC();
-          if(
-            #if DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-              powersupply_on &&
-            #endif
-          (voltage_level < VOLTAGE_MINIMUM)) {
-            // Input voltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
-            if(voltage_out_of_power == power_ok) {
-              voltage_out_of_power = power_timing_out;
-              voltage_millis = millis() + VOLTAGE_LEVEL_TIMEOUT;
-            }
-            else if(voltage_out_of_power == power_timing_out) {
-              if(ELAPSED(millis(), voltage_millis)) {
-                voltage_out_of_power = power_lost;
-                SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
-                #if DISABLED(VOLTAGE_WARNING)
-                  kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
-                #endif
-              }
-            }
-          }
-          else
-          {
-            if(voltage_out_of_power == power_lost) {
-              ui.reset_status();
-            }
-            voltage_out_of_power = power_ok;
-          }
-        break;
-    #endif
-
     #if HAS_ADC_BUTTONS
       case Prepare_ADC_KEY:
         HAL_START_ADC(ADC_KEYPAD_PIN);
