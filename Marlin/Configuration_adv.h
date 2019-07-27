@@ -2206,31 +2206,32 @@
 /*
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
- * Needs BATTERY_STATUS_PIN defined
+ *
+ * Overlord Pro has internal rechargable battery
  */
-//#define BATTERY_STATUS_AVAILABLE
+#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
-  #define BATTERY_STATUS_PIN      -1    // If not in your pins .h file
+  #define BATTERY_STATUS_PIN    -1
   #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
 /*
- * An ADC measuring the input voltage
- * Assumes a resistor divider network to lower voltage to something the ADC can handle
+ * An ADC measuring input voltage is, display in Board info menu page
+ * Assumes a resistor divider network to lower voltage to something ADC can handle
  *  E.g. 12V: Divider upper 180K, Divider lower 91K
  *  E.g. 24V: Divider upper 240K, Divider lower 47K
  */
 #define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
-  #define VOLTAGE_DETECTION_PIN 3       // If not in your pins .h file
-  #define DIVIDER_UPPER         180.0f  // upper resistance of divider network
-  #define DIVIDER_LOWER         91.0f   // lower resistance of divider network
-  #define ADC_VREF              5.0f    // ADC AREF
-  #define ADC_RESOLUTION        1024.0f
-  #define DIVIDER_RATIO         (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
-  #define VOLTAGE_MINIMUM       625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
-  #define VOLTAGE_LEVEL_TIMEOUT 2000UL  // and for this timeout
-  //#define VOLTAGE_ALWAYS_AVAILABLE      // input voltage always available, even when PSU off using M81
+  #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
+  #define DIVIDER_UPPER           180.0f  // total resistance of divider network
+  #define DIVIDER_LOWER           91.0f   // lower resistance of divider network
+  #define DIVIDER_RATIO           (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
+  #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
+  #define ADC_RESOLUTION          1024
+  #define VOLTAGE_MINIMUM         625     // Alert if input voltage ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this timeout
+  #define VOLTAGE_ALWAYS_AVAILABLE        // input voltage always available
   //#define VOLTAGE_WARNING               // input voltage low warning only
 #endif
 
