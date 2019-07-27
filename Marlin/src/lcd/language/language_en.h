@@ -1527,14 +1527,14 @@
 #endif
 
 #ifndef MSG_INPUT_VOLTAGE_TOO_LOW
-  #define MSG_INPUT_VOLTAGE_TOO_LOW _UxGT("Input Voltage Too low")
+  #define MSG_INPUT_VOLTAGE_TOO_LOW           _UxGT("Input Voltage Too low")
 #endif
 #ifndef MSG_THERMAL_RUNAWAY_ON
-  #define MSG_THERMAL_RUNAWAY_ON              _UxGT("Thermal Runaway: On")
+  #define MSG_THERMAL_RUNAWAY_ON              _UxGT("Tx Runaway: On")
 #endif
 #ifndef MSG_THERMAL_RUNAWAY_BED_ON
-  #define MSG_THERMAL_RUNAWAY_BED_ON          _UxGT("B Thermal Runaway: On")
+  #define MSG_THERMAL_RUNAWAY_BED_ON          _UxGT("TBed Runaway: On")
 #endif
 #ifndef MSG_THERMAL_RUNAWAY_CHAMBER_ON
-  #define MSG_THERMAL_RUNAWAY_CHAMBER_ON      _UxGT("C Thermal Runaway: On")
+  #define MSG_THERMAL_RUNAWAY_CHAMBER_ON      _UxGT("TChamber Runaway: On")
 #endif
