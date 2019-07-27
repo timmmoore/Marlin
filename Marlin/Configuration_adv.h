@@ -2217,7 +2217,7 @@
  *
  * Overlord Pro has internal rechargable battery
  */
-#define BATTERY_STATUS_AVAILABLE
+//#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
   #define BATTERY_STATUS_PIN    -1
   #define BATTERY_STATUS_CHARGED  LOW
@@ -2229,7 +2229,7 @@
  *  E.g. 12V: Divider upper 180K, Divider lower 91K
  *  E.g. 24V: Divider upper 240K, Divider lower 47K
  */
-#define INPUT_VOLTAGE_AVAILABLE
+//#define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
   #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
   #define DIVIDER_UPPER           239.16f // total resistance of divider network
