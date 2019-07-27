@@ -2213,8 +2213,6 @@
 /*
  * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if charged will show in menu info
- *
- * Overlord Pro has internal rechargable battery
  */
 //#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
