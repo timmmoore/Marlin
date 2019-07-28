@@ -519,6 +519,7 @@
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+//#define ALT_BED_HOTEND
 
 #if ENABLED(PIDTEMPBED)
 
