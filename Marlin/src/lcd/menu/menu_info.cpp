@@ -199,7 +199,7 @@ void menu_info_power() {
   STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
   #if ENABLED(POWER_LOSS_RECOVERY)
     #if PIN_EXISTS(POWER_LOSS)
-      STATIC_ITEM(MSG_INFO_POWER_LOSS ": Power", true);
+      STATIC_ITEM(MSG_INFO_POWER_LOSS " Pin: " STRINGIFY(POWER_LOSS_PIN), true);
     #else
       STATIC_ITEM(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", true);
     #endif
