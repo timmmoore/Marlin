@@ -273,6 +273,7 @@ void menu_info_power() {
 void menu_info() {
   START_MENU();
   MENU_BACK(MSG_MAIN);
+
   #if ENABLED(LCD_PRINTER_INFO_IS_BOOTSCREEN)
     MENU_ITEM(submenu, MSG_INFO_PRINTER_MENU, (
       #if ENABLED(SHOW_CUSTOM_BOOTSCREEN)
