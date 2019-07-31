@@ -29,7 +29,6 @@
 #if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU)
 
 #include "menu.h"
-#include "../../module/temperature.h"
 
 #if HAS_GAMES
   #include "game/game.h"
@@ -190,6 +189,9 @@ void menu_info_board() {
   END_SCREEN();
 }
 
+#if HAS_VOLTAGE_AVAILABLE
+  #include "../../module/temperature.h"
+#endif
 //
 // About Printer > Power Info
 //
