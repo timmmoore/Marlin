@@ -1887,6 +1887,11 @@
 #define OVERLORD_OLED
 
 //
+// Overlord OLED display + buttons + LEDs + buzzer
+//
+//#define OVERLORD_OLED
+
+//
 // Generic 16x2, 16x4, 20x2, or 20x4 character-based LCD.
 //
 //#define ULTRA_LCD
