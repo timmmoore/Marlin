@@ -131,6 +131,10 @@ enum ADCSensorState : char {
     Prepare_ADC_KEY,
     Measure_ADC_KEY,
   #endif
+  #if HAS_VOLTAGE_AVAILABLE
+    Prepare_VOLTAGE_DETECTION,
+    Measure_VOLTAGE_DETECTION,
+  #endif
   SensorsReady, // Temperatures ready. Delay the next round of readings to let ADC pins settle.
   StartupDelay  // Startup, delay initial temp reading a tiny bit so the hardware can settle
 };
@@ -289,6 +293,10 @@ class Temperature {
     #if ENABLED(FAN_SOFT_PWM)
       static uint8_t soft_pwm_amount_fan[FAN_COUNT],
                      soft_pwm_count_fan[FAN_COUNT];
+    #endif
+
+    #if HAS_VOLTAGE_AVAILABLE
+      static uint16_t voltage_level;
     #endif
 
     #if ENABLED(PREVENT_COLD_EXTRUSION)

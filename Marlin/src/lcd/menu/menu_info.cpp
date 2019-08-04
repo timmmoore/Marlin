@@ -169,6 +169,19 @@ void menu_info_board() {
   STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
   STATIC_ITEM(MSG_INFO_PROTOCOL ": " PROTOCOL_VERSION, true);    // Protocol: 1.0
   STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
+  #if HAS_VOLTAGE_AVAILABLE
+    #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
+      if (!powersupply_on)
+        STATIC_ITEM("Power Voltage: OFF", true);
+      else
+    #endif
+      {
+        char buffer[8];
+        uint16_t volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
+        sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
+        STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
+      }
+  #endif
   END_SCREEN();
 }
 

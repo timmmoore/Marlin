@@ -126,6 +126,13 @@ hotend_info_t Temperature::temp_hotend[HOTENDS
   uint8_t Temperature::chamberfan_speed; // = 0
 #endif
 
+#if HAS_VOLTAGE_AVAILABLE
+  uint16_t Temperature::voltage_level;
+  enum voltage_state_t { power_ok, power_timing_out, power_lost };
+  static voltage_state_t voltage_out_of_power = power_ok;
+  static millis_t voltage_millis;
+#endif
+
 #if FAN_COUNT > 0
 
   uint8_t Temperature::fan_speed[FAN_COUNT]; // = { 0 }
@@ -1717,6 +1724,9 @@ void Temperature::init() {
   #if HAS_ADC_BUTTONS
     HAL_ANALOG_SELECT(ADC_KEYPAD_PIN);
   #endif
+  #if HAS_VOLTAGE_AVAILABLE
+    HAL_ANALOG_SELECT(VOLTAGE_DETECTION_PIN);
+  #endif
 
   HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
   ENABLE_TEMPERATURE_INTERRUPT();
@@ -2807,6 +2817,45 @@ void Temperature::isr() {
         if (ADCKey_count == 16) ADCKey_pressed = true;
         break;
     #endif // ADC_KEYPAD
+
+    #if HAS_VOLTAGE_AVAILABLE
+      case Prepare_VOLTAGE_DETECTION:
+        HAL_START_ADC(VOLTAGE_DETECTION_PIN);
+        break;
+      case Measure_VOLTAGE_DETECTION:
+        if (!HAL_ADC_READY())
+          next_sensor_state = adc_sensor_state; // redo this state
+        else
+          voltage_level = HAL_READ_ADC();
+          if(
+            #if DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
+              powersupply_on &&
+            #endif
+          (voltage_level < VOLTAGE_MINIMUM)) {
+            // Input voltage needs to be under VOLTAGE_MINIMUM for VOLTAGE_LEVEL_TIMEOUT before alerting
+            if(voltage_out_of_power == power_ok) {
+              voltage_out_of_power = power_timing_out;
+              voltage_millis = millis() + VOLTAGE_LEVEL_TIMEOUT;
+            }
+            else if(voltage_out_of_power == power_timing_out) {
+              if(ELAPSED(millis(), voltage_millis)) {
+                voltage_out_of_power = power_lost;
+                SERIAL_ERROR_MSG(MSG_INPUT_VOLTAGE_TOO_LOW);
+                #if DISABLED(VOLTAGE_WARNING)
+                  kill(PSTR(MSG_INPUT_VOLTAGE_TOO_LOW));
+                #endif
+              }
+            }
+          }
+          else
+          {
+            if(voltage_out_of_power == power_lost) {
+              ui.reset_status();
+            }
+            voltage_out_of_power = power_ok;
+          }
+        break;
+    #endif
 
     case StartupDelay: break;
 
