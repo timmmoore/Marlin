@@ -2904,8 +2904,7 @@ void Temperature::isr() {
         break;
     #endif
 
-    case StartupDelay:
-      break;
+    case StartupDelay: break;
 
   } // switch(adc_sensor_state)
 
