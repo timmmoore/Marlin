@@ -49,3 +49,7 @@
 #ifndef MSG_INFO_POWER_LOSS
   #define MSG_INFO_POWER_LOSS                 _UxGT("Power Loss")
 #endif
+
+#ifndef MSG_INFO_POWER_VOLT
+  #define MSG_INFO_POWER_VOLT                 _UxGT("Power Voltage: ")
+#endif

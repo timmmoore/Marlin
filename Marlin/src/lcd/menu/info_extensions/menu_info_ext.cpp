@@ -61,14 +61,14 @@ namespace ExtMenuInfo {
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_ITEM("Power Voltage: OFF", true);
+          STATIC_ITEM(MSG_INFO_POWER_VOLT "OFF", true);
         else
       #endif
         {
           char buffer[8];
           uint16_t volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
           sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
-          STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
+          STATIC_ITEM_P(PSTR(MSG_INFO_POWER_VOLT), false, false, buffer);
         }
     #endif
     END_SCREEN();
