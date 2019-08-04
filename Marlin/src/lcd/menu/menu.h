@@ -412,7 +412,7 @@ void _lcd_draw_homing();
 #endif
 
 #if ENABLED(HAS_MENU_INFO_EXTENSIONS)
-  void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr);
-#else
-  #define menu_info_ext_add(S, M, T, L)
+  namespace ExtMenuInfo {
+    void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr);
+  };
 #endif

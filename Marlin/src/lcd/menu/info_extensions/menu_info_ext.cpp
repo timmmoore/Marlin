@@ -51,7 +51,7 @@ void menu_info_power() {
       STATIC_ITEM(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", true);
     #endif
   #endif
-  #if HAS_BATTERY_STATUS
+  #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
       STATIC_ITEM(MSG_BATTERY_CHARGING, true);
     else
@@ -73,11 +73,13 @@ void menu_info_power() {
   END_SCREEN();
 }
 
-//
-// Add any menu info extension sub menus
-//
-void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr) {
+namespace ExtMenuInfo {
+  //
+  // Add any menu info extension sub menus
+  //
+  void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr) { 
     MENU_ITEM(submenu, MSG_INFO_POWER_MENU, menu_info_power);            // Power Info >
-}
+  }
+};
 
 #endif // HAS_LCD_MENU && LCD_INFO_MENU

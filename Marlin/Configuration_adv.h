@@ -862,7 +862,7 @@
 #define LCD_INFO_MENU
 #if ENABLED(LCD_INFO_MENU)
   //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
-  //#define HAS_MENU_INFO_EXTENSIONS
+  #define HAS_MENU_INFO_EXTENSIONS
 #endif
 
 // Scroll a longer status message into view
