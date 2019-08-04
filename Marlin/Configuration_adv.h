@@ -854,6 +854,7 @@
 //#define LCD_INFO_MENU
 #if ENABLED(LCD_INFO_MENU)
   //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
+  //#define HAS_MENU_INFO_EXTENSIONS
 #endif
 
 // Scroll a longer status message into view
@@ -2212,6 +2213,16 @@
 
   // Display filament width on the LCD status line. Status messages will expire after 5 seconds.
   //#define FILAMENT_LCD_DISPLAY
+#endif
+
+/*
+ * A chargable battery supporting power loss, i.e. powers board when power loss occurs
+ * If a pin is available to see if battery is charged will show battery status in menu info
+ */
+//#define BATTERY_STATUS_AVAILABLE
+#if ENABLED(BATTERY_STATUS_AVAILABLE)
+  #define BATTERY_STATUS_PIN    -1
+  #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
 /**
