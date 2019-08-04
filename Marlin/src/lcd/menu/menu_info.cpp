@@ -218,8 +218,7 @@ void menu_info_power() {
     #endif
       {
         char buffer[8];
-        uint16_t volt;
-        volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
+        uint16_t volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
         sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
         STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
       }

@@ -131,7 +131,7 @@ enum ADCSensorState : char {
     Prepare_ADC_KEY,
     Measure_ADC_KEY,
   #endif
-  #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+  #if HAS_VOLTAGE_AVAILABLE
     Prepare_VOLTAGE_DETECTION,
     Measure_VOLTAGE_DETECTION,
   #endif
@@ -299,7 +299,7 @@ class Temperature {
                      soft_pwm_count_fan[FAN_COUNT];
     #endif
 
-    #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+    #if HAS_VOLTAGE_AVAILABLE
       static uint16_t voltage_level;
     #endif
 
