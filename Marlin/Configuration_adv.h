@@ -854,6 +854,7 @@
 //#define LCD_INFO_MENU
 #if ENABLED(LCD_INFO_MENU)
   //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
+  //#define HAS_MENU_INFO_EXTENSIONS
 #endif
 
 // Scroll a longer status message into view
@@ -2222,6 +2223,18 @@
 
   // Display filament width on the LCD status line. Status messages will expire after 5 seconds.
   //#define FILAMENT_LCD_DISPLAY
+#endif
+
+/*
+ * An ADC measuring input voltage check if too low and kill printer
+ */
+#define INPUT_VOLTAGE_AVAILABLE
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+  #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
+  #define VOLTAGE_MINIMUM         625     // Alert if input ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this time (ms)
+  #define VOLTAGE_ALWAYS_AVAILABLE        // input voltage always available
+  //#define VOLTAGE_WARNING               // input voltage low warning only
 #endif
 
 /**
