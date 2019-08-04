@@ -1536,9 +1536,6 @@
   #define MSG_BACKLASH_SMOOTHING              _UxGT("Smoothing")
 #endif
 
-#ifndef MSG_INPUT_VOLTAGE_TOO_LOW
-  #define MSG_INPUT_VOLTAGE_TOO_LOW           _UxGT("Input Voltage Too low")
-#endif
 #ifndef MSG_THERMAL_RUNAWAY_ON
   #define MSG_THERMAL_RUNAWAY_ON              _UxGT("Tx Runaway: On")
 #endif
@@ -1547,4 +1544,15 @@
 #endif
 #ifndef MSG_THERMAL_RUNAWAY_CHAMBER_ON
   #define MSG_THERMAL_RUNAWAY_CHAMBER_ON      _UxGT("TChamber Runaway: On")
+#endif
+
+#ifndef MSG_BATTERY_CHARGED
+  #define MSG_BATTERY_CHARGED                 _UxGT("Battery: Charged")
+#endif
+#ifndef MSG_BATTERY_CHARGING
+  #define MSG_BATTERY_CHARGING                _UxGT("Battery: Charging")
+#endif
+
+#ifndef MSG_INPUT_VOLTAGE_TOO_LOW
+  #define MSG_INPUT_VOLTAGE_TOO_LOW           _UxGT("Input Voltage Too low")
 #endif

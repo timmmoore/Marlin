@@ -208,9 +208,9 @@ void menu_info_power() {
   #endif
   #if HAS_BATTERY_STATUS
     if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
-      STATIC_ITEM("Battery" ": Charging", true);
+      STATIC_ITEM(MSG_BATTERY_CHARGING, true);
     else
-      STATIC_ITEM("Battery" ": Charged", true);
+      STATIC_ITEM(MSG_BATTERY_CHARGED, true);
   #endif
   #if HAS_VOLTAGE_AVAILABLE
     #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
@@ -224,7 +224,6 @@ void menu_info_power() {
         sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
         STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
       }
-  #endif
   END_SCREEN();
 }
 
