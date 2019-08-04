@@ -410,3 +410,9 @@ void _lcd_draw_homing();
 #if ENABLED(POWER_LOSS_RECOVERY)
   void menu_job_recovery();
 #endif
+
+#if ENABLED(HAS_MENU_INFO_EXTENSIONS)
+  namespace ExtMenuInfo {
+    void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr);
+  };
+#endif
