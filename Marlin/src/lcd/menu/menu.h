@@ -410,3 +410,10 @@ void _lcd_draw_homing();
 #if ENABLED(POWER_LOSS_RECOVERY)
   void menu_job_recovery();
 #endif
+
+#if ENABLED(HAS_MENU_INFO_EXTENSIONS)
+  namespace ExtMenuInfo {
+    typedef struct p { const char *menuName; void (*function)(); } MenuInfoExtensions[];
+    extern MenuInfoExtensions ExtMenuInfoSubMenuInfoList;
+  };
+#endif
