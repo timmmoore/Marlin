@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,70 +21,37 @@
  */
 #pragma once
 
-// PT100 with LMV324 amp on Overlord v1.1 electronics
-//
-// This does not match the normal thermistor behaviour so we need to set the following defines
-#if THERMISTOR_HEATER_0 == 201
-  #define HEATER_0_RAW_HI_TEMP 16383
-  #define HEATER_0_RAW_LO_TEMP 0
-#endif
-#if THERMISTOR_HEATER_1 == 201
-  #define HEATER_1_RAW_HI_TEMP 16383
-  #define HEATER_1_RAW_LO_TEMP 0
-#endif
-#if THERMISTOR_HEATER_2 == 201
-  #define HEATER_2_RAW_HI_TEMP 16383
-  #define HEATER_2_RAW_LO_TEMP 0
-#endif
-#if THERMISTOR_HEATER_3 == 201
-  #define HEATER_3_RAW_HI_TEMP 16383
-  #define HEATER_3_RAW_LO_TEMP 0
-#endif
-#if THERMISTOR_HEATER_4 == 201
-  #define HEATER_4_RAW_HI_TEMP 16383
-  #define HEATER_4_RAW_LO_TEMP 0
-#endif
-#if THERMISTOR_HEATER_5 == 201
-  #define HEATER_5_RAW_HI_TEMP 16383
-  #define HEATER_5_RAW_LO_TEMP 0
-#endif
-#if THERMISTORBED == 201
-  #define HEATER_BED_RAW_HI_TEMP 16383
-  #define HEATER_BED_RAW_LO_TEMP 0
-#endif
-#if THERMISTORCHAMBER == 201
-  #define HEATER_CHAMBER_RAW_HI_TEMP 16383
-  #define HEATER_CHAMBER_RAW_LO_TEMP 0
-#endif
+#define REVERSE_TEMP_SENSOR_RANGE
 
+// Pt100 with LMV324 amp on Overlord v1.1 electronics
 const short temptable_201[][2] PROGMEM = {
-  {     OV(0),       0       },
-  {     OV(8),       1       },
-  {    OV(23),       6       },
-  {    OV(41),       15      },
-  {    OV(51),       20      },
-  {    OV(68),       28      },
-  {    OV(74),       30      },
-  {    OV(88),       35      },
-  {    OV(99),       40      },
-  {   OV(123),       50      },
-  {   OV(148),       60      },
-  {   OV(173),       70      },
-  {   OV(198),       80      },
-  {   OV(221),       90      },
-  {   OV(245),       100     },
-  {   OV(269),       110     },
-  {   OV(294),       120     },
-  {   OV(316),       130     },
-  {   OV(342),       140     },
-  {   OV(364),       150     },
-  {   OV(387),       160     },
-  {   OV(412),       170     },
-  {   OV(433),       180     },
-  {   OV(456),       190     },
-  {   OV(480),       200     },
-  {   OV(500),       210     },
-  {   OV(548),       224     },
-  {   OV(572),       233     },
-  {  OV(1155),       490     }
+  { OV(   0),   0 },
+  { OV(   8),   1 },
+  { OV(  23),   6 },
+  { OV(  41),  15 },
+  { OV(  51),  20 },
+  { OV(  68),  28 },
+  { OV(  74),  30 },
+  { OV(  88),  35 },
+  { OV(  99),  40 },
+  { OV( 123),  50 },
+  { OV( 148),  60 },
+  { OV( 173),  70 },
+  { OV( 198),  80 },
+  { OV( 221),  90 },
+  { OV( 245), 100 },
+  { OV( 269), 110 },
+  { OV( 294), 120 },
+  { OV( 316), 130 },
+  { OV( 342), 140 },
+  { OV( 364), 150 },
+  { OV( 387), 160 },
+  { OV( 412), 170 },
+  { OV( 433), 180 },
+  { OV( 456), 190 },
+  { OV( 480), 200 },
+  { OV( 500), 210 },
+  { OV( 548), 224 },
+  { OV( 572), 233 },
+  { OV(1155), 490 }
 };
