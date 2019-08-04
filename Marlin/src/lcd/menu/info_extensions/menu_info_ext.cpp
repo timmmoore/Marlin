@@ -29,6 +29,10 @@
 #if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU) && ENABLED(HAS_MENU_INFO_EXTENSIONS)
 
 #include "../menu.h"
+#undef LANGUAGE_INCL_
+#define LANGUAGE_INCL_(M) STRINGIFY_(language_##M.h)
+#include INCLUDE_LANGUAGE
+#include "language_en.h"
 
 #if HAS_VOLTAGE_AVAILABLE
   #include "../../../module/temperature.h"

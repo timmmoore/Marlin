@@ -1143,12 +1143,6 @@
 #ifndef MSG_INFO_BOARD_MENU
   #define MSG_INFO_BOARD_MENU                 _UxGT("Board Info")
 #endif
-#ifndef MSG_INFO_POWER_MENU
-  #define MSG_INFO_POWER_MENU                 _UxGT("Power Info")
-#endif
-#ifndef MSG_INFO_POWER_LOSS
-  #define MSG_INFO_POWER_LOSS                 _UxGT("Power Loss")
-#endif
 #ifndef MSG_INFO_THERMISTOR_MENU
   #define MSG_INFO_THERMISTOR_MENU            _UxGT("Thermistors")
 #endif
@@ -1544,13 +1538,6 @@
 #endif
 #ifndef MSG_THERMAL_RUNAWAY_CHAMBER_ON
   #define MSG_THERMAL_RUNAWAY_CHAMBER_ON      _UxGT("TChamber Runaway: On")
-#endif
-
-#ifndef MSG_BATTERY_CHARGED
-  #define MSG_BATTERY_CHARGED                 _UxGT("Battery: Charged")
-#endif
-#ifndef MSG_BATTERY_CHARGING
-  #define MSG_BATTERY_CHARGING                _UxGT("Battery: Charging")
 #endif
 
 #ifndef MSG_INPUT_VOLTAGE_TOO_LOW
