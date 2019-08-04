@@ -224,6 +224,7 @@ void menu_info_power() {
         sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
         STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
       }
+  #endif
   END_SCREEN();
 }
 
