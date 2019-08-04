@@ -2386,6 +2386,11 @@ void Temperature::isr() {
   // avoid multiple loads of pwm_count
   uint8_t pwm_count_tmp = pwm_count;
 
+  #if ENABLED(ALT_BED_HOTEND)
+    static bool hotend_last = false;
+    bool hotend_current = hotend_last;
+  #endif
+
   #if HAS_ADC_BUTTONS
     static unsigned int raw_ADCKey_value = 0;
     static bool ADCKey_pressed = false;
@@ -2419,11 +2424,35 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-      #define _PWM_MOD(N,S,T) do{                           \
-        const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-        WRITE_HEATER_##N(on);                               \
-      }while(0)
-      #define _PWM_MOD_E(N) _PWM_MOD(N,soft_pwm_hotend[N],temp_hotend[N])
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+        #define _PWM_MOD_V_CHAMBER(V,N,S,T) do{                 \
+          bool on = S.add(pwm_mask, T.soft_pwm_amount);         \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+        #define _PWM_MOD_V_BED(V,N,S,T) do{                     \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(!hotend_last && on) WRITE_HEATER_##N(on);          \
+          else WRITE_HEATER_##N(LOW);                           \
+        }while(0)
+        #define _PWM_MOD_V_E(V,N,S,T) do{                       \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(on && !hotend_current) {                           \
+            WRITE_HEATER_BED(LOW);                              \
+            hotend_last = true;                                 \
+            WRITE_HEATER_##N(on);                               \
+          }                                                     \
+          else WRITE_HEATER_##N(LOW);                           \
+        }while(0)
+        #define _PWM_MOD_V(V,N,S,T) _PWM_MOD_V_##V(V,N,S,T)
+      #else
+        #define _PWM_MOD_V(V,N,S,T) do{                         \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+      #endif
+      #define _PWM_MOD(N,S,T) _PWM_MOD_V(N,N,S,T)
+      #define _PWM_MOD_E(N) _PWM_MOD_V(E,N,soft_pwm_hotend[N],temp_hotend[N])
       _PWM_MOD_E(0);
       #if HOTENDS > 1
         _PWM_MOD_E(1);
@@ -2526,12 +2555,26 @@ void Temperature::isr() {
      *
      * For relay-driven heaters
      */
-    #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
-    #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
-    #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #if ENABLED(ALT_BED_HOTEND)
+      #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
+      #define _SLOW_SET_E(NR,PWM,V) do{ if (!hotend_current && PWM.ready(V)) { \
+        WRITE_HEATER_BED(LOW); hotend_last = true; WRITE_HEATER_##NR(V); } else WRITE_HEATER_##NR(LOW); }while(0)
+      #define _SLOW_SET_BED(NR,PWM,V) do{ if (!hotend_last && PWM.ready(V)) WRITE_HEATER_##NR(V); else WRITE_HEATER_##NR(LOW); }while(0)
+      #define _SLOW_PWM_V(V,NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET_##V(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _SLOW_PWM(NR,PWM,SRC) _SLOW_PWM_V(NR,NR,PWM,SRC)
+      #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #else
+      #define _SLOW_SET(NR,PWM,V) do{ if (PWM.ready(V)) WRITE_HEATER_##NR(V); }while(0)
+      #define _SLOW_PWM(NR,PWM,SRC) do{ PWM.count = SRC.soft_pwm_amount; _SLOW_SET(NR,PWM,(PWM.count > 0)); }while(0)
+      #define _SLOW_PWM_V(V,NR,PWM,SRC) _SLOW_PWM(NR,PWM,SRC)
+      #define _PWM_OFF(NR,PWM) do{ if (PWM.count < slow_pwm_count) _SLOW_SET(NR,PWM,0); }while(0)
+    #endif
 
     if (slow_pwm_count == 0) {
 
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+      #endif
       #if HOTENDS
         #define _SLOW_PWM_E(N) _SLOW_PWM(N, soft_pwm_hotend[N], temp_hotend[N])
         _SLOW_PWM_E(0);
