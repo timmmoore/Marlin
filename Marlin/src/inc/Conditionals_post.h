@@ -286,6 +286,9 @@
 
 #define HAS_POWER_SWITCH (ENABLED(PSU_CONTROL) && PIN_EXISTS(PS_ON))
 
+// Input power voltage available on an ADC
+#define HAS_VOLTAGE_AVAILABLE ENABLED(INPUT_VOLTAGE_AVAILABLE) && PIN_EXISTS(VOLTAGE_DETECTION)
+
 /**
  * Temp Sensor defines
  */
