@@ -1529,3 +1529,10 @@
 #ifndef MSG_BACKLASH_SMOOTHING
   #define MSG_BACKLASH_SMOOTHING              _UxGT("Smoothing")
 #endif
+
+#ifndef MSG_BATTERY_CHARGED
+  #define MSG_BATTERY_CHARGED                 _UxGT("Battery: Charged")
+#endif
+#ifndef MSG_BATTERY_CHARGING
+  #define MSG_BATTERY_CHARGING                _UxGT("Battery: Charging")
+#endif

@@ -286,6 +286,9 @@
 
 #define HAS_POWER_SWITCH (ENABLED(PSU_CONTROL) && PIN_EXISTS(PS_ON))
 
+// Rechargable battery status for power loss handling
+#define HAS_BATTERY_STATUS ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
+
 /**
  * Temp Sensor defines
  */
