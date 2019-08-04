@@ -519,7 +519,7 @@
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-//#define ALT_BED_HOTEND  // Dont power hotends and bed at same time, will slow heating down so watch periods will likely need increasing
+//#define ALT_BED_HOTEND    // Dont power hotends and bed at same time, will slow heating down so watch periods will likely need increasing
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
