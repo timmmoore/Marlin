@@ -2215,8 +2215,8 @@
 #endif
 
 /*
- * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
- * If a pin is available to see if charged will show in menu info
+ * A chargable battery supporting power loss, i.e. powers board when power loss occurs
+ * If a pin is available to see if battery is charged will show battery status in menu info
  */
 //#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
