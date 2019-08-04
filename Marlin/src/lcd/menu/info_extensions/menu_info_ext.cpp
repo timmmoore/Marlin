@@ -77,9 +77,8 @@ namespace ExtMenuInfo {
   //
   // Add any menu info extension sub menus
   //
-  void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr) { 
+  void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr) {
     MENU_ITEM(submenu, MSG_INFO_POWER_MENU, menu_info_power);            // Power Info >
   }
 };
-
 #endif // HAS_LCD_MENU && LCD_INFO_MENU
