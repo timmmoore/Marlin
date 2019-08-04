@@ -191,42 +191,6 @@ void menu_info_board() {
 }
 
 //
-// About Printer > Power Info
-//
-void menu_info_power() {
-  if (ui.use_click()) return ui.goto_previous_screen();
-  START_SCREEN();
-  STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
-  #if ENABLED(POWER_LOSS_RECOVERY)
-    #if PIN_EXISTS(POWER_LOSS)
-      STATIC_ITEM(MSG_INFO_POWER_LOSS ": Power", true);
-    #else
-      STATIC_ITEM(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", true);
-    #endif
-  #endif
-  #if HAS_BATTERY_STATUS
-    if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
-      STATIC_ITEM(MSG_BATTERY_CHARGING, true);
-    else
-      STATIC_ITEM(MSG_BATTERY_CHARGED, true);
-  #endif
-  #if HAS_VOLTAGE_AVAILABLE
-    #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
-      if (!powersupply_on)
-        STATIC_ITEM("Power Voltage: OFF", true);
-      else
-    #endif
-      {
-        char buffer[8];
-        uint16_t volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
-        sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
-        STATIC_ITEM_P(PSTR("Power Voltage: "), false, false, buffer);
-      }
-  #endif
-  END_SCREEN();
-}
-
-//
 // About Printer > Printer Info
 //
 #if DISABLED(LCD_PRINTER_INFO_IS_BOOTSCREEN)
@@ -283,7 +247,6 @@ void menu_info() {
   #else
     MENU_ITEM(submenu, MSG_INFO_PRINTER_MENU, menu_info_printer);        // Printer Info >
     MENU_ITEM(submenu, MSG_INFO_BOARD_MENU, menu_info_board);            // Board Info >
-    MENU_ITEM(submenu, MSG_INFO_POWER_MENU, menu_info_power);            // Power Info >
     MENU_ITEM(submenu, MSG_INFO_THERMISTOR_MENU, menu_info_thermistors); // Thermistors >
     #if ENABLED(HAS_MENU_INFO_EXTENSIONS)
       ExtMenuInfo::menu_info_ext_add(_skipStatic, _menuLineNr, _thisItemNr, _lcdLineNr);
