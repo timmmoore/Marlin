@@ -2224,6 +2224,18 @@
   //#define FILAMENT_LCD_DISPLAY
 #endif
 
+/*
+ * An ADC measuring input voltage and check if input voltage is too low
+ *  Note will need a resistor devider network to lower input voltage (24V/12V) to correct range for ADC (3.3V/5v)
+ */
+//#define INPUT_VOLTAGE_AVAILABLE
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+  #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
+  #define VOLTAGE_MINIMUM         625     // Alert if input ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this time (ms)
+  //#define VOLTAGE_WARNING               // input voltage low warning only
+#endif
+
 /**
  * CNC Coordinate Systems
  *
