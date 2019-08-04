@@ -285,6 +285,9 @@ void menu_info() {
     MENU_ITEM(submenu, MSG_INFO_BOARD_MENU, menu_info_board);            // Board Info >
     MENU_ITEM(submenu, MSG_INFO_POWER_MENU, menu_info_power);            // Power Info >
     MENU_ITEM(submenu, MSG_INFO_THERMISTOR_MENU, menu_info_thermistors); // Thermistors >
+    #if ENABLED(HAS_MENU_INFO_EXTENSIONS)
+      ExtMenuInfo::menu_info_ext_add(_skipStatic, _menuLineNr, _thisItemNr, _lcdLineNr);
+    #endif
   #endif
 
   #if ENABLED(PRINTCOUNTER)
