@@ -75,10 +75,25 @@ namespace ExtMenuInfo {
   }
 
   //
-  // Add any menu info extension sub menus
+  // About Printer > Test Info
   //
-  void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr) {
-    MENU_ITEM(submenu, MSG_INFO_POWER_MENU, menu_info_power);            // Power Info >
+  void menu_info_test() {
+    if (ui.use_click()) return ui.goto_previous_screen();
+    START_SCREEN();
+    STATIC_ITEM("Test Info", true);
+    END_SCREEN();
   }
+
+  //
+  // List of menu info submenus
+  //
+  static const char menu1str[] PROGMEM = MSG_INFO_POWER_MENU;
+  static const char menu2str[] PROGMEM = "Test";
+
+  MenuInfoExtensions ExtMenuInfoSubMenuInfoList = {
+    { menu1str, menu_info_power },
+    { menu2str, menu_info_test },
+    { nullptr, nullptr }
+  };
 };
 #endif // HAS_LCD_MENU && LCD_INFO_MENU
