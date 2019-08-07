@@ -53,3 +53,10 @@
 #ifndef MSG_INFO_POWER_VOLT
   #define MSG_INFO_POWER_VOLT                 _UxGT("Power Voltage: ")
 #endif
+
+#ifndef MSG_INPUT_VOLTAGE_CHECK_ON
+  #define MSG_INPUT_VOLTAGE_CHECK_ON          _UxGT("Power Voltage Check: On")
+#endif
+#ifndef MSG_INPUT_VOLTAGE_CHECK_OFF
+  #define MSG_INPUT_VOLTAGE_CHECK_OFF         _UxGT("Power Voltage Check: Off")
+#endif

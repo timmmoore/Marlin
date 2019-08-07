@@ -70,6 +70,11 @@ namespace ExtMenuInfo {
           sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
           STATIC_ITEM(MSG_INFO_POWER_VOLT, false, false, buffer);
         }
+      #if ENABLED(VOLTAGE_WARNING)
+        STATIC_ITEM(MSG_INPUT_VOLTAGE_CHECK_OFF, false, true);
+      #else
+        STATIC_ITEM(MSG_INPUT_VOLTAGE_CHECK_ON, false, true);
+      #endif
     #endif
     END_SCREEN();
   }
