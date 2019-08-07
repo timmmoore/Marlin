@@ -2226,9 +2226,7 @@
 
 /*
  * An ADC measuring input voltage and check if input voltage is too low
- * Assumes a resistor divider network to lower voltage to something ADC can handle
- *  E.g. 12V: Divider upper 180K, Divider lower 91K
- *  E.g. 24V: Divider upper 240K, Divider lower 47K
+ *  Note will need a resistor devider network to lower input voltage (24V/12V) to correct range for ADC (3.3V/5v)
  */
 //#define INPUT_VOLTAGE_AVAILABLE
 #if ENABLED(INPUT_VOLTAGE_AVAILABLE)
