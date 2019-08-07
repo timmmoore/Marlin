@@ -35,10 +35,6 @@
 #include INCLUDE_LANGUAGE
 #include "language_en.h"
 
-#if HAS_VOLTAGE_AVAILABLE
-  #include "../../../module/temperature.h"
-#endif
-
 /*
  * If input voltage is measured then display in Board info menu page
  * Assumes a resistor divider network to lower voltage to something ADC can handle
@@ -46,7 +42,9 @@
  *  E.g. 24V: Divider upper 240K, Divider lower 47K
  * Calculate translation from ADC reading to voltage
  */
-#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+#if HAS_VOLTAGE_AVAILABLE
+  #include "../../../module/temperature.h"
+
   #define DIVIDER_UPPER           239.16f // total resistance of divider network
   #define DIVIDER_LOWER           48.84f  // lower resistance of divider network
   #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
