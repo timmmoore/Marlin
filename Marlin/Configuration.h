@@ -134,12 +134,11 @@
   #define MOTHERBOARD BOARD_OVERLORD
 #endif
 
-// Optional custom name for your RepStrap or other custom machine
-// Displayed in the LCD "Ready" message
+// Name displayed in the LCD "Ready" message and Info menu
 #define CUSTOM_MACHINE_NAME "Overlord Pro"
 
-// Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
-// You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
+// Printer's unique ID, used by some programs to differentiate between machines.
+// Choose your own or use a service like http://www.uuidgenerator.net/version4
 #define MACHINE_UUID "cbb82bbc-4e3c-4e6d-aad6-c1fa3fcedb14"
 
 // @section extruder
@@ -333,11 +332,11 @@
 
   #define AUTO_POWER_CONTROL    // Enable automatic control of the PS_ON pin
   #if ENABLED(AUTO_POWER_CONTROL)
-    #define AUTO_POWER_FANS             // Turn on PSU if fans need power
-    #define AUTO_POWER_CONTROLLERFAN
+    #define AUTO_POWER_FANS           // Turn on PSU if fans need power
     #define AUTO_POWER_E_FANS
-    #define AUTO_POWER_E_TEMP        50 // (°C) Turn on PSU over this temperature
+    #define AUTO_POWER_CONTROLLERFAN
     //#define AUTO_POWER_CHAMBER_FAN
+    #define AUTO_POWER_E_TEMP        50 // (°C) Turn on PSU over this temperature
     //#define AUTO_POWER_CHAMBER_TEMP  30 // (°C) Turn on PSU over this temperature
     #define POWER_TIMEOUT 30
   #endif
@@ -444,13 +443,13 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 250            // lower max temp since updated nozzle is a E3D V6 lite clone
-#define HEATER_1_MAXTEMP 250
+#define HEATER_0_MAXTEMP 245            // lower max temp since updated nozzle is a E3D V6 lite clone
+#define HEATER_1_MAXTEMP 245
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
 #define HEATER_4_MAXTEMP 275
 #define HEATER_5_MAXTEMP 275
-#define BED_MAXTEMP      100
+#define BED_MAXTEMP      115
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -475,25 +474,25 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-// Overlord Pro with new nozzle with integrated probe, update using M303
-#define DEFAULT_Kp 8.62
-#define DEFAULT_Ki 0.55
-#define DEFAULT_Kd 33.89
+  // Overlord Pro with new nozzle with integrated probe, update using M303
+  #define DEFAULT_Kp 8.62
+  #define DEFAULT_Ki 0.55
+  #define DEFAULT_Kd 33.89
 
-// Ultimaker
-//#define DEFAULT_Kp 22.2
-//#define DEFAULT_Ki 1.08
-//#define DEFAULT_Kd 114
+  // Ultimaker
+  //#define DEFAULT_Kp 22.2
+  //#define DEFAULT_Ki 1.08
+  //#define DEFAULT_Kd 114
 
-// MakerGear
-//#define DEFAULT_Kp 7.0
-//#define DEFAULT_Ki 0.1
-//#define DEFAULT_Kd 12
+  // MakerGear
+  //#define DEFAULT_Kp 7.0
+  //#define DEFAULT_Ki 0.1
+  //#define DEFAULT_Kd 12
 
-// Mendel Parts V9 on 12V
-//#define DEFAULT_Kp 63.0
-//#define DEFAULT_Ki 2.25
-//#define DEFAULT_Kd 440
+  // Mendel Parts V9 on 12V
+  //#define DEFAULT_Kp 63.0
+  //#define DEFAULT_Ki 2.25
+  //#define DEFAULT_Kd 440
 
 #endif // PIDTEMP
 
@@ -524,19 +523,27 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  *
- * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
- * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
- * If both the hotend and bed are on at the same time, then there is no power available for anything else
- * and power supply will shutdown if steppers are moving while both hotend and bed are on
- *  This will trigger an alert - "Input Voltage Too low"
- * Recommend upgrade PSU
- *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
- * Or uncomment ALT_BED_HOTEND, this forces alternating turning on hotend and bed
- * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
- * But will heat up hotend and bed slower so WATCH_(BED)_TEMP_PERIOD needs to be increased
  */
+
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-//#define ALT_BED_HOTEND    // Dont power hotends and bed at same time, will slow heating down so watch periods will likely need increasing
+#if TEMP_SENSOR_BED != 0
+  /*
+   * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
+   * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
+   * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
+   * If both are on at the same time, then there is no power available for anything else
+   * and power supply will shutdown if steppers are moving while both hotend and bed are on
+   * Recommend upgrade PSU
+   *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
+   *  This will trigger an alert - "Input Voltage Too low"
+   * Or uncomment ALT_BED_HOTEND, this forces alternating turning on hotend and bed
+   *    Only works with hotend PID and Bed PID without SLOW_PWM_HEATERS
+   * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
+   * But will heat up hotend and bed slower so WATCH_(BED)_TEMP_PERIOD needs to be increased
+   */
+  //#error "Overlord Pro needs larger PSU than stock PSU, comment out this line if you have a larger PSU, otherwise set TEMP_SENSOR_BED to 0"
+#endif
+//#define ALT_BED_HOTEND
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
@@ -746,7 +753,7 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE TMC2208_STANDALONE       // Note modified from standard Overlord Pro which has DRV8825
+#define X_DRIVER_TYPE TMC2208_STANDALONE
 #define Y_DRIVER_TYPE TMC2208_STANDALONE
 #define Z_DRIVER_TYPE TMC2208_STANDALONE
 //#define X2_DRIVER_TYPE A4988
@@ -789,7 +796,7 @@
  * These settings can be reset by M502
  *
  * Note that if EEPROM is enabled, saved values will override these.
-*/
+ */
 
 /**
  * With this option each E stepper can have its own factors for the
@@ -805,7 +812,7 @@
  */
 // variables to calculate steps
 #define XYZ_FULL_STEPS_PER_ROTATION 100
-#define XYZ_MICROSTEPS              16         // Modified from standard Overlord Pro which uses DRV8825 with 32 microsteps
+#define XYZ_MICROSTEPS              16
 #define XYZ_BELT_PITCH              2.03
 #define XYZ_PULLEY_TEETH            20
 // delta speeds must be the same on xyz
@@ -865,7 +872,7 @@
 #if DISABLED(JUNCTION_DEVIATION)
   #define DEFAULT_XJERK 10.0
   #define DEFAULT_YJERK DEFAULT_XJERK
-  #define DEFAULT_ZJERK DEFAULT_XJERK
+  #define DEFAULT_ZJERK DEFAULT_XJERK // Must be same as XY for delta
 #endif
 
 #define DEFAULT_EJERK    5.0  // May be used by Linear Advance
@@ -977,9 +984,52 @@
   #define Z_PROBE_RETRACT_X X_MAX_POS
 #endif
 
-//
-// For Z_PROBE_ALLEN_KEY see the Delta example configurations.
-//
+/**
+ * Allen key retractable z-probe as seen on many Kossel delta printers - http://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
+ * Deploys by touching z-axis belt. Retracts by pushing the probe down. Uses Z_MIN_PIN.
+ */
+//#define Z_PROBE_ALLEN_KEY
+
+#if ENABLED(Z_PROBE_ALLEN_KEY)
+  // 2 or 3 sets of coordinates for deploying and retracting the spring loaded touch probe on G29,
+  // if servo actuated touch probe is not defined. Uncomment as appropriate for your printer/probe.
+
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_1_X 30.0
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_1_Y DELTA_PRINTABLE_RADIUS
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_1_Z 100.0
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_1_FEEDRATE XY_PROBE_SPEED
+
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_2_X 0.0
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_2_Y DELTA_PRINTABLE_RADIUS
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_2_Z 100.0
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_2_FEEDRATE (XY_PROBE_SPEED)/10
+
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_3_X Z_PROBE_ALLEN_KEY_DEPLOY_2_X * 0.75
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_3_Y Z_PROBE_ALLEN_KEY_DEPLOY_2_Y * 0.75
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_3_Z Z_PROBE_ALLEN_KEY_DEPLOY_2_Z
+  #define Z_PROBE_ALLEN_KEY_DEPLOY_3_FEEDRATE XY_PROBE_SPEED
+
+  #define Z_PROBE_ALLEN_KEY_STOW_1_X -64.0 // Move the probe into position
+  #define Z_PROBE_ALLEN_KEY_STOW_1_Y 56.0
+  #define Z_PROBE_ALLEN_KEY_STOW_1_Z 23.0
+  #define Z_PROBE_ALLEN_KEY_STOW_1_FEEDRATE XY_PROBE_SPEED
+
+  #define Z_PROBE_ALLEN_KEY_STOW_2_X -64.0 // Push it down
+  #define Z_PROBE_ALLEN_KEY_STOW_2_Y 56.0
+  #define Z_PROBE_ALLEN_KEY_STOW_2_Z 3.0
+  #define Z_PROBE_ALLEN_KEY_STOW_2_FEEDRATE (XY_PROBE_SPEED)/10
+
+  #define Z_PROBE_ALLEN_KEY_STOW_3_X -64.0 // Move it up to clear
+  #define Z_PROBE_ALLEN_KEY_STOW_3_Y 56.0
+  #define Z_PROBE_ALLEN_KEY_STOW_3_Z 50.0
+  #define Z_PROBE_ALLEN_KEY_STOW_3_FEEDRATE XY_PROBE_SPEED
+
+  #define Z_PROBE_ALLEN_KEY_STOW_4_X 0.0
+  #define Z_PROBE_ALLEN_KEY_STOW_4_Y 0.0
+  #define Z_PROBE_ALLEN_KEY_STOW_4_Z Z_PROBE_ALLEN_KEY_STOW_3_Z
+  #define Z_PROBE_ALLEN_KEY_STOW_4_FEEDRATE XY_PROBE_SPEED
+
+#endif // Z_PROBE_ALLEN_KEY
 
 /**
  * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
@@ -1181,7 +1231,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-#define FILAMENT_RUNOUT_SENSOR        // Not on Overlord by default
+#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // Set to true to invert the logic of the sensor.
@@ -1422,8 +1472,7 @@
   #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
 #endif
 
-// Homing speeds (mm/m)
-//#define HOMING_FEEDRATE_XY (50*60)
+// Delta only homes to Z
 #define HOMING_FEEDRATE_Z  (100*60)
 
 // Validate that endstops are triggered on homing moves
@@ -1537,9 +1586,9 @@
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 190
-#define PREHEAT_1_TEMP_BED     40
-#define PREHEAT_1_FAN_SPEED   255 // Value from 0 to 255
+#define PREHEAT_1_TEMP_HOTEND 180
+#define PREHEAT_1_TEMP_BED     70
+#define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240

@@ -287,7 +287,7 @@
  */
 //#define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)
-  #define CONTROLLER_FAN_PIN -1          // Set a custom pin for the controller fan
+  //#define CONTROLLER_FAN_PIN -1        // Set a custom pin for the controller fan
   #define CONTROLLERFAN_SECS 60          // Duration in seconds for the fan to run after all motors are disabled
   #define CONTROLLERFAN_SPEED 255        // 255 == full speed
 #endif
@@ -365,7 +365,6 @@
 #define EXTRUDER_AUTO_FAN_SPEED 255   // 255 == full speed
 #define CHAMBER_AUTO_FAN_TEMPERATURE 30
 #define CHAMBER_AUTO_FAN_SPEED 255
-  
 /**
  * Part-Cooling Fan Multiplexer
  *
@@ -524,7 +523,7 @@
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
 #define Y_HOME_BUMP_MM 5
-#define Z_HOME_BUMP_MM 5
+#define Z_HOME_BUMP_MM 5 // deltas need the same for all three axes
 #define HOMING_BUMP_DIVISOR { 10, 10, 10 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 //#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
 //#define HOMING_BACKOFF_MM { 2, 2, 2 }  // (mm) Move away from the endstops after homing
@@ -657,7 +656,8 @@
 // @section lcd
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
-  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE_XYZ 50*60
+  #define MANUAL_FEEDRATE { MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
   #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
   #if ENABLED(ULTIPANEL)
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -671,6 +671,7 @@
 #define DEFAULT_MINSEGMENTTIME        20000
 
 // If defined the movements slow down when the look ahead buffer is only half full
+// (don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
 //#define SLOWDOWN
 
 // Frequency limit
@@ -1860,25 +1861,17 @@
   #define E5_HYBRID_THRESHOLD     30
 
   /**
-   * Use StallGuard2 to home / probe X, Y, Z.
-   *
    * TMC2130, TMC2160, TMC2209, TMC2660, TMC5130, and TMC5160 only
+   * Use StallGuard2 to sense an obstacle and trigger an endstop.
    * Connect the stepper driver's DIAG1 pin to the X/Y endstop pin.
    * X, Y, and Z homing will always be done in spreadCycle mode.
    *
-   * X/Y/Z_STALL_SENSITIVITY is used to tune the trigger sensitivity.
-   * Use M914 X Y Z to live-adjust the sensitivity.
-   *  Higher: LESS sensitive. (Too high => failure to trigger)
-   *   Lower: MORE sensitive. (Too low  => false positives)
-   *
-   * It is recommended to set [XYZ]_HOME_BUMP_MM to 0.
-   *
-   * SPI_ENDSTOPS  *** Beta feature! *** TMC2130 Only ***
-   * Poll the driver through SPI to determine load when homing.
-   * Removes the need for a wire from DIAG1 to an endstop pin.
-   *
-   * IMPROVE_HOMING_RELIABILITY tunes acceleration and jerk when
-   * homing and adds a guard period for endstop triggering.
+   * X/Y/Z_STALL_SENSITIVITY is used for tuning the trigger sensitivity.
+   * Higher values make the system LESS sensitive.
+   * Lower value make the system MORE sensitive.
+   * Too low values can lead to false positives, while too high values will collide the axis without triggering.
+   * It is advised to set X/Y/Z_HOME_BUMP_MM to 0.
+   * M914 X/Y/Z to live tune the setting
    */
   //#define SENSORLESS_HOMING // StallGuard capable drivers only
 
@@ -1895,8 +1888,6 @@
     #define X_STALL_SENSITIVITY  8
     #define Y_STALL_SENSITIVITY  8
     //#define Z_STALL_SENSITIVITY  8
-    //#define SPI_ENDSTOPS              // TMC2130 only
-    //#define IMPROVE_HOMING_RELIABILITY
   #endif
 
   /**
@@ -2234,8 +2225,10 @@
 #endif
 
 /*
- * A chargable battery supporting power loss, i.e. powers board when power loss occurs
- * If a pin is available to see if battery is charged will show battery status in menu info
+ * Assumes a battery supporting power loss, i.e. powers board when power loss occurs
+ * If a pin is available to see if charged will show in menu info
+ *
+ * Overlord Pro has internal rechargable battery
  */
 #define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
