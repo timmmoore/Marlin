@@ -18,7 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * 
  */
 
 //
@@ -50,6 +49,16 @@
   #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
   #define ADC_RESOLUTION          1024
   #define DIVIDER_RATIO           (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
+#endif
+
+/*
+ * A chargable battery supporting power loss, i.e. powers board when power loss occurs
+ * If a pin is available to see if battery is charged will show battery status in menu info
+ */
+//#define BATTERY_STATUS_AVAILABLE
+#if ENABLED(BATTERY_STATUS_AVAILABLE)
+  #define BATTERY_STATUS_PIN    -1
+  #define BATTERY_STATUS_CHARGED  LOW
 #endif
 
 namespace ExtMenuInfo {
@@ -98,10 +107,10 @@ namespace ExtMenuInfo {
   // List of menu info submenus
   //
   static const char menu1str[] PROGMEM = MSG_INFO_POWER_MENU;
-
+  
   MenuInfoExtensions ExtMenuInfoSubMenuInfoList = {
     { menu1str, menu_info_power },
     { nullptr, nullptr }
   };
 };
-#endif // HAS_LCD_MENU && LCD_INFO_MENU && HAS_MENU_INFO_EXTENSIONS
+#endif // HAS_LCD_MENU && LCD_INFO_MENU
