@@ -2226,13 +2226,15 @@
 #endif
 
 /*
- * A chargable battery supporting power loss, i.e. powers board when power loss occurs
- * If a pin is available to see if battery is charged will show battery status in menu info
+ * An ADC measuring input voltage check if too low and kill printer
  */
-//#define BATTERY_STATUS_AVAILABLE
-#if ENABLED(BATTERY_STATUS_AVAILABLE)
-  #define BATTERY_STATUS_PIN    -1
-  #define BATTERY_STATUS_CHARGED  LOW
+#define INPUT_VOLTAGE_AVAILABLE
+#if ENABLED(INPUT_VOLTAGE_AVAILABLE)
+  #define VOLTAGE_DETECTION_PIN   -1      // if not in pins .h file
+  #define VOLTAGE_MINIMUM         625     // Alert if input ADC reading goes lower than this (~3V@ADC)
+  #define VOLTAGE_LEVEL_TIMEOUT   2000UL  // and for this time (ms)
+  #define VOLTAGE_ALWAYS_AVAILABLE        // input voltage always available
+  //#define VOLTAGE_WARNING               // input voltage low warning only
 #endif
 
 /**
