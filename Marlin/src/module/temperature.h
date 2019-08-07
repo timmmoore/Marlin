@@ -274,7 +274,7 @@ class Temperature {
 
     static hotend_info_t temp_hotend[HOTENDS
       #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-        +1
+        + 1
       #endif
     ];
 
