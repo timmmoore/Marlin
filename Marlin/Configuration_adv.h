@@ -2225,7 +2225,7 @@
 #endif
 
 /*
- * An ADC measuring input voltage check if too low and kill printer
+ * An ADC measuring input voltage and check if input voltage is too low
  *  Note will need a resistor devider network to lower input voltage (24V/12V) to correct range for ADC (3.3V/5v)
  */
 #define INPUT_VOLTAGE_AVAILABLE
