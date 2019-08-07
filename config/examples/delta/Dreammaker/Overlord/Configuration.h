@@ -135,7 +135,7 @@
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "Overlord Pro"
+#define CUSTOM_MACHINE_NAME "Overlord"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like http://www.uuidgenerator.net/version4
@@ -410,7 +410,7 @@
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_4 0
 #define TEMP_SENSOR_5 0
-#define TEMP_SENSOR_BED 1
+#define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
@@ -449,7 +449,7 @@
 #define HEATER_3_MAXTEMP 275
 #define HEATER_4_MAXTEMP 275
 #define HEATER_5_MAXTEMP 275
-#define BED_MAXTEMP      115
+#define BED_MAXTEMP      150
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -474,7 +474,7 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-  // Overlord Pro with new nozzle with integrated probe, update using M303
+  // Overlord with new nozzle with integrated probe, update using M303
   #define DEFAULT_Kp 8.62
   #define DEFAULT_Ki 0.55
   #define DEFAULT_Kd 33.89
@@ -513,7 +513,7 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-#define PIDTEMPBED
+//#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -522,36 +522,8 @@
  * Applies to all forms of bed control (PID, bang-bang, and bang-bang with hysteresis).
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
- *
- * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
- * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
- * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
- * If both are on at the same time, then there is no power available for anything else
- * and power supply will shutdown if steppers are moving while both hotend and bed are on
- *  This will trigger an alert - "Input Voltage Too low"
- * Recommend upgrade PSU
- *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
- * Or uncomment ALT_BED_HOTEND, this forces alternating turning on hotend and bed
- *    Only works with hotend PID and Bed PID without SLOW_PWM_HEATERS
- * Only use if PSU is not powerful enough to run hotend/bed and steppers at the same time
- * But will heat up hotend and bed slower so WATCH_(BED)_TEMP_PERIOD needs to be increased
  */
-//#define ALT_BED_HOTEND
-
-#if ENABLED(PIDTEMPBED)
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-#if TEMP_SENSOR_BED != 0
-  /*
-   * For Overlord Pro, the default PSU isn't powerful to run hotend/bed/etc.
-   * Problem is Hotend heater is 24V 60W, Bed is 24V 160W, Standard Overlord Pro PSU is 24V 220.8W
-   * Hotend and bed are PWMed to keep their average power less than the max power but they can both be on at the same time.
-   * If both are on at the same time, then there is no power available for anything else
-   * and power supply will shutdown if steppers are moving while both hotend and bed are on
-   * Recommend upgrade PSU
-   *  A Meanwell RSP-500-24 works, a RSP-350-24 should work but has not been tested
-   */
-  //#error "Overlord Pro needs larger PSU than stock PSU, comment out this line if you have a larger PSU, otherwise set TEMP_SENSOR_BED to 0"
-#endif
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
@@ -665,24 +637,24 @@
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)  // (mm) Overlord Pro 80mm
+    #define DELTA_CALIBRATION_RADIUS DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)  // (mm) Overlord 70mm
     // Set the steprate for papertest probing
     #define PROBE_MANUALLY_STEP 0.05                              // (mm)
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS 85.0                             // (mm) Overlord Pro
+  #define DELTA_PRINTABLE_RADIUS 75.0                             // (mm) Overlord
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 206.0                                // (mm) Overlord Pro
+  #define DELTA_DIAGONAL_ROD 206.0                                // (mm) Overlord
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 286.14                                     // (mm) Overlord Pro - Update this value using G33 auto calibrate
+  #define DELTA_HEIGHT 186.14                                     // (mm) Overlord - Update this value using G33 auto calibrate
 
   #define DELTA_ENDSTOP_ADJ { -0.33, 0.0, -0.85 }                 // Update these values using G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 100.63                                     // (mm) Overlord Pro - Update this value using G33 auto calibrate
+  #define DELTA_RADIUS 100.63                                     // (mm) Overlord - Update this value using G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
@@ -909,7 +881,7 @@
  *
  * Enable this option for a probe connected to the Z Min endstop pin.
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN                          // Overlord Pro with Nozzle upgrade with integrated probe
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN                          // Overlord with Nozzle upgrade with integrated probe
 
 /**
  * Z_MIN_PROBE_PIN
@@ -1159,9 +1131,9 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR true
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR true
+#define INVERT_X_DIR false
+#define INVERT_Y_DIR false
+#define INVERT_Z_DIR false
 
 // @section extruder
 
@@ -1184,7 +1156,7 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#define X_HOME_DIR 1
+#define X_HOME_DIR 1  // deltas always home to max
 #define Y_HOME_DIR 1
 #define Z_HOME_DIR 1
 
@@ -1353,10 +1325,10 @@
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
-  #define LEFT_PROBE_BED_POSITION -(DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE))
-  #define RIGHT_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)
-  #define FRONT_PROBE_BED_POSITION -(DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE))
-  #define BACK_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)
+  //#define LEFT_PROBE_BED_POSITION -(DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE))
+  //#define RIGHT_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)
+  //#define FRONT_PROBE_BED_POSITION -(DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE))
+  //#define BACK_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS - (MIN_PROBE_EDGE)
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -1462,7 +1434,7 @@
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS DELTA_HEIGHT
+#define MANUAL_Z_HOME_POS DELTA_HEIGHT // Distance between the nozzle to printbed after homing
 
 // Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
 //
@@ -1480,7 +1452,8 @@
   #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
 #endif
 
-// Delta only homes to Z
+// Homing speeds (mm/m)
+//#define HOMING_FEEDRATE_XY (50*60)
 #define HOMING_FEEDRATE_Z  (100*60)
 
 // Validate that endstops are triggered on homing moves
