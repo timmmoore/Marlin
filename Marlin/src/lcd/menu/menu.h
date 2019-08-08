@@ -413,6 +413,7 @@ void _lcd_draw_homing();
 
 #if ENABLED(HAS_MENU_INFO_EXTENSIONS)
   namespace ExtMenuInfo {
-    void menu_info_ext_add(bool _skipStatic, int8_t _menuLineNr, int8_t _thisItemNr, int8_t _lcdLineNr);
+    typedef struct p { const char *menuName; void (*function)(); } MenuInfoExtensions[];
+    extern MenuInfoExtensions ExtMenuInfoSubMenuInfoList;
   };
 #endif
