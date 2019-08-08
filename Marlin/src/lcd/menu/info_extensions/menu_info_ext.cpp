@@ -49,7 +49,7 @@
   #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
   #define ADC_RESOLUTION          1024
   #define DIVIDER_RATIO           (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
-  //#define VOLTAGE_ALWAYS_AVAILABLE        // If input voltage is always available
+  #define VOLTAGE_ALWAYS_AVAILABLE        // If input voltage is always available
 #endif
 
 /*
