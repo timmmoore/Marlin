@@ -44,8 +44,8 @@
 #if HAS_VOLTAGE_AVAILABLE
   #include "../../../module/temperature.h"
 
-  #define DIVIDER_UPPER           239.16f // total resistance of divider network
-  #define DIVIDER_LOWER           48.84f  // lower resistance of divider network
+  #define DIVIDER_UPPER           180.0f  // total resistance of divider network
+  #define DIVIDER_LOWER           91.0f   // lower resistance of divider network
   #define ADC_VREF                5.0f    // Whatever the ADC AREF is, default is 5.0V
   #define ADC_RESOLUTION          1024
   #define DIVIDER_RATIO           (((ADC_VREF * (DIVIDER_UPPER + DIVIDER_LOWER)) / (DIVIDER_LOWER * ADC_RESOLUTION)) * 100.0f)
