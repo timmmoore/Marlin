@@ -290,7 +290,7 @@ class Temperature {
       static uint8_t autofan_speed[HOTENDS];
     #endif
 
-    #if ENABLED(AUTO_POWER_CHAMBER_FAN)
+    #if ENABLED(AUTO_POWER_CHAMBER_FAN) || HAS_AUTO_CHAMBER_FAN
       static uint8_t chamberfan_speed;
     #endif
 
