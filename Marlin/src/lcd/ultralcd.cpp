@@ -764,6 +764,7 @@ void MarlinUI::update() {
 
     // If the action button is pressed...
     static bool wait_for_unclick; // = 0
+    #if ENABLED(TOUCH_BUTTONS)
     if (touch_buttons) {
       if (buttons & EN_C) {
         if (!wait_for_unclick) {                        // If not waiting for a debounce release:
@@ -790,6 +791,7 @@ void MarlinUI::update() {
       }
     }
     else {
+    #endif
       //
       // Integrated LCD click handling via button_pressed()
       //
@@ -801,8 +803,7 @@ void MarlinUI::update() {
           quick_feedback();                             //  - Always make a click sound
         }
       }
-    }
-    else wait_for_unclick = false;
+      else wait_for_unclick = false;
 
     #if HAS_DIGITAL_BUTTONS && BUTTON_EXISTS(BACK)
       if (LCD_BACK_CLICKED()) {
