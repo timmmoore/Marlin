@@ -800,7 +800,8 @@ void MarlinUI::update() {
         wait_for_user = false;                        //  - Any click clears wait for user
         quick_feedback();                             //  - Always make a click sound
       }
-      else wait_for_unclick = false;
+    }
+    else wait_for_unclick = false;
 
     #if HAS_DIGITAL_BUTTONS && BUTTON_EXISTS(BACK)
       if (LCD_BACK_CLICKED()) {
