@@ -66,15 +66,7 @@ PrintJobRecovery recovery;
 /**
  * Clear the recovery info
  */
-void PrintJobRecovery::init() {
-  memset(&info, 0, sizeof(info));
-  #if ENABLED(POWER_LOSS_PULLUP)
-    SET_INPUT_PULLUP(POWER_LOSS_PIN);
-  #endif
-  #if ENABLED(POWER_LOSS_PULLDOWN)
-    SET_INPUT_PULLDOWN(POWER_LOSS_PIN);
-  #endif
-}
+void PrintJobRecovery::init() { memset(&info, 0, sizeof(info)); }
 
 /**
  * Enable or disable then call changed()
