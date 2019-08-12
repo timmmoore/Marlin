@@ -139,6 +139,8 @@ class PrintJobRecovery {
     static inline void open(const bool read) { card.openJobRecoveryFile(read); }
     static inline void close() { file.close(); }
 
+    static inline bool read() { return(READ(POWER_LOSS_PIN) == POWER_LOSS_STATE);}
+
     static void purge();
     static void load();
     static void save(const bool force=
