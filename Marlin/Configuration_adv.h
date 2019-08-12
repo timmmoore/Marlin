@@ -587,7 +587,7 @@
    * This feature was designed for Delta's with very fast Z moves however higher speed cartesians may function
    * If the machine cannot raise the probe fast enough after a trigger, it may enter a fault state.
    */
-  //#define BLTOUCH_HS_MODE
+  #define BLTOUCH_HS_MODE
 
   // Safety: Enable voltage mode settings in the LCD menu.
   //#define BLTOUCH_LCD_VOLTAGE_MENU
@@ -931,6 +931,8 @@
   #if ENABLED(POWER_LOSS_RECOVERY)
     #define POWER_LOSS_PIN            2 // Pin to detect power loss
     #define POWER_LOSS_STATE        LOW // State of pin indicating power loss
+    #define POWER_LOSS_PULLUP
+    //#define POWER_LOSS_PULLDOWN
     //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
     //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
 
