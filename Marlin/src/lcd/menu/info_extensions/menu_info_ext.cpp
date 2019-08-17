@@ -108,7 +108,7 @@ namespace ExtMenuInfo {
   // List of menu info submenus
   //
   static const char menu1str[] PROGMEM = MSG_INFO_POWER_MENU;
-  
+
   MenuInfoExtensions ExtMenuInfoPower = {
     { menu1str, menu_info_power },
     { nullptr, nullptr }
