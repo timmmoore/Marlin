@@ -230,7 +230,7 @@ void menu_info() {
     MENU_ITEM(submenu, MSG_INFO_PRINTER_MENU, menu_info_printer);        // Printer Info >
     MENU_ITEM(submenu, MSG_INFO_BOARD_MENU, menu_info_board);            // Board Info >
     MENU_ITEM(submenu, MSG_INFO_THERMISTOR_MENU, menu_info_thermistors); // Thermistors >
-    #if ENABLED(HAS_MENU_INFO_EXTENSIONS)
+    #if defined(HAS_MENU_INFO_EXTENSIONS)
       for(int16_t i = 0; ExtMenuInfo::ExtMenuInfoExtensions[i].menuName != nullptr; i++) {
         MENU_ITEM_P(submenu, ExtMenuInfo::ExtMenuInfoExtensions[i].menuName, ExtMenuInfo::ExtMenuInfoExtensions[i].function);
       }
