@@ -19,6 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
+
 #define CUSTOM_BOOTSCREEN_BMPWIDTH 80
 
 const uint8_t custom_start_bmp[] PROGMEM = {
