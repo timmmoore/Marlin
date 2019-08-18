@@ -26,7 +26,7 @@
 
 #include "../../../inc/MarlinConfigPre.h"
 
-#if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU) && ENABLED(HAS_MENU_INFO_EXTENSIONS)
+#if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU) && defined(HAS_MENU_INFO_EXTENSIONS)
 
 #include "../menu.h"
 #undef LANGUAGE_INCL_
@@ -109,7 +109,7 @@ namespace ExtMenuInfo {
   //
   static const char menu1str[] PROGMEM = MSG_INFO_POWER_MENU;
 
-  MenuInfoExtensions ExtMenuInfoSubMenuInfoList = {
+  MenuInfoExtensions ExtMenuInfoPower = {
     { menu1str, menu_info_power },
     { nullptr, nullptr }
   };
