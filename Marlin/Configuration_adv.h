@@ -886,6 +886,7 @@
     #endif
   #endif
 
+  #define BATTERY_STATUS_AVAILABLE
 #endif // HAS_LCD_MENU
 
 // Scroll a longer status message into view
