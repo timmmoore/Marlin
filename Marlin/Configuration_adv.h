@@ -666,10 +666,10 @@
   #endif
 #endif
 
-// @section extras
+// @section motion
 
-// minimum time in microseconds that a movement needs to take if the buffer is emptied.
-#define DEFAULT_MINSEGMENTTIME        20000
+// Minimum time that a segment needs to take if the buffer is emptied
+#define DEFAULT_MINSEGMENTTIME        20000   // (ms)
 
 // If defined the movements slow down when the look ahead buffer is only half full
 // (don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
@@ -860,12 +860,33 @@
   #define FEEDRATE_CHANGE_BEEP_FREQUENCY 440
 #endif
 
-// Include a page of printer information in the LCD Main Menu
-#define LCD_INFO_MENU
-#if ENABLED(LCD_INFO_MENU)
-  //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
-  #define HAS_MENU_INFO_EXTENSIONS ExtMenuInfoPower // name of menu info extension array
-#endif
+#if HAS_LCD_MENU
+
+  // Include a page of printer information in the LCD Main Menu
+  #define LCD_INFO_MENU
+  #if ENABLED(LCD_INFO_MENU)
+    //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
+    #define HAS_MENU_INFO_EXTENSIONS ExtMenuInfoPower // name of menu info extension array
+  #endif
+
+  /**
+   * LED Control Menu
+   * Add LED Control to the LCD menu
+   */
+  #define LED_CONTROL_MENU
+  #if ENABLED(LED_CONTROL_MENU)
+    #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
+    #if ENABLED(LED_COLOR_PRESETS)
+      #define LED_USER_PRESET_RED         35  // User defined RED value
+      #define LED_USER_PRESET_GREEN       35  // User defined GREEN value
+      #define LED_USER_PRESET_BLUE        25  // User defined BLUE value
+      #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
+      #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
+      //#define LED_USER_PRESET_STARTUP       // Have the printer display the user preset color on startup
+    #endif
+  #endif
+
+#endif // HAS_LCD_MENU
 
 // Scroll a longer status message into view
 #define STATUS_MESSAGE_SCROLLING
@@ -889,23 +910,6 @@
     //#define LCD_PROGRESS_BAR_TEST       // Add a menu item to test the progress bar
   #endif
 #endif
-
-/**
- * LED Control Menu
- * Enable this feature to add LED Control to the LCD menu
- */
-#define LED_CONTROL_MENU
-#if ENABLED(LED_CONTROL_MENU)
-  #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
-  #if ENABLED(LED_COLOR_PRESETS)
-    #define LED_USER_PRESET_RED         35  // User defined RED value
-    #define LED_USER_PRESET_GREEN       35  // User defined GREEN value
-    #define LED_USER_PRESET_BLUE        35  // User defined BLUE value
-    #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
-    #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
-    #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
-  #endif
-#endif // LED_CONTROL_MENU
 
 #if ENABLED(SDSUPPORT)
 
