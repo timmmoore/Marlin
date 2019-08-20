@@ -70,7 +70,7 @@
     #if ENABLED(LCD_USE_I2C_BUZZER)
       lcd.buzz(duration, freq);
     #elif ENABLED(PCA9632_BUZZER)
-      pca9632_buzz(const long duration, const uint16_t freq) {
+      pca9632_buzz(duration, freq);
     #elif USE_BEEPER
       buzzer.tone(duration, freq);
     #endif

@@ -116,7 +116,9 @@
   #define BUZZ(d,f) buzzer.tone(d, f)
 
 #elif HAS_BUZZER
-
+  #if ENABLED(PCA9632_BUZZER)
+    #include "../feature/leds/pca9632.h"
+  #endif
   // Buzz indirectly via the MarlinUI instance
   #define BUZZ(d,f) ui.buzz(d,f)
 
