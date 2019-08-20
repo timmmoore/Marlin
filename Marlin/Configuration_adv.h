@@ -879,14 +879,13 @@
     #if ENABLED(LED_COLOR_PRESETS)
       #define LED_USER_PRESET_RED         35  // User defined RED value
       #define LED_USER_PRESET_GREEN       35  // User defined GREEN value
-      #define LED_USER_PRESET_BLUE        25  // User defined BLUE value
+      #define LED_USER_PRESET_BLUE        35  // User defined BLUE value
       #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
       #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
       #define LED_USER_PRESET_STARTUP       // Have the printer display the user preset color on startup
     #endif
   #endif
 
-  #define BATTERY_STATUS_AVAILABLE
 #endif // HAS_LCD_MENU
 
 // Scroll a longer status message into view
