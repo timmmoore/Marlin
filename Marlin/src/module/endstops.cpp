@@ -396,7 +396,7 @@ static void print_es_state(const bool is_hit, PGM_P const label=nullptr, const u
   SERIAL_EOL();
 }
 
-void _O2 Endstops::M119() {
+void _O2 Endstops::M119(const bool display=false) {
   #if ENABLED(BLTOUCH)
     bltouch._set_SW_mode();
   #endif
@@ -428,7 +428,7 @@ void _O2 Endstops::M119() {
   #endif
   #if HAS_Z_MIN
     #if ENABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
-      print_es_state(READ(Z_MIN_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE), 2);
+      print_es_state(READ(Z_MIN_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE), display?2:0);
     #else
       ES_REPORT(Z_MIN);
     #endif
@@ -449,11 +449,11 @@ void _O2 Endstops::M119() {
     ES_REPORT(Z3_MAX);
   #endif
   #if USES_Z_MIN_PROBE_ENDSTOP
-    print_es_state(READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE), 2);
+    print_es_state(READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE), display?2:0);
   #endif
   #if HAS_FILAMENT_SENSOR
     #if NUM_RUNOUT_SENSORS == 1
-      print_es_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, PSTR(MSG_FILAMENT_RUNOUT_SENSOR), 1);
+      print_es_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, PSTR(MSG_FILAMENT_RUNOUT_SENSOR), display?1:0);
     #else
       for (uint8_t i = 1; i <= NUM_RUNOUT_SENSORS; i++) {
         pin_t pin;
@@ -476,12 +476,12 @@ void _O2 Endstops::M119() {
         }
         SERIAL_ECHOPGM(MSG_FILAMENT_RUNOUT_SENSOR);
         if (i > 1) { SERIAL_CHAR(' '); SERIAL_CHAR('0' + i); }
-        print_es_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, nullptr, 1);
+        print_es_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, nullptr, display?1:0);
       }
     #endif
   #endif
   #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
-    print_es_state(READ(POWER_LOSS_PIN) != POWER_LOSS_STATE, PSTR(MSG_POWER_LOSS), 3);
+    print_es_state(READ(POWER_LOSS_PIN) != POWER_LOSS_STATE, PSTR(MSG_POWER_LOSS), display?3:0);
   #endif
   #if ENABLED(BLTOUCH)
     bltouch._reset_SW_mode();
