@@ -860,6 +860,9 @@
     #define HAS_MENU_INFO_EXTENSIONS ExtMenuInfoPower // name of menu info extension array
   #endif
 
+  // BACK menu items keep the highlight at the top
+  //#define TURBO_BACK_MENU_ITEM
+
   /**
    * LED Control Menu
    * Add LED Control to the LCD menu
