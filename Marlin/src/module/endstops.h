@@ -126,7 +126,7 @@ class Endstops {
     /**
      * Report endstop positions in response to M119
      */
-    static void M119(const bool display);
+    static void M119(const bool display=false);
 
     // Enable / disable endstop checking globally
     static void enable_globally(const bool onoff=true);
