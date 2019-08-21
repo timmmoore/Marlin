@@ -384,7 +384,7 @@ void Endstops::event_handler() {
   prev_hit_state = hit_state;
 }
 
-static void print_es_state(const bool is_hit, PGM_P const label=nullptr, const uint8_t type=0, const bool display=false) {
+static void print_es_state(const bool is_hit, PGM_P const label=nullptr, const uint8_t type=0) {
   if (label) serialprintPGM(label);
   SERIAL_ECHOPGM(": ");
   switch (type) {
@@ -401,7 +401,7 @@ void _O2 Endstops::M119(const bool display=false) {
     bltouch._set_SW_mode();
   #endif
   SERIAL_ECHOLNPGM(MSG_M119_REPORT);
-  #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(MSG_##S), display)
+  #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(MSG_##S))
   #if HAS_X_MIN
     ES_REPORT(X_MIN);
   #endif
