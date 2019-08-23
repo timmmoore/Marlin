@@ -217,7 +217,7 @@
 // Show extra position information in M114
 #define M114_DETAIL
 
-// Enable localized info in M119
+// Show more info in M119
 #define M119_DETAIL
 
 // Show Temperature ADC value
