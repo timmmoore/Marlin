@@ -1533,11 +1533,11 @@
   #define MSG_BACKLASH_SMOOTHING              _UxGT("Smoothing")
 #endif
 
-#ifndef MSG_POWER_ON
-  #define MSG_POWER_ON                        _UxGT("Power ok")
+#ifndef MSG_ENDSTOP_OK
+  #define MSG_ENDSTOP_OK                      _UxGT("ok")
 #endif
 #ifndef MSG_POWER_OFF
-  #define MSG_POWER_OFF                       _UxGT("Power lost") 
+  #define MSG_POWER_OFF                       _UxGT("lost") 
 #endif
 #ifndef MSG_LOC_ENDSTOP_HIT
   #define MSG_LOC_ENDSTOP_HIT                 _UxGT("TRIGGERED")
@@ -1545,15 +1545,12 @@
 #ifndef MSG_LOC_ENDSTOP_OPEN
   #define MSG_LOC_ENDSTOP_OPEN                _UxGT("open")
 #endif
-#ifndef MSG_FILAMENT_HIT
-  #define MSG_FILAMENT_HIT                    _UxGT("Filament")
-#endif
 #ifndef MSG_FILAMENT_OPEN
-  #define MSG_FILAMENT_OPEN                   _UxGT("No Filament")
+  #define MSG_FILAMENT_OPEN                   _UxGT("None")
 #endif
 #ifndef MSG_PROBE_HIT
-  #define MSG_PROBE_HIT                       _UxGT("Probe Touching")
+  #define MSG_PROBE_HIT                       _UxGT("Touching")
 #endif
 #ifndef MSG_PROBE_OPEN
-  #define MSG_PROBE_OPEN                      _UxGT("Probe not touching")
+  #define MSG_PROBE_OPEN                      _UxGT("Not touching")
 #endif
