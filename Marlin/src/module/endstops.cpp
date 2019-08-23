@@ -388,10 +388,11 @@ static void print_es_state(const bool is_hit, PGM_P const label=nullptr, const u
   if (label) serialprintPGM(label);
   SERIAL_ECHOPGM(": ");
   switch (type) {
-    case 0: serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN)); break;   // endstop
-    case 1: serialprintPGM(is_hit ? PSTR(MSG_FILAMENT_HIT) : PSTR(MSG_FILAMENT_OPEN)); break; // filament
-    case 2: serialprintPGM(is_hit ? PSTR(MSG_PROBE_HIT) : PSTR(MSG_PROBE_OPEN)); break;       // probe
-    default: serialprintPGM(is_hit ? PSTR(MSG_ON) : PSTR(MSG_OFF));                           // other
+    case 0: serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN)); break;         // default non localized strings
+    case 1: serialprintPGM(is_hit ? PSTR(MSG_FILAMENT_HIT) : PSTR(MSG_FILAMENT_OPEN)); break;   // filament
+    case 2: serialprintPGM(is_hit ? PSTR(MSG_PROBE_HIT) : PSTR(MSG_PROBE_OPEN)); break;         // probe
+    case 3: serialprintPGM(is_hit ? PSTR(MSG_LOC_ENDSTOP_HIT) : PSTR(MSG_LOC_ENDSTOP_OPEN)); break; // endstop
+    default: serialprintPGM(is_hit ? PSTR(MSG_POWER_ON) : PSTR(MSG_POWER_OFF));                     // other
   }
   SERIAL_EOL();
 }
@@ -401,7 +402,7 @@ void _O2 Endstops::M119(const bool display=false) {
     bltouch._set_SW_mode();
   #endif
   SERIAL_ECHOLNPGM(MSG_M119_REPORT);
-  #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(MSG_##S))
+  #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(MSG_##S), display?3:0)
   #if HAS_X_MIN
     ES_REPORT(X_MIN);
   #endif
@@ -481,7 +482,7 @@ void _O2 Endstops::M119(const bool display=false) {
     #endif
   #endif
   #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
-    print_es_state(READ(POWER_LOSS_PIN) != POWER_LOSS_STATE, PSTR(MSG_POWER_LOSS), display?3:0);
+    print_es_state(READ(POWER_LOSS_PIN) != POWER_LOSS_STATE, PSTR(MSG_POWER_LOSS), display?4:0);
   #endif
   #if ENABLED(BLTOUCH)
     bltouch._reset_SW_mode();
