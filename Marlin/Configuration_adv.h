@@ -217,6 +217,9 @@
 // Show extra position information in M114
 #define M114_DETAIL
 
+// Enable localized info in M119
+//#define M119_DETAIL
+
 // Show Temperature ADC value
 // Enable for M105 to include ADC values read from temperature sensors.
 #define SHOW_TEMP_ADC_VALUES
