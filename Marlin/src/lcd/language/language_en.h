@@ -1561,3 +1561,6 @@
 #ifndef MSG_FILAMENT_OPEN
   #define MSG_FILAMENT_OPEN                   _UxGT("None")
 #endif
+#ifndef MSG_FILAMENT_SENSOR
+  #define MSG_FILAMENT_SENSOR                 _UxGT("Filament sensor")
+#endif

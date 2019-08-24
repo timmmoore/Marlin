@@ -122,9 +122,9 @@ class TFilamentMonitor : public FilamentMonitorBase {
       SERIAL_EOL();
     }
 
-    static void print_state(PGM_P const hit, PGM_P const open) {
+    static void print_state(PGM_P const label, PGM_P const hit, PGM_P const open) {
       #if NUM_RUNOUT_SENSORS == 1
-        print_ro_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, hit, open, PSTR(MSG_FILAMENT_RUNOUT_SENSOR));
+        print_ro_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, hit, open, label);
       #else
         for (uint8_t i = 1; i <= NUM_RUNOUT_SENSORS; i++) {
           pin_t pin;

@@ -447,7 +447,7 @@ void _O2 Endstops::M119() {
     print_es_state(READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE));
   #endif
   #if HAS_FILAMENT_SENSOR
-    runout.print_state(PSTR(MSG_ENDSTOP_HIT), PSTR(MSG_ENDSTOP_OPEN));
+    runout.print_state(PSTR(MSG_FILAMENT_RUNOUT_SENSOR), PSTR(MSG_ENDSTOP_HIT), PSTR(MSG_ENDSTOP_OPEN));
   #endif
   #if ENABLED(BLTOUCH)
     bltouch._reset_SW_mode();
