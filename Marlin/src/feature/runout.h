@@ -114,6 +114,43 @@ class TFilamentMonitor : public FilamentMonitorBase {
         }
       }
     }
+
+    static void print_ro_state(const bool value, PGM_P const hit, PGM_P const open, PGM_P const label = nullptr) {
+      if(label) serialprintPGM(label);
+      SERIAL_ECHOPGM(": ");
+      serialprintPGM(value ? hit : open);
+      SERIAL_EOL();
+    }
+
+    static void print_state(PGM_P const hit, PGM_P const open) {
+      #if NUM_RUNOUT_SENSORS == 1
+        print_ro_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, hit, open, PSTR(MSG_FILAMENT_RUNOUT_SENSOR));
+      #else
+        for (uint8_t i = 1; i <= NUM_RUNOUT_SENSORS; i++) {
+          pin_t pin;
+          switch (i) {
+            default: continue;
+            case 1: pin = FIL_RUNOUT_PIN; break;
+            case 2: pin = FIL_RUNOUT2_PIN; break;
+            #if NUM_RUNOUT_SENSORS > 2
+              case 3: pin = FIL_RUNOUT3_PIN; break;
+              #if NUM_RUNOUT_SENSORS > 3
+                case 4: pin = FIL_RUNOUT4_PIN; break;
+                #if NUM_RUNOUT_SENSORS > 4
+                  case 5: pin = FIL_RUNOUT5_PIN; break;
+                  #if NUM_RUNOUT_SENSORS > 5
+                    case 6: pin = FIL_RUNOUT6_PIN; break;
+                  #endif
+                #endif
+              #endif
+            #endif
+          }
+          SERIAL_ECHOPGM(MSG_FILAMENT_RUNOUT_SENSOR);
+          if (i > 1) { SERIAL_CHAR(' '); SERIAL_CHAR('0' + i); }
+          print_ro_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, hit, open);
+        }
+      #endif
+    }
 };
 
 /*************************** FILAMENT PRESENCE SENSORS ***************************/
