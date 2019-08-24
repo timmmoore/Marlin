@@ -24,7 +24,7 @@
 // Info Menu
 //
 
-#define BATTERY_STATUS_AVAILABLE      // in case BATTERY_STATUS_PIN defined in pins file
+#define BATTERY_STATUS_AVAILABLE
 #include "../../../inc/MarlinConfigPre.h"
 
 #if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU) && defined(HAS_MENU_INFO_EXTENSIONS)
