@@ -1556,7 +1556,7 @@
   #define MSG_ENDSTOP_OK                      _UxGT("ok")
 #endif
 #ifndef MSG_POWER_OFF
-  #define MSG_POWER_OFF                       _UxGT("lost") 
+  #define MSG_POWER_OFF                       _UxGT("lost")
 #endif
 #ifndef MSG_FILAMENT_OPEN
   #define MSG_FILAMENT_OPEN                   _UxGT("None")
