@@ -44,6 +44,10 @@
   #include "../feature/bltouch.h"
 #endif
 
+#if ENABLED(POWER_LOSS_RECOVERY)
+  #include "../feature/power_loss_recovery.h"
+#endif
+
 Endstops endstops;
 
 // private:
@@ -488,7 +492,7 @@ void _O2 Endstops::M119(const bool display) {
     #endif
   #endif
   #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
-    print_es_state(READ(POWER_LOSS_PIN) != POWER_LOSS_STATE, PSTR(MSG_POWER_LOSS), display?4:0);
+    print_es_state(!recovery.read(), PSTR(MSG_POWER_LOSS), display?4:0);
   #endif
   #if ENABLED(BLTOUCH)
     bltouch._reset_SW_mode();
