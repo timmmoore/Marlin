@@ -401,7 +401,6 @@ static void print_es_state(const bool is_hit, PGM_P const label=nullptr, const u
       case 1: serialprintPGM(is_hit ? PSTR(MSG_LOC_ENDSTOP_HIT) : PSTR(MSG_LOC_ENDSTOP_OPEN)); break; // endstop
       case 2: serialprintPGM(is_hit ? PSTR(MSG_PROBE_HIT) : PSTR(MSG_PROBE_OPEN)); break;             // probe
       case 3: serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_OK) : PSTR(MSG_FILAMENT_OPEN)); break;         // filament
-      case 4: serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_OK) : PSTR(MSG_POWER_OFF)); break;             // other
     }
   #endif
   SERIAL_EOL();
@@ -490,9 +489,6 @@ void _O2 Endstops::M119(const bool display) {
         print_es_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, nullptr, display?3:0);
       }
     #endif
-  #endif
-  #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
-    print_es_state(!recovery.read(), PSTR(MSG_POWER_LOSS), display?4:0);
   #endif
   #if ENABLED(BLTOUCH)
     bltouch._reset_SW_mode();
