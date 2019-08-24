@@ -44,6 +44,9 @@ void GcodeSuite::M413() {
     SERIAL_ECHO_START();
     SERIAL_ECHOPGM("Power-loss recovery ");
     serialprintln_onoff(recovery.enabled);
+    SERIAL_ECHOPGM(MSG_POWER_LOSS " ");
+    serialprintPGM(recovery.read() ? PSTR(MSG_ENDSTOP_OK) : PSTR(MSG_POWER_OFF));
+    SERIAL_EOL();
   }
 
   #if ENABLED(DEBUG_POWER_LOSS_RECOVERY)
