@@ -67,7 +67,11 @@ namespace ExtMenuInfo {
   // About Printer > Power Info
   //
   void menu_info_power() {
-    if (ui.use_click()) return ui.goto_previous_screen();
+    if (ui.use_click()) return ui.goto_previous_screen(
+      #if ENABLED(TURBO_BACK_MENU_ITEM)
+        true
+      #endif
+    );
     START_SCREEN();
     STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
     #if ENABLED(POWER_LOSS_RECOVERY)
