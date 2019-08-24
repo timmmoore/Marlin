@@ -388,30 +388,19 @@ void Endstops::event_handler() {
   prev_hit_state = hit_state;
 }
 
-static void print_es_state(const bool is_hit, PGM_P const label=nullptr, const uint8_t type=0) {
+static void print_es_state(const bool is_hit, PGM_P const label=nullptr) {
   if (label) serialprintPGM(label);
   SERIAL_ECHOPGM(": ");
-  #if DISABLED(M119_DETAIL)
-    UNUSED(type);
-    serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));                          // default non localized strings
-  #else
-    switch (type) {
-      default:
-      case 0: serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN)); break;         // default non localized strings
-      case 1: serialprintPGM(is_hit ? PSTR(MSG_LOC_ENDSTOP_HIT) : PSTR(MSG_LOC_ENDSTOP_OPEN)); break; // endstop
-      case 2: serialprintPGM(is_hit ? PSTR(MSG_PROBE_HIT) : PSTR(MSG_PROBE_OPEN)); break;             // probe
-      case 3: serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_OK) : PSTR(MSG_FILAMENT_OPEN)); break;         // filament
-    }
-  #endif
+  serialprintPGM(is_hit ? PSTR(MSG_ENDSTOP_HIT) : PSTR(MSG_ENDSTOP_OPEN));
   SERIAL_EOL();
 }
 
-void _O2 Endstops::M119(const bool display) {
+void _O2 Endstops::M119() {
   #if ENABLED(BLTOUCH)
     bltouch._set_SW_mode();
   #endif
   SERIAL_ECHOLNPGM(MSG_M119_REPORT);
-  #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(MSG_##S), display?1:0)
+  #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(MSG_##S))
   #if HAS_X_MIN
     ES_REPORT(X_MIN);
   #endif
@@ -438,7 +427,7 @@ void _O2 Endstops::M119(const bool display) {
   #endif
   #if HAS_Z_MIN
     #if ENABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
-      print_es_state(READ(Z_MIN_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE), display?2:0);
+      print_es_state(READ(Z_MIN_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE));
     #else
       ES_REPORT(Z_MIN);
     #endif
@@ -459,11 +448,11 @@ void _O2 Endstops::M119(const bool display) {
     ES_REPORT(Z3_MAX);
   #endif
   #if USES_Z_MIN_PROBE_ENDSTOP
-    print_es_state(READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE), display?2:0);
+    print_es_state(READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING, PSTR(MSG_Z_PROBE));
   #endif
   #if HAS_FILAMENT_SENSOR
     #if NUM_RUNOUT_SENSORS == 1
-      print_es_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, PSTR(MSG_FILAMENT_RUNOUT_SENSOR), display?3:0);
+      print_es_state(READ(FIL_RUNOUT_PIN) != FIL_RUNOUT_INVERTING, PSTR(MSG_FILAMENT_RUNOUT_SENSOR));
     #else
       for (uint8_t i = 1; i <= NUM_RUNOUT_SENSORS; i++) {
         pin_t pin;
@@ -486,7 +475,7 @@ void _O2 Endstops::M119(const bool display) {
         }
         SERIAL_ECHOPGM(MSG_FILAMENT_RUNOUT_SENSOR);
         if (i > 1) { SERIAL_CHAR(' '); SERIAL_CHAR('0' + i); }
-        print_es_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, nullptr, display?3:0);
+        print_es_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, nullptr);
       }
     #endif
   #endif
