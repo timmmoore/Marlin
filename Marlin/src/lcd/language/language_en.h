@@ -1564,3 +1564,6 @@
 #ifndef MSG_FILAMENT_SENSOR
   #define MSG_FILAMENT_SENSOR                 _UxGT("Filament sensor")
 #endif
+#ifndef MSG_POWER_LOSS
+  #define MSG_POWER_LOSS                      _UxGT("Power")
+#endif
