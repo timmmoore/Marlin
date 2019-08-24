@@ -44,10 +44,6 @@
   #include "../feature/bltouch.h"
 #endif
 
-#if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../feature/power_loss_recovery.h"
-#endif
-
 Endstops endstops;
 
 // private:
