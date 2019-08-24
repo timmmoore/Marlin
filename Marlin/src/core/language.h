@@ -213,7 +213,6 @@
 #define MSG_OFF                             "OFF"
 #define MSG_ENDSTOP_HIT                     "TRIGGERED"
 #define MSG_ENDSTOP_OPEN                    "open"
-#define MSG_POWER_LOSS                      "Power"
 #define MSG_HOTEND_OFFSET                   "Hotend offsets:"
 #define MSG_DUPLICATION_MODE                "Duplication mode: "
 #define MSG_SOFT_ENDSTOPS                   "Soft endstops: "
