@@ -68,7 +68,7 @@
   #include "tool_change.h"
 #endif
 
-#if HAS_BUZZER && PIN_EXISTS(BEEPER)
+#if USE_BEEPER
   #include "../libs/buzzer.h"
 #endif
 
@@ -756,7 +756,7 @@ int16_t Temperature::getHeaterPower(const heater_ind_t heater_id) {
 
 inline void loud_kill(PGM_P const lcd_msg) {
   Running = false;
-  #if HAS_BUZZER && PIN_EXISTS(BEEPER)
+  #if USE_BEEPER
     for (uint8_t i = 20; i--;) {
       WRITE(BEEPER_PIN, HIGH); delay(25);
       WRITE(BEEPER_PIN, LOW); delay(80);

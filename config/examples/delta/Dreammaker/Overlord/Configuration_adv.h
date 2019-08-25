@@ -659,10 +659,10 @@
   #endif
 #endif
 
-// @section extras
+// @section motion
 
-// minimum time in microseconds that a movement needs to take if the buffer is emptied.
-#define DEFAULT_MINSEGMENTTIME        20000
+// Minimum time that a segment needs to take if the buffer is emptied
+#define DEFAULT_MINSEGMENTTIME        20000   // (ms)
 
 // If defined the movements slow down when the look ahead buffer is only half full
 // (don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
@@ -853,11 +853,35 @@
   #define FEEDRATE_CHANGE_BEEP_FREQUENCY 440
 #endif
 
-// Include a page of printer information in the LCD Main Menu
-#define LCD_INFO_MENU
-#if ENABLED(LCD_INFO_MENU)
-  //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
-#endif
+#if HAS_LCD_MENU
+
+  // Include a page of printer information in the LCD Main Menu
+  #define LCD_INFO_MENU
+  #if ENABLED(LCD_INFO_MENU)
+    //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
+  #endif
+
+  // BACK menu items keep the highlight at the top
+  //#define TURBO_BACK_MENU_ITEM
+
+  /**
+   * LED Control Menu
+   * Add LED Control to the LCD menu
+   */
+  #define LED_CONTROL_MENU
+  #if ENABLED(LED_CONTROL_MENU)
+    #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
+    #if ENABLED(LED_COLOR_PRESETS)
+      #define LED_USER_PRESET_RED         35  // User defined RED value
+      #define LED_USER_PRESET_GREEN       35  // User defined GREEN value
+      #define LED_USER_PRESET_BLUE        35  // User defined BLUE value
+      #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
+      #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
+      #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
+    #endif
+  #endif
+
+#endif // HAS_LCD_MENU
 
 // Scroll a longer status message into view
 #define STATUS_MESSAGE_SCROLLING
@@ -881,23 +905,6 @@
     //#define LCD_PROGRESS_BAR_TEST       // Add a menu item to test the progress bar
   #endif
 #endif
-
-/**
- * LED Control Menu
- * Enable this feature to add LED Control to the LCD menu
- */
-#define LED_CONTROL_MENU
-#if ENABLED(LED_CONTROL_MENU)
-  #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
-  #if ENABLED(LED_COLOR_PRESETS)
-    #define LED_USER_PRESET_RED         35  // User defined RED value
-    #define LED_USER_PRESET_GREEN       35  // User defined GREEN value
-    #define LED_USER_PRESET_BLUE        35  // User defined BLUE value
-    #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
-    #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
-    #define LED_USER_PRESET_STARTUP         // Have the printer display the user preset color on startup
-  #endif
-#endif // LED_CONTROL_MENU
 
 #if ENABLED(SDSUPPORT)
 
@@ -933,6 +940,7 @@
   #if ENABLED(POWER_LOSS_RECOVERY)
     //#define POWER_LOSS_PIN         44 // Pin to detect power loss (optional)
     #define POWER_LOSS_STATE        LOW // State of pin indicating power loss
+    //#define POWER_LOSS_PULL           // Set pullup / pulldown as appropriate
     //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
     //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
 
@@ -1012,17 +1020,31 @@
    * equivalent MAX3421E breakout board. The USB thumb drive will appear
    * to Marlin as an SD card.
    *
-   * The MAX3421E must be assigned the same pins as the SD card reader, with
+   * The MAX3421E can be assigned the same pins as the SD card reader, with
    * the following pin mapping:
    *
    *    SCLK, MOSI, MISO --> SCLK, MOSI, MISO
-   *    INT              --> SD_DETECT_PIN
+   *    INT              --> SD_DETECT_PIN [1]
    *    SS               --> SDSS
+   *
+   * [1] On AVR an interrupt-capable pin is best for UHS3 compatibility.
    */
   //#define USB_FLASH_DRIVE_SUPPORT
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
-    #define USB_CS_PIN         SDSS
-    #define USB_INTR_PIN       SD_DETECT_PIN
+    #define USB_CS_PIN    SDSS
+    #define USB_INTR_PIN  SD_DETECT_PIN
+
+    /**
+     * USB Host Shield Library
+     *
+     * - UHS2 uses no interrupts and has been production-tested
+     *   on a LulzBot TAZ Pro with a 32-bit Archim board.
+     *
+     * - UHS3 is newer code with better USB compatibility. But it
+     *   is less tested and is known to interfere with Servos.
+     *   [1] This requires USB_INTR_PIN to be interrupt-capable.
+     */
+    //#define USE_UHS3_USB
   #endif
 
   /**
@@ -1137,6 +1159,7 @@
   //#define STATUS_FAN_FRAMES 3       // :[0,1,2,3,4] Number of fan animation frames
   //#define STATUS_HEAT_PERCENT       // Show heating in a progress bar
   //#define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
+  //#define BOOT_MARLIN_LOGO_ANIMATED // Animated Marlin logo. Costs ~‭3260 (or ~940) bytes of PROGMEM.
 
   // Frivolous Game Options
   //#define MARLIN_BRICKOUT
@@ -1329,7 +1352,7 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
-#define MIN_STEPS_PER_SEGMENT 6
+#define MIN_STEPS_PER_SEGMENT 1
 
 /**
  * Minimum delay after setting the stepper DIR (in ns)
