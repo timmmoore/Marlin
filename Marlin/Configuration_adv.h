@@ -857,7 +857,7 @@
   #define LCD_INFO_MENU
   #if ENABLED(LCD_INFO_MENU)
     //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
-    //#define HAS_MENU_INFO_EXTENSIONS ExtMenuInfoPower
+    #define HAS_MENU_INFO_EXTENSIONS ExtMenuInfoPower
   #endif
 
   // BACK menu items keep the highlight at the top
