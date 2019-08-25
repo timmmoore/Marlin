@@ -142,7 +142,7 @@ void PrintJobRecovery::save(const bool force/*=false*/, const bool save_queue/*=
   if (force
     #if DISABLED(SAVE_EACH_CMD_MODE)      // Always save state when enabled
       #if PIN_EXISTS(POWER_LOSS)          // Save if power loss pin is triggered
-        || READ(POWER_LOSS_PIN) == POWER_LOSS_STATE
+        || read()
       #endif
       #if SAVE_INFO_INTERVAL_MS > 0       // Save if interval is elapsed
         || ELAPSED(ms, next_save_ms)
@@ -225,7 +225,7 @@ void PrintJobRecovery::save(const bool force/*=false*/, const bool save_queue/*=
 
     // KILL now if the power-loss pin was triggered
     #if PIN_EXISTS(POWER_LOSS)
-      if (READ(POWER_LOSS_PIN) == POWER_LOSS_STATE) kill(PSTR(MSG_OUTAGE_RECOVERY));
+      if (read()) kill(PSTR(MSG_OUTAGE_RECOVERY));
     #endif
   }
 }
