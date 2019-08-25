@@ -45,8 +45,8 @@ void GcodeSuite::M413() {
     SERIAL_ECHOPGM("Power-loss recovery ");
     serialprintln_onoff(recovery.enabled);
     #if PIN_EXISTS(POWER_LOSS)
-      SERIAL_ECHOPGM(MSG_POWER_LOSS " ");
-      serialprintPGM(!recovery.read() ? PSTR(MSG_ENDSTOP_OK) : PSTR(MSG_POWER_OFF));
+      SERIAL_ECHOPGM(PSTR("Power: "));
+      serialprintPGM(!recovery.read() ? PSTR("ok") : PSTR("lost"));
       SERIAL_EOL();
     #endif
   }
