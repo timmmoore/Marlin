@@ -56,7 +56,7 @@ void GcodeSuite::M412() {
     #ifdef FILAMENT_RUNOUT_DISTANCE_MM
       SERIAL_ECHOLNPAIR("Filament runout distance (mm): ", runout.runout_distance());
     #endif
-    runout.print_state(PSTR("Filament sensor: "), PSTR("ok"), PSTR("none"));
+    runout.print_state(PSTR("Filament sensor"), PSTR("ok"), PSTR("none"));
   }
 }
 
