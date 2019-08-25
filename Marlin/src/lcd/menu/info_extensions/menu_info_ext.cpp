@@ -24,9 +24,10 @@
 // Info Menu
 //
 
+//#define BATTERY_STATUS_AVAILABLE
 #include "../../../inc/MarlinConfigPre.h"
 
-#if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU) && ENABLED(HAS_MENU_INFO_EXTENSIONS)
+#if HAS_LCD_MENU && ENABLED(LCD_INFO_MENU) && defined(HAS_MENU_INFO_EXTENSIONS)
 
 #include "../menu.h"
 #undef LANGUAGE_INCL_
@@ -56,7 +57,6 @@
  * A chargable battery supporting power loss, i.e. powers board when power loss occurs
  * If a pin is available to see if battery is charged will show battery status in menu info
  */
-//#define BATTERY_STATUS_AVAILABLE
 #if ENABLED(BATTERY_STATUS_AVAILABLE)
   #define BATTERY_STATUS_PIN    -1
   #define BATTERY_STATUS_CHARGED  LOW
@@ -67,7 +67,11 @@ namespace ExtMenuInfo {
   // About Printer > Power Info
   //
   void menu_info_power() {
-    if (ui.use_click()) return ui.goto_previous_screen();
+    if (ui.use_click()) return ui.goto_previous_screen(
+      #if ENABLED(TURBO_BACK_MENU_ITEM)
+        true
+      #endif
+    );
     START_SCREEN();
     STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
     #if ENABLED(POWER_LOSS_RECOVERY)
@@ -109,7 +113,7 @@ namespace ExtMenuInfo {
   //
   static const char menu1str[] PROGMEM = MSG_INFO_POWER_MENU;
 
-  MenuInfoExtensions ExtMenuInfoSubMenuInfoList = {
+  MenuInfoExtensions ExtMenuInfoPower = {
     { menu1str, menu_info_power },
     { nullptr, nullptr }
   };
