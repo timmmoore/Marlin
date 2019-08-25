@@ -145,7 +145,7 @@ class TFilamentMonitor : public FilamentMonitorBase {
               #endif
             #endif
           }
-          SERIAL_ECHOPGM(MSG_FILAMENT_RUNOUT_SENSOR);
+          SERIAL_ECHOPGM(label);
           if (i > 1) { SERIAL_CHAR(' '); SERIAL_CHAR('0' + i); }
           print_ro_state(extDigitalRead(pin) != FIL_RUNOUT_INVERTING, hit, open);
         }

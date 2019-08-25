@@ -1551,19 +1551,3 @@
 #ifndef MSG_THERMAL_RUNAWAY_CHAMBER_ON
   #define MSG_THERMAL_RUNAWAY_CHAMBER_ON      _UxGT("TChamber Runaway: On")
 #endif
-
-#ifndef MSG_ENDSTOP_OK
-  #define MSG_ENDSTOP_OK                      _UxGT("ok")
-#endif
-#ifndef MSG_POWER_OFF
-  #define MSG_POWER_OFF                       _UxGT("lost")
-#endif
-#ifndef MSG_FILAMENT_OPEN
-  #define MSG_FILAMENT_OPEN                   _UxGT("None")
-#endif
-#ifndef MSG_FILAMENT_SENSOR
-  #define MSG_FILAMENT_SENSOR                 _UxGT("Filament sensor")
-#endif
-#ifndef MSG_POWER_LOSS
-  #define MSG_POWER_LOSS                      _UxGT("Power")
-#endif
