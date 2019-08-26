@@ -2644,12 +2644,11 @@ void MarlinSettings::reset() {
         SERIAL_ECHOPGM(" ; Units in ");
         serialprintPGM(parser.temp_units_name());
       #else
-        SERIAL_ECHOLNPGM("  M149 C ; Units in Celsius");
+        SERIAL_ECHOPGM("  M149 C ; Units in Celsius");
       #endif
+      SERIAL_EOL();
 
     #endif
-
-    SERIAL_EOL();
 
     #if DISABLED(NO_VOLUMETRICS)
 
