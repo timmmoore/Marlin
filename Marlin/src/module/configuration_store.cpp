@@ -2845,10 +2845,9 @@ void MarlinSettings::reset() {
       #elif ENABLED(AUTO_BED_LEVELING_UBL)
 
         if (!forReplay) {
-          SERIAL_EOL();
           ubl.report_state();
-          SERIAL_ECHOLNPAIR("\nActive Mesh Slot: ", ubl.storage_slot);
-          SERIAL_ECHOLNPAIR("EEPROM can hold ", calc_num_meshes(), " meshes.\n");
+          SERIAL_ECHOLNPAIR("Active Mesh Slot: ", ubl.storage_slot);
+          SERIAL_ECHOLNPAIR("EEPROM can hold ", calc_num_meshes(), " meshes.");
         }
 
        //ubl.report_current_mesh();   // This is too verbose for large meshes. A better (more terse)
