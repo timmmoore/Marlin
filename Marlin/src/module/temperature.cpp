@@ -3089,7 +3089,7 @@ void Temperature::isr() {
           SERIAL_EOL();
         }
 
-        idle();
+        manage_inactivity();
         gcode.reset_stepper_timeout(); // Keep steppers powered
 
         const float temp = degHotend(target_extruder);
