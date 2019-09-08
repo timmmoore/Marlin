@@ -44,12 +44,12 @@
   #include "../feature/bltouch.h"
 #endif
 
-#if HAS_FILAMENT_SENSOR
-  #include "../feature/runout.h"
-#endif
-
 #if ENABLED(JOYSTICK)
   #include "../feature/joystick.h"
+#endif
+
+#if HAS_FILAMENT_SENSOR
+  #include "../feature/runout.h"
 #endif
 
 Endstops endstops;
