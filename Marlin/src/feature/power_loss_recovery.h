@@ -163,7 +163,7 @@ class PrintJobRecovery {
 
   #if PIN_EXISTS(POWER_LOSS)
     static inline void outage() {
-      if (enabled && IS_SD_PRINTING() && READ(POWER_LOSS_PIN) == POWER_LOSS_STATE)
+      if (enabled && IS_SD_PRINTING() && read())
         _outage();
     }
   #endif
