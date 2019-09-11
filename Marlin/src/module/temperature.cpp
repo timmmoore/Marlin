@@ -2455,28 +2455,25 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-
-      #if HOTENDS
-        #if ENABLED(ALT_BED_HOTEND)
-          hotend_last = false;
-        #endif
-        _PWM_MOD_E(0);
-        #if HOTENDS > 1
-          _PWM_MOD_E(1);
-          #if HOTENDS > 2
-            _PWM_MOD_E(2);
-            #if HOTENDS > 3
-              _PWM_MOD_E(3);
-              #if HOTENDS > 4
-                _PWM_MOD_E(4);
-                #if HOTENDS > 5
-                  _PWM_MOD_E(5);
-                #endif // HOTENDS > 5
-              #endif // HOTENDS > 4
-            #endif // HOTENDS > 3
-          #endif // HOTENDS > 2
-        #endif // HOTENDS > 1
-      #endif // HOTENDS
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+      #endif
+      _PWM_MOD_E(0);
+      #if HOTENDS > 1
+        _PWM_MOD_E(1);
+        #if HOTENDS > 2
+          _PWM_MOD_E(2);
+          #if HOTENDS > 3
+            _PWM_MOD_E(3);
+            #if HOTENDS > 4
+              _PWM_MOD_E(4);
+              #if HOTENDS > 5
+                _PWM_MOD_E(5);
+              #endif // HOTENDS > 5
+            #endif // HOTENDS > 4
+          #endif // HOTENDS > 3
+        #endif // HOTENDS > 2
+      #endif // HOTENDS > 1
 
       #if HAS_HEATED_BED
         _PWM_MOD(BED,soft_pwm_bed,temp_bed);
