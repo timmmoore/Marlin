@@ -2419,10 +2419,34 @@ void Temperature::isr() {
           0
         #endif
       ;
-      #define _PWM_MOD(N,S,T) do{                           \
-        const bool on = S.add(pwm_mask, T.soft_pwm_amount); \
-        WRITE_HEATER_##N(on);                               \
-      }while(0)
+      #if ENABLED(ALT_BED_HOTEND)
+        #define _PWM_MOD_V_CHAMBER(V,N,S,T) do{                 \
+          bool on = S.add(pwm_mask, T.soft_pwm_amount);         \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+        #define _PWM_MOD_V_BED(V,N,S,T) do{                     \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(!hotend_last && on) WRITE_HEATER_##N(on);          \
+          else WRITE_HEATER_##N(LOW);                           \
+        }while(0)
+        #define _PWM_MOD_V_E(V,N,S,T) do{                       \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          if(on && !hotend_current) {                           \
+            WRITE_HEATER_BED(LOW);                              \
+            hotend_last = true;                                 \
+            WRITE_HEATER_##N(on);                               \
+          }                                                     \
+          else WRITE_HEATER_##N(LOW);                           \
+        }while(0)
+        #define _PWM_MOD_V(V,N,S,T) _PWM_MOD_V_##V(V,N,S,T)
+      #else
+        #define _PWM_MOD_V(V,N,S,T) do{                         \
+          const bool on = S.add(pwm_mask, T.soft_pwm_amount);   \
+          WRITE_HEATER_##N(on);                                 \
+        }while(0)
+      #endif
+      #define _PWM_MOD(N,S,T) _PWM_MOD_V(N,N,S,T)
+      #define _PWM_MOD_E(N) _PWM_MOD_V(E,N,soft_pwm_hotend[N],temp_hotend[N])
     #endif
 
     /**
@@ -2430,26 +2454,25 @@ void Temperature::isr() {
      */
     if (pwm_count_tmp >= 127) {
       pwm_count_tmp -= 127;
-
-      #if HOTENDS
-        #define _PWM_MOD_E(N) _PWM_MOD(N,soft_pwm_hotend[N],temp_hotend[N])
-        _PWM_MOD_E(0);
-        #if HOTENDS > 1
-          _PWM_MOD_E(1);
-          #if HOTENDS > 2
-            _PWM_MOD_E(2);
-            #if HOTENDS > 3
-              _PWM_MOD_E(3);
-              #if HOTENDS > 4
-                _PWM_MOD_E(4);
-                #if HOTENDS > 5
-                  _PWM_MOD_E(5);
-                #endif // HOTENDS > 5
-              #endif // HOTENDS > 4
-            #endif // HOTENDS > 3
-          #endif // HOTENDS > 2
-        #endif // HOTENDS > 1
-      #endif // HOTENDS
+      #if ENABLED(ALT_BED_HOTEND)
+        hotend_last = false;
+      #endif
+      _PWM_MOD_E(0);
+      #if HOTENDS > 1
+        _PWM_MOD_E(1);
+        #if HOTENDS > 2
+          _PWM_MOD_E(2);
+          #if HOTENDS > 3
+            _PWM_MOD_E(3);
+            #if HOTENDS > 4
+              _PWM_MOD_E(4);
+              #if HOTENDS > 5
+                _PWM_MOD_E(5);
+              #endif // HOTENDS > 5
+            #endif // HOTENDS > 4
+          #endif // HOTENDS > 3
+        #endif // HOTENDS > 2
+      #endif // HOTENDS > 1
 
       #if HAS_HEATED_BED
         _PWM_MOD(BED,soft_pwm_bed,temp_bed);

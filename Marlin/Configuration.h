@@ -541,7 +541,7 @@
    */
   //#error "Overlord Pro needs larger PSU than stock PSU, comment out this line if you have a larger PSU, otherwise set TEMP_SENSOR_BED to 0"
 #endif
-//#define ALT_BED_HOTEND
+//#define ALT_BED_HOTEND    // Dont power hotends and bed at same time, will slow heating down so watch periods will likely need increasing
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
