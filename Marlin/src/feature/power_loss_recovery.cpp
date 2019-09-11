@@ -36,6 +36,9 @@ bool PrintJobRecovery::enabled; // Initialized by settings.load()
 SdFile PrintJobRecovery::file;
 job_recovery_info_t PrintJobRecovery::info;
 const char PrintJobRecovery::filename[5] = "/PLR";
+uint8_t PrintJobRecovery::queue_index_r;
+uint32_t PrintJobRecovery::cmd_sdpos, // = 0
+         PrintJobRecovery::sdpos[BUFSIZE];
 
 #include "../sd/cardreader.h"
 #include "../lcd/ultralcd.h"
@@ -125,6 +128,14 @@ void PrintJobRecovery::load() {
 }
 
 /**
+ * Set info fields that won't change
+ */
+void PrintJobRecovery::prepare() {
+  card.getAbsFilename(info.sd_filename);  // SD filename
+  cmd_sdpos = 0;
+}
+
+/**
  * Save the current machine state to the power-loss recovery file
  */
 void PrintJobRecovery::save(const bool force/*=false*/, const bool save_queue/*=true*/) {
@@ -141,9 +152,6 @@ void PrintJobRecovery::save(const bool force/*=false*/, const bool save_queue/*=
   // Did Z change since the last call?
   if (force
     #if DISABLED(SAVE_EACH_CMD_MODE)      // Always save state when enabled
-      #if PIN_EXISTS(POWER_LOSS)          // Save if power loss pin is triggered
-        || read()
-      #endif
       #if SAVE_INFO_INTERVAL_MS > 0       // Save if interval is elapsed
         || ELAPSED(ms, next_save_ms)
       #endif
@@ -175,7 +183,9 @@ void PrintJobRecovery::save(const bool force/*=false*/, const bool save_queue/*=
       info.active_extruder = active_extruder;
     #endif
 
-    HOTEND_LOOP() info.target_temperature[e] = thermalManager.temp_hotend[e].target;
+    #if EXTRUDERS
+      HOTEND_LOOP() info.target_temperature[e] = thermalManager.temp_hotend[e].target;
+    #endif
 
     #if HAS_HEATED_BED
       info.target_temperature_bed = thermalManager.temp_bed.target;
@@ -209,26 +219,19 @@ void PrintJobRecovery::save(const bool force/*=false*/, const bool save_queue/*=
     info.relative_mode = relative_mode;
     info.relative_modes_e = gcode.axis_relative_modes[E_AXIS];
 
-    // Commands in the queue
-    info.queue_length = save_queue ? queue.length : 0;
-    info.queue_index_r = queue.index_r;
-    COPY(info.queue_buffer, queue.command_buffer);
-
     // Elapsed print job time
     info.print_job_elapsed = print_job_timer.duration();
 
-    // SD file position
-    card.getAbsFilename(info.sd_filename);
-    info.sdpos = card.getIndex();
-
     write();
-
-    // KILL now if the power-loss pin was triggered
-    #if PIN_EXISTS(POWER_LOSS)
-      if (read()) kill(PSTR(MSG_OUTAGE_RECOVERY));
-    #endif
   }
 }
+
+#if PIN_EXISTS(POWER_LOSS)
+  void PrintJobRecovery::_outage() {
+    save(true);
+    kill(PSTR(MSG_OUTAGE_RECOVERY));
+  }
+#endif
 
 /**
  * Save the recovery info the recovery file
@@ -250,6 +253,8 @@ void PrintJobRecovery::write() {
 void PrintJobRecovery::resume() {
 
   #define RECOVERY_ZRAISE 2
+
+  const uint32_t resume_sdpos = info.sdpos; // Get here before the stepper ISR overwrites it
 
   #if HAS_LEVELING
     // Make sure leveling is off before any G92 and G28
@@ -297,17 +302,19 @@ void PrintJobRecovery::resume() {
   #endif
 
   // Restore all hotend temperatures
-  HOTEND_LOOP() {
-    const int16_t et = info.target_temperature[e];
-    if (et) {
-      #if HOTENDS > 1
-        sprintf_P(cmd, PSTR("T%i"), e);
+  #if HOTENDS
+    HOTEND_LOOP() {
+      const int16_t et = info.target_temperature[e];
+      if (et) {
+        #if HOTENDS > 1
+          sprintf_P(cmd, PSTR("T%i"), e);
+          gcode.process_subcommands_now(cmd);
+        #endif
+        sprintf_P(cmd, PSTR("M109 S%i"), et);
         gcode.process_subcommands_now(cmd);
-      #endif
-      sprintf_P(cmd, PSTR("M109 S%i"), et);
-      gcode.process_subcommands_now(cmd);
+      }
     }
-  }
+  #endif
 
   // Restore print cooling fan speeds
   FANS_LOOP(i) {
@@ -401,16 +408,11 @@ void PrintJobRecovery::resume() {
     }
   #endif
 
-  // Process commands from the old pending queue
-  uint8_t c = info.queue_length, r = info.queue_index_r;
-  for (; c--; r = (r + 1) % BUFSIZE)
-    gcode.process_subcommands_now(info.queue_buffer[r]);
-
   // Resume the SD file from the last position
   char *fn = info.sd_filename;
   sprintf_P(cmd, PSTR("M23 %s"), fn);
   gcode.process_subcommands_now(cmd);
-  sprintf_P(cmd, PSTR("M24 S%ld T%ld"), info.sdpos, info.print_job_elapsed);
+  sprintf_P(cmd, PSTR("M24 S%ld T%ld"), resume_sdpos, info.print_job_elapsed);
   gcode.process_subcommands_now(cmd);
 }
 
@@ -452,12 +454,14 @@ void PrintJobRecovery::resume() {
           DEBUG_ECHOLNPAIR("active_extruder: ", int(info.active_extruder));
         #endif
 
-        DEBUG_ECHOPGM("target_temperature: ");
-        HOTEND_LOOP() {
-          DEBUG_ECHO(info.target_temperature[e]);
-          if (e < HOTENDS - 1) DEBUG_CHAR(',');
-        }
-        DEBUG_EOL();
+        #if HOTENDS
+          DEBUG_ECHOPGM("target_temperature: ");
+          HOTEND_LOOP() {
+            DEBUG_ECHO(info.target_temperature[e]);
+            if (e < HOTENDS - 1) DEBUG_CHAR(',');
+          }
+          DEBUG_EOL();
+        #endif
 
         #if HAS_HEATED_BED
           DEBUG_ECHOLNPAIR("target_temperature_bed: ", info.target_temperature_bed);
@@ -484,9 +488,6 @@ void PrintJobRecovery::resume() {
           DEBUG_EOL();
           DEBUG_ECHOLNPAIR("retract_hop: ", info.retract_hop);
         #endif
-        DEBUG_ECHOLNPAIR("queue_index_r: ", int(info.queue_index_r));
-        DEBUG_ECHOLNPAIR("queue_length: ", int(info.queue_length));
-        for (uint8_t i = 0; i < info.queue_length; i++) DEBUG_ECHOLNPAIR("> ", info.queue_buffer[i]);
         DEBUG_ECHOLNPAIR("sd_filename: ", info.sd_filename);
         DEBUG_ECHOLNPAIR("sdpos: ", info.sdpos);
         DEBUG_ECHOLNPAIR("print_job_elapsed: ", info.print_job_elapsed);

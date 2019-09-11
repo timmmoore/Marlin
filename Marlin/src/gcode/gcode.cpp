@@ -118,7 +118,7 @@ void GcodeSuite::get_destination_from_command() {
       destination[i] = current_position[i];
   }
 
-  #if ENABLED(POWER_LOSS_RECOVERY)
+  #if ENABLED(POWER_LOSS_RECOVERY) && !PIN_EXISTS(POWER_LOSS)
     // Only update power loss recovery on moves with E
     if (recovery.enabled && IS_SD_PRINTING() && seen[E_AXIS] && (seen[X_AXIS] || seen[Y_AXIS]))
       recovery.save();
@@ -400,8 +400,18 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 100: M100(); break;                                  // M100: Free Memory Report
       #endif
 
-      case 104: M104(); break;                                    // M104: Set hot end temperature
-      case 109: M109(); break;                                    // M109: Wait for hotend temperature to reach target
+      #if EXTRUDERS
+        case 104: M104(); break;                                  // M104: Set hot end temperature
+        case 109: M109(); break;                                  // M109: Wait for hotend temperature to reach target
+      #endif
+
+      case 105: M105(); return;                                   // M105: Report Temperatures (and say "ok")
+
+      #if FAN_COUNT > 0
+        case 106: M106(); break;                                  // M106: Fan On
+        case 107: M107(); break;                                  // M107: Fan Off
+      #endif
+
       case 110: M110(); break;                                    // M110: Set Current Line Number
       case 111: M111(); break;                                    // M111: Set debug level
 
@@ -410,7 +420,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 112: M112(); break;                                  // M112: Full Shutdown
         case 410: M410(); break;                                  // M410: Quickstop - Abort all the planned moves.
         #if ENABLED(HOST_PROMPT_SUPPORT)
-          case 876: M876(); break;                                  // M876: Handle Host prompt responses
+          case 876: M876(); break;                                // M876: Handle Host prompt responses
         #endif
       #else
         case 108: case 112: case 410:
@@ -434,15 +444,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         //case 191: M191(); break;                                // M191: Wait for chamber temperature to reach target
       #endif
 
-      case 105: M105(); return;                                   // M105: Report Temperatures (and say "ok")
-
       #if ENABLED(AUTO_REPORT_TEMPERATURES) && HAS_TEMP_SENSOR
         case 155: M155(); break;                                  // M155: Set temperature auto-report interval
-      #endif
-
-      #if FAN_COUNT > 0
-        case 106: M106(); break;                                  // M106: Fan On
-        case 107: M107(); break;                                  // M107: Fan Off
       #endif
 
       #if ENABLED(PARK_HEAD_ON_PAUSE)
@@ -481,7 +484,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       case 120: M120(); break;                                    // M120: Enable endstops
       case 121: M121(); break;                                    // M121: Disable endstops
 
-      #if HAS_LCD_MENU
+      #if HOTENDS && HAS_LCD_MENU
         case 145: M145(); break;                                  // M145: Set material heatup parameters
       #endif
 
@@ -553,7 +556,11 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       case 220: M220(); break;                                    // M220: Set Feedrate Percentage: S<percent> ("FR" on your LCD)
-      case 221: M221(); break;                                    // M221: Set Flow Percentage
+
+      #if EXTRUDERS
+        case 221: M221(); break;                                  // M221: Set Flow Percentage
+      #endif
+
       case 226: M226(); break;                                    // M226: Wait until a pin reaches a state
 
       #if HAS_SERVOS
@@ -815,6 +822,10 @@ void GcodeSuite::process_next_command() {
   char * const current_command = queue.command_buffer[queue.index_r];
 
   PORT_REDIRECT(queue.port[queue.index_r]);
+
+  #if ENABLED(POWER_LOSS_RECOVERY)
+    recovery.queue_index_r = queue.index_r;
+  #endif
 
   if (DEBUGGING(ECHO)) {
     SERIAL_ECHO_START();
