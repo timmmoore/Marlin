@@ -278,6 +278,7 @@ void menu_info() {
       for(int16_t i = 0; ExtMenuInfo::ExtMenuInfoExtensions[i].menuName != nullptr; i++) {
         MENU_ITEM_P(submenu, ExtMenuInfo::ExtMenuInfoExtensions[i].menuName, ExtMenuInfo::ExtMenuInfoExtensions[i].function);
       }
+    #endif
   #endif
 
   #if ENABLED(PRINTCOUNTER)
