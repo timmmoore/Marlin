@@ -54,8 +54,10 @@ void GcodeSuite::M412() {
     SERIAL_ECHOPGM("Filament runout ");
     serialprintln_onoff(runout.enabled);
     #ifdef FILAMENT_RUNOUT_DISTANCE_MM
+      SERIAL_ECHO_START();
       SERIAL_ECHOLNPAIR("Filament runout distance (mm): ", runout.runout_distance());
     #endif
+    SERIAL_ECHO_START();
     runout.print_state(PSTR("Filament sensor"), PSTR("ok"), PSTR("none"));
   }
 }
