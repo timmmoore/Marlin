@@ -453,7 +453,7 @@
               SERIAL_ECHO(g29_y_pos);
               SERIAL_ECHOLNPGM(").\n");
             }
-            probe_entire_mesh(g29_x_pos + zprobe_offset[X_AXIS], g29_y_pos + zprobe_offset[Y_AXIS],
+            probe_entire_mesh(g29_x_pos + probe_offset[X_AXIS], g29_y_pos + probe_offset[Y_AXIS],
                               parser.seen('T'), parser.seen('E'), parser.seen('U'));
 
             report_current_position();
@@ -482,8 +482,8 @@
                 g29_x_pos = X_HOME_POS;
                 g29_y_pos = Y_HOME_POS;
               #else // cartesian
-                g29_x_pos = zprobe_offset[X_AXIS] > 0 ? X_BED_SIZE : 0;
-                g29_y_pos = zprobe_offset[Y_AXIS] < 0 ? Y_BED_SIZE : 0;
+                g29_x_pos = probe_offset[X_AXIS] > 0 ? X_BED_SIZE : 0;
+                g29_y_pos = probe_offset[Y_AXIS] < 0 ? Y_BED_SIZE : 0;
               #endif
             }
 
@@ -800,8 +800,8 @@
       restore_ubl_active_state_and_leave();
 
       do_blocking_move_to_xy(
-        constrain(rx - zprobe_offset[X_AXIS], MESH_MIN_X, MESH_MAX_X),
-        constrain(ry - zprobe_offset[Y_AXIS], MESH_MIN_Y, MESH_MAX_Y)
+        constrain(rx - probe_offset[X_AXIS], MESH_MIN_X, MESH_MAX_X),
+        constrain(ry - probe_offset[Y_AXIS], MESH_MIN_Y, MESH_MAX_Y)
       );
     }
 
@@ -1281,8 +1281,8 @@
     out_mesh.distance = -99999.9f;
 
     // Get our reference position. Either the nozzle or probe location.
-    const float px = rx + (probe_as_reference == USE_PROBE_AS_REFERENCE ? zprobe_offset[X_AXIS] : 0),
-                py = ry + (probe_as_reference == USE_PROBE_AS_REFERENCE ? zprobe_offset[Y_AXIS] : 0);
+    const float px = rx + (probe_as_reference == USE_PROBE_AS_REFERENCE ? probe_offset[X_AXIS] : 0),
+                py = ry + (probe_as_reference == USE_PROBE_AS_REFERENCE ? probe_offset[Y_AXIS] : 0);
 
     float best_so_far = 99999.99f;
 
@@ -1381,6 +1381,8 @@
 
   #if HAS_BED_PROBE
 
+    //#define VALIDATE_MESH_TILT
+
     #include "../../../libs/vector_3.h"
 
     void unified_bed_leveling::tilt_mesh_based_on_probed_grid(const bool do_3_pt_leveling) {
@@ -1392,7 +1394,9 @@
       float measured_z;
       bool abort_flag = false;
 
-      //float z1, z2, z3;  // Needed for algorithm validation below
+      #ifdef VALIDATE_MESH_TILT
+        float z1, z2, z3;  // Needed for algorithm validation below
+      #endif
 
       struct linear_fit_data lsf_results;
       incremental_LSF_reset(&lsf_results);
@@ -1403,17 +1407,19 @@
           ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " 1/3"));
         #endif
 
-        measured_z = probe_at_point(PROBE_PT_1_X, PROBE_PT_1_Y, PROBE_PT_RAISE, g29_verbose_level);
+        measured_z = probe_at_point(x_min, y_min, PROBE_PT_RAISE, g29_verbose_level);
         if (isnan(measured_z))
           abort_flag = true;
         else {
-          measured_z -= get_z_correction(PROBE_PT_1_X, PROBE_PT_1_Y);
-          //z1 = measured_z;
+          measured_z -= get_z_correction(x_min, y_min);
+          #ifdef VALIDATE_MESH_TILT
+            z1 = measured_z;
+          #endif
           if (g29_verbose_level > 3) {
             serial_spaces(16);
             SERIAL_ECHOLNPAIR("Corrected_Z=", measured_z);
           }
-          incremental_LSF(&lsf_results, PROBE_PT_1_X, PROBE_PT_1_Y, measured_z);
+          incremental_LSF(&lsf_results, x_min, y_min, measured_z);
         }
 
         if (!abort_flag) {
@@ -1422,17 +1428,19 @@
             ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " 2/3"));
           #endif
 
-          measured_z = probe_at_point(PROBE_PT_2_X, PROBE_PT_2_Y, PROBE_PT_RAISE, g29_verbose_level);
-          //z2 = measured_z;
+          measured_z = probe_at_point(x_max, y_min, PROBE_PT_RAISE, g29_verbose_level);
+          #ifdef VALIDATE_MESH_TILT
+            z2 = measured_z;
+          #endif
           if (isnan(measured_z))
             abort_flag = true;
           else {
-            measured_z -= get_z_correction(PROBE_PT_2_X, PROBE_PT_2_Y);
+            measured_z -= get_z_correction(x_max, y_min);
             if (g29_verbose_level > 3) {
               serial_spaces(16);
               SERIAL_ECHOLNPAIR("Corrected_Z=", measured_z);
             }
-            incremental_LSF(&lsf_results, PROBE_PT_2_X, PROBE_PT_2_Y, measured_z);
+            incremental_LSF(&lsf_results, x_max, y_min, measured_z);
           }
         }
 
@@ -1442,17 +1450,20 @@
             ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " 3/3"));
           #endif
 
-          measured_z = probe_at_point(PROBE_PT_3_X, PROBE_PT_3_Y, PROBE_PT_STOW, g29_verbose_level);
-          //z3 = measured_z;
+          const float center_probe = (x_max - x_min) / 2;
+          measured_z = probe_at_point(center_probe, y_max, PROBE_PT_STOW, g29_verbose_level);
+          #ifdef VALIDATE_MESH_TILT
+            z3 = measured_z;
+          #endif
           if (isnan(measured_z))
             abort_flag = true;
           else {
-            measured_z -= get_z_correction(PROBE_PT_3_X, PROBE_PT_3_Y);
+            measured_z -= get_z_correction(center_probe, y_max);
             if (g29_verbose_level > 3) {
               serial_spaces(16);
               SERIAL_ECHOLNPAIR("Corrected_Z=", measured_z);
             }
-            incremental_LSF(&lsf_results, PROBE_PT_3_X, PROBE_PT_3_Y, measured_z);
+            incremental_LSF(&lsf_results, center_probe, y_max, measured_z);
           }
         }
 
@@ -1500,7 +1511,7 @@
                 DEBUG_ECHOPAIR_F("   correction: ", get_z_correction(rx, ry), 7);
               }
 
-              measured_z -= get_z_correction(rx, ry) /* + zprobe_offset[Z_AXIS] */ ;
+              measured_z -= get_z_correction(rx, ry) /* + probe_offset[Z_AXIS] */ ;
 
               if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR_F("   final >>>---> ", measured_z, 7);
 
@@ -1598,34 +1609,34 @@
          * is calculated.  The Z error between the probed point locations and the get_z_correction()
          * numbers for those locations should be 0.
          */
-        #if 0
-        float t, t1, d;
-        t = normal.x * (PROBE_PT_1_X) + normal.y * (PROBE_PT_1_Y);
-        d = t + normal.z * z1;
-        DEBUG_ECHOPAIR_F("D from 1st point: ", d, 6);
-        DEBUG_ECHOLNPAIR_F("   Z error: ", normal.z*z1-get_z_correction(PROBE_PT_1_X, PROBE_PT_1_Y), 6);
+        #ifdef VALIDATE_MESH_TILT
+          float t, t1, d;
+          t = normal.x * x_min + normal.y * y_min;
+          d = t + normal.z * z1;
+          DEBUG_ECHOPAIR_F("D from 1st point: ", d, 6);
+          DEBUG_ECHOLNPAIR_F("   Z error: ", normal.z * z1 - get_z_correction(x_min, y_min), 6);
 
-        t = normal.x * (PROBE_PT_2_X) + normal.y * (PROBE_PT_2_Y);
-        d = t + normal.z * z2;
-        DEBUG_EOL();
-        DEBUG_ECHOPAIR_F("D from 2nd point: ", d, 6);
-        DEBUG_ECHOLNPAIR_F("   Z error: ", normal.z*z2-get_z_correction(PROBE_PT_2_X, PROBE_PT_2_Y), 6);
+          t = normal.x * x_max + normal.y * y_min;
+          d = t + normal.z * z2;
+          DEBUG_EOL();
+          DEBUG_ECHOPAIR_F("D from 2nd point: ", d, 6);
+          DEBUG_ECHOLNPAIR_F("   Z error: ", normal.z * z2 - get_z_correction(x_max, y_min), 6);
 
-        t = normal.x * (PROBE_PT_3_X) + normal.y * (PROBE_PT_3_Y);
-        d = t + normal.z * z3;
-        DEBUG_ECHOPAIR_F("D from 3rd point: ", d, 6);
-        DEBUG_ECHOLNPAIR_F("   Z error: ", normal.z*z3-get_z_correction(PROBE_PT_3_X, PROBE_PT_3_Y), 6);
+          t = normal.x * ((x_max - x_min) / 2) + normal.y * (y_min);
+          d = t + normal.z * z3;
+          DEBUG_ECHOPAIR_F("D from 3rd point: ", d, 6);
+          DEBUG_ECHOLNPAIR_F("   Z error: ", normal.z * z3 - get_z_correction((x_max - x_min) / 2, y_max), 6);
 
-        t = normal.x * (Z_SAFE_HOMING_X_POINT) + normal.y * (Z_SAFE_HOMING_Y_POINT);
-        d = t + normal.z * 0;
-        DEBUG_ECHOLNPAIR_F("D from home location with Z=0 : ", d, 6);
+          t = normal.x * (Z_SAFE_HOMING_X_POINT) + normal.y * (Z_SAFE_HOMING_Y_POINT);
+          d = t + normal.z * 0;
+          DEBUG_ECHOLNPAIR_F("D from home location with Z=0 : ", d, 6);
 
-        t = normal.x * (Z_SAFE_HOMING_X_POINT) + normal.y * (Z_SAFE_HOMING_Y_POINT);
-        d = t + get_z_correction(Z_SAFE_HOMING_X_POINT, Z_SAFE_HOMING_Y_POINT); // normal.z * 0;
-        DEBUG_ECHOPAIR_F("D from home location using mesh value for Z: ", d, 6);
+          t = normal.x * (Z_SAFE_HOMING_X_POINT) + normal.y * (Z_SAFE_HOMING_Y_POINT);
+          d = t + get_z_correction(Z_SAFE_HOMING_X_POINT, Z_SAFE_HOMING_Y_POINT); // normal.z * 0;
+          DEBUG_ECHOPAIR_F("D from home location using mesh value for Z: ", d, 6);
 
-        DEBUG_ECHOPAIR("   Z error: (", Z_SAFE_HOMING_X_POINT, ",", Z_SAFE_HOMING_Y_POINT);
-        DEBUG_ECHOLNPAIR_F(") = ", get_z_correction(Z_SAFE_HOMING_X_POINT, Z_SAFE_HOMING_Y_POINT), 6);
+          DEBUG_ECHOPAIR("   Z error: (", Z_SAFE_HOMING_X_POINT, ",", Z_SAFE_HOMING_Y_POINT);
+          DEBUG_ECHOLNPAIR_F(") = ", get_z_correction(Z_SAFE_HOMING_X_POINT, Z_SAFE_HOMING_Y_POINT), 6);
         #endif
       } // DEBUGGING(LEVELING)
 
@@ -1712,7 +1723,7 @@
       adjust_mesh_to_mean(g29_c_flag, g29_constant);
 
       #if HAS_BED_PROBE
-        SERIAL_ECHOLNPAIR_F("Probe Offset M851 Z", zprobe_offset[Z_AXIS], 7);
+        SERIAL_ECHOLNPAIR_F("Probe Offset M851 Z", probe_offset[Z_AXIS], 7);
       #endif
 
       SERIAL_ECHOLNPAIR("MESH_MIN_X  " STRINGIFY(MESH_MIN_X) "=", MESH_MIN_X); serial_delay(50);

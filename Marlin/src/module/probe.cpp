@@ -28,9 +28,9 @@
 
 #if HAS_BED_PROBE
 
-#include "../libs/buzzer.h"
-
 #include "probe.h"
+
+#include "../libs/buzzer.h"
 #include "motion.h"
 #include "temperature.h"
 #include "endstops.h"
@@ -56,7 +56,7 @@
   #include "../feature/backlash.h"
 #endif
 
-float zprobe_offset[XYZ]; // Initialized by settings.load()
+float probe_offset[XYZ]; // Initialized by settings.load()
 
 #if ENABLED(BLTOUCH)
   #include "../feature/bltouch.h"
@@ -85,43 +85,6 @@ float zprobe_offset[XYZ]; // Initialized by settings.load()
 
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../core/debug_out.h"
-
-float probe_min_x() {
-  return _MAX(
-    #if ENABLED(DELTA) || IS_SCARA
-      PROBE_X_MIN, MESH_MIN_X
-    #else
-      (X_MIN_BED) + (MIN_PROBE_EDGE), (X_MIN_POS) + zprobe_offset[X_AXIS]
-    #endif
-  );
-}
-float probe_max_x() {
-  return _MIN(
-    #if ENABLED(DELTA) || IS_SCARA
-      PROBE_X_MAX, MESH_MAX_X
-    #else
-      (X_MAX_BED) - (MIN_PROBE_EDGE), (X_MAX_POS) + zprobe_offset[X_AXIS]
-    #endif
-  );
-}
-float probe_min_y() {
-  return _MAX(
-    #if ENABLED(DELTA) || IS_SCARA
-      PROBE_Y_MIN, MESH_MIN_Y
-    #else
-      (Y_MIN_BED) + (MIN_PROBE_EDGE), (Y_MIN_POS) + zprobe_offset[Y_AXIS]
-    #endif
-  );
-}
-float probe_max_y() {
-  return _MIN(
-    #if ENABLED(DELTA) || IS_SCARA
-      PROBE_Y_MAX, MESH_MAX_Y
-    #else
-      (Y_MAX_BED) - (MIN_PROBE_EDGE), (Y_MAX_POS) + zprobe_offset[Y_AXIS]
-    #endif
-  );
-}
 
 #if ENABLED(Z_PROBE_SLED)
 
@@ -300,7 +263,7 @@ inline void do_probe_raise(const float z_raise) {
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("do_probe_raise(", z_raise, ")");
 
   float z_dest = z_raise;
-  if (zprobe_offset[Z_AXIS] < 0) z_dest -= zprobe_offset[Z_AXIS];
+  if (probe_offset[Z_AXIS] < 0) z_dest -= probe_offset[Z_AXIS];
 
   NOMORE(z_dest, Z_MAX_POS);
 
@@ -569,7 +532,7 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
 /**
  * @brief Probe at the current XY (possibly more than once) to find the bed Z.
  *
- * @details Used by probe_pt to get the bed Z height at the current XY.
+ * @details Used by probe_at_point to get the bed Z height at the current XY.
  *          Leaves current_position[Z_AXIS] at the height where the probe triggered.
  *
  * @return The Z position of the bed at the current XY or NAN on error.
@@ -580,7 +543,7 @@ static float run_z_probe() {
 
   // Stop the probe before it goes too low to prevent damage.
   // If Z isn't known then probe to -10mm.
-  const float z_probe_low_point = TEST(axis_known_position, Z_AXIS) ? -zprobe_offset[Z_AXIS] + Z_PROBE_LOW_POINT : -10.0;
+  const float z_probe_low_point = TEST(axis_known_position, Z_AXIS) ? -probe_offset[Z_AXIS] + Z_PROBE_LOW_POINT : -10.0;
 
   // Double-probing does a fast probe followed by a slow probe
   #if TOTAL_PROBING == 2
@@ -605,7 +568,7 @@ static float run_z_probe() {
 
     // If the nozzle is well over the travel height then
     // move down quickly before doing the slow probe
-    const float z = Z_CLEARANCE_DEPLOY_PROBE + 5.0 + (zprobe_offset[Z_AXIS] < 0 ? -zprobe_offset[Z_AXIS] : 0);
+    const float z = Z_CLEARANCE_DEPLOY_PROBE + 5.0 + (probe_offset[Z_AXIS] < 0 ? -probe_offset[Z_AXIS] : 0);
     if (current_position[Z_AXIS] > z) {
       // Probe down fast. If the probe never triggered, raise for probe clearance
       if (!do_probe_move(z, MMM_TO_MMS(Z_PROBE_SPEED_FAST)))
@@ -723,7 +686,7 @@ static float run_z_probe() {
 float probe_at_point(const float &rx, const float &ry, const ProbePtRaise raise_after/*=PROBE_PT_NONE*/, const uint8_t verbose_level/*=0*/, const bool probe_relative/*=true*/) {
   if (DEBUGGING(LEVELING)) {
     DEBUG_ECHOLNPAIR(
-      ">>> probe_pt(", LOGICAL_X_POSITION(rx), ", ", LOGICAL_Y_POSITION(ry),
+      ">>> probe_at_point(", LOGICAL_X_POSITION(rx), ", ", LOGICAL_Y_POSITION(ry),
       ", ", raise_after == PROBE_PT_RAISE ? "raise" : raise_after == PROBE_PT_STOW ? "stow" : "none",
       ", ", int(verbose_level),
       ", ", probe_relative ? "probe" : "nozzle", "_relative)"
@@ -735,8 +698,8 @@ float probe_at_point(const float &rx, const float &ry, const ProbePtRaise raise_
   float nx = rx, ny = ry;
   if (probe_relative) {
     if (!position_is_reachable_by_probe(rx, ry)) return NAN;  // The given position is in terms of the probe
-    nx -= zprobe_offset[X_AXIS];                     // Get the nozzle position
-    ny -= zprobe_offset[Y_AXIS];
+    nx -= probe_offset[X_AXIS];                     // Get the nozzle position
+    ny -= probe_offset[Y_AXIS];
   }
   else if (!position_is_reachable(nx, ny)) return NAN;        // The given position is in terms of the nozzle
 
@@ -757,7 +720,7 @@ float probe_at_point(const float &rx, const float &ry, const ProbePtRaise raise_
 
   float measured_z = NAN;
   if (!DEPLOY_PROBE()) {
-    measured_z = run_z_probe() + zprobe_offset[Z_AXIS];
+    measured_z = run_z_probe() + probe_offset[Z_AXIS];
 
     const bool big_raise = raise_after == PROBE_PT_BIG_RAISE;
     if (big_raise || raise_after == PROBE_PT_RAISE)
@@ -780,7 +743,7 @@ float probe_at_point(const float &rx, const float &ry, const ProbePtRaise raise_
     SERIAL_ERROR_MSG(MSG_ERR_PROBING_FAILED);
   }
 
-  if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("<<< probe_pt");
+  if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("<<< probe_at_point");
 
   return measured_z;
 }
