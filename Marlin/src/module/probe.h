@@ -47,7 +47,9 @@
     extern const char msg_wait_for_bed_heating[25];
   #endif
 
+#if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
   float probe_min_x(), probe_max_x(), probe_min_y(), probe_max_y();
+#endif
 
 #else
 

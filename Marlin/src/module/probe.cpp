@@ -86,6 +86,7 @@ float zprobe_offset[XYZ]; // Initialized by settings.load()
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../core/debug_out.h"
 
+#if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
 float probe_min_x() {
   return _MAX(
     #if ENABLED(DELTA) || IS_SCARA
@@ -122,6 +123,7 @@ float probe_max_y() {
     #endif
   );
 }
+#endif
 
 #if ENABLED(Z_PROBE_SLED)
 
