@@ -49,7 +49,13 @@
   #if HAS_HEATED_BED && ENABLED(WAIT_FOR_BED_HEATER)
     extern const char msg_wait_for_bed_heating[25];
   #endif
+#else
+  constexpr float probe_offset[XYZ] = { 0 };
+  #define DEPLOY_PROBE()
+  #define STOW_PROBE()
+#endif
 
+#if HAS_BED_PROBE && ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, AUTO_BED_LEVELING_BILINEAR)
   inline float probe_min_x() {
     return _MAX(
       #if ENABLED(DELTA) || IS_SCARA
@@ -86,18 +92,11 @@
       #endif
     );
   }
-
 #else
-
-  constexpr float probe_offset[XYZ] = { 0 };
-  #define DEPLOY_PROBE()
-  #define STOW_PROBE()
-
   inline float probe_min_x() { return 0; };
   inline float probe_max_x() { return 0; };
   inline float probe_min_y() { return 0; };
   inline float probe_max_y() { return 0; };
-
 #endif
 
 #if HAS_Z_SERVO_PROBE
