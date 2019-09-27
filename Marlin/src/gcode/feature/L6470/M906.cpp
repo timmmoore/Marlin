@@ -26,7 +26,7 @@
 
 #include "../../gcode.h"
 #include "../../../libs/L6470/L6470_Marlin.h"
-#include "../../../module/stepper_indirection.h"
+#include "../../../module/stepper/indirection.h"
 #include "../../../module/planner.h"
 
 #define DEBUG_OUT ENABLED(L6470_CHITCHAT)
@@ -151,7 +151,7 @@ void L6470_report_current(L6470 &motor, const uint8_t axis) {
       break;
   }
   SERIAL_ECHO(dtostrf(val * 100 / 256, 10, 2, numstr));
-  SERIAL_ECHO("%% ");
+  SERIAL_ECHOPGM("%% ");
   serialprintPGM(suf);
   SERIAL_EOL();
 }

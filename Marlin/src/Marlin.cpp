@@ -45,7 +45,7 @@
 
 #include "HAL/shared/Delay.h"
 
-#include "module/stepper_indirection.h"
+#include "module/stepper/indirection.h"
 
 #ifdef ARDUINO
   #include <pins_arduino.h>
@@ -87,6 +87,10 @@
 
 #if ENABLED(BLTOUCH)
   #include "feature/bltouch.h"
+#endif
+
+#if ENABLED(POLL_JOG)
+  #include "feature/joystick.h"
 #endif
 
 #if HAS_SERVOS
@@ -668,6 +672,9 @@ void idle(
     bool no_stepper_sleep/*=false*/
   #endif
 ) {
+  #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
+    recovery.outage();
+  #endif
 
   #if ENABLED(SPI_ENDSTOPS)
     if (endstops.tmc_spi_homing.any
@@ -739,13 +746,17 @@ void idle(
   #if ENABLED(PRUSA_MMU2)
     mmu2.mmu_loop();
   #endif
+
+  #if ENABLED(POLL_JOG)
+    joystick.inject_jog_moves();
+  #endif
 }
 
 /**
  * Kill all activity and lock the machine.
  * After this the machine will need to be reset.
  */
-void kill(PGM_P const lcd_msg/*=nullptr*/) {
+void kill(PGM_P const lcd_msg/*=nullptr*/, const bool steppers_off/*=false*/) {
   thermalManager.disable_all_heaters();
 
   SERIAL_ERROR_MSG(MSG_ERR_KILLED);
@@ -760,10 +771,10 @@ void kill(PGM_P const lcd_msg/*=nullptr*/) {
     host_action_kill();
   #endif
 
-  minkill();
+  minkill(steppers_off);
 }
 
-void minkill() {
+void minkill(const bool steppers_off/*=false*/) {
 
   // Wait a short time (allows messages to get out before shutting down.
   for (int i = 1000; i--;) DELAY_US(600);
@@ -773,7 +784,11 @@ void minkill() {
   // Wait to ensure all interrupts stopped
   for (int i = 1000; i--;) DELAY_US(250);
 
-  thermalManager.disable_all_heaters(); // turn off heaters again
+  // Reiterate heaters off
+  thermalManager.disable_all_heaters();
+
+  // Power off all steppers (for M112) or just the E steppers
+  steppers_off ? disable_all_steppers() : disable_e_steppers();
 
   #if HAS_POWER_SWITCH
     PSU_OFF();
@@ -799,8 +814,8 @@ void minkill() {
       #endif
     }
 
-    void(*resetFunc)(void) = 0; // Declare resetFunc() at address 0
-    resetFunc();                // Jump to address 0
+    void (*resetFunc)() = 0;  // Declare resetFunc() at address 0
+    resetFunc();                  // Jump to address 0
 
   #else // !HAS_KILL
 
@@ -947,10 +962,11 @@ void setup() {
   SERIAL_EOL();
 
   #if defined(STRING_DISTRIBUTION_DATE) && defined(STRING_CONFIG_H_AUTHOR)
-    SERIAL_ECHO_START();
-    SERIAL_ECHOPGM(MSG_CONFIGURATION_VER);
-    SERIAL_ECHOPGM(STRING_DISTRIBUTION_DATE);
-    SERIAL_ECHOLNPGM(MSG_AUTHOR STRING_CONFIG_H_AUTHOR);
+    SERIAL_ECHO_MSG(
+      MSG_CONFIGURATION_VER
+      STRING_DISTRIBUTION_DATE
+      MSG_AUTHOR STRING_CONFIG_H_AUTHOR
+    );
     SERIAL_ECHO_MSG("Compiled: " __DATE__);
   #endif
 
@@ -959,6 +975,12 @@ void setup() {
 
   // UI must be initialized before EEPROM
   // (because EEPROM code calls the UI).
+
+  // Set up LEDs early
+  #if HAS_COLOR_LEDS
+    leds.setup();
+  #endif
+
   ui.init();
   ui.reset_status();
 
@@ -966,9 +988,8 @@ void setup() {
     ui.show_bootscreen();
   #endif
 
-  #if ENABLED(SDIO_SUPPORT) && !PIN_EXISTS(SD_DETECT)
-    // Auto-mount the SD for EEPROM.dat emulation
-    if (!card.isDetected()) card.initsd();
+  #if ENABLED(SDSUPPORT)
+    card.mount(); // Mount the SD card before settings.first_load
   #endif
 
   // Load data from EEPROM if available (or use defaults)
@@ -1052,10 +1073,6 @@ void setup() {
 
   #if PIN_EXISTS(STAT_LED_BLUE)
     OUT_WRITE(STAT_LED_BLUE_PIN, LOW); // OFF
-  #endif
-
-  #if HAS_COLOR_LEDS
-    leds.setup();
   #endif
 
   #if HAS_CASE_LIGHT
@@ -1189,7 +1206,6 @@ void loop() {
 
     #endif // SDSUPPORT
 
-    if (queue.length < BUFSIZE) queue.get_available_commands();
     queue.advance();
     endstops.event_handler();
   }

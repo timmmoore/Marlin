@@ -37,7 +37,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V68"
+#define EEPROM_VERSION "V70"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -60,6 +60,8 @@
   #include "../HAL/shared/persistent_store_api.h"
 #endif
 
+#include "probe.h"
+
 #if HAS_LEVELING
   #include "../feature/bedlevel/bedlevel.h"
 #endif
@@ -76,10 +78,6 @@
   #define EEPROM_NUM_SERVOS NUM_SERVOS
 #else
   #define EEPROM_NUM_SERVOS NUM_SERVO_PLUGS
-#endif
-
-#if HAS_BED_PROBE
-  #include "probe.h"
 #endif
 
 #include "../feature/fwretract.h"
@@ -112,7 +110,7 @@
 #endif
 
 #if HAS_TRINAMIC
-  #include "stepper_indirection.h"
+  #include "stepper/indirection.h"
   #include "../feature/tmc_util.h"
 #endif
 
@@ -120,11 +118,16 @@
 
 typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
 typedef struct { uint32_t X, Y, Z, X2, Y2, Z2, Z3, E0, E1, E2, E3, E4, E5; } tmc_hybrid_threshold_t;
-typedef struct {  int16_t X, Y, Z;                                         } tmc_sgt_t;
+typedef struct {  int16_t X, Y, Z, X2;                                     } tmc_sgt_t;
 typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, E0, E1, E2, E3, E4, E5; } tmc_stealth_enabled_t;
 
 // Limit an index to an array size
 #define ALIM(I,ARR) _MIN(I, COUNT(ARR) - 1)
+
+// Defaults for reset / fill in on load
+static const uint32_t   _DMA[] PROGMEM = DEFAULT_MAX_ACCELERATION;
+static const float     _DASU[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT;
+static const feedRate_t _DMF[] PROGMEM = DEFAULT_MAX_FEEDRATE;
 
 /**
  * Current EEPROM Layout
@@ -178,7 +181,7 @@ typedef struct SettingsDataStruct {
   // HAS_BED_PROBE
   //
 
-  float zprobe_zoffset;
+  float probe_offset[XYZ];
 
   //
   // ABL_PLANAR
@@ -283,7 +286,7 @@ typedef struct SettingsDataStruct {
   //
   tmc_stepper_current_t tmc_stepper_current;            // M906 X Y Z X2 Y2 Z2 Z3 E0 E1 E2 E3 E4 E5
   tmc_hybrid_threshold_t tmc_hybrid_threshold;          // M913 X Y Z X2 Y2 Z2 Z3 E0 E1 E2 E3 E4 E5
-  tmc_sgt_t tmc_sgt;                                    // M914 X Y Z
+  tmc_sgt_t tmc_sgt;                                    // M914 X Y Z X2
   tmc_stealth_enabled_t tmc_stealth_enabled;            // M569 X Y Z X2 Y2 Z2 Z3 E0 E1 E2 E3 E4 E5
 
   //
@@ -309,7 +312,9 @@ typedef struct SettingsDataStruct {
   //
   // ADVANCED_PAUSE_FEATURE
   //
-  fil_change_settings_t fc_settings[EXTRUDERS];         // M603 T U L
+  #if EXTRUDERS
+    fil_change_settings_t fc_settings[EXTRUDERS];       // M603 T U L
+  #endif
 
   //
   // Tool-change settings
@@ -367,7 +372,7 @@ void MarlinSettings::postprocess() {
 
   #if DISABLED(NO_VOLUMETRICS)
     planner.calculate_volumetric_multipliers();
-  #else
+  #elif EXTRUDERS
     for (uint8_t i = COUNT(planner.e_factor); i--;)
       planner.refresh_e_factor(i);
   #endif
@@ -613,12 +618,8 @@ void MarlinSettings::postprocess() {
     // Probe Z Offset
     //
     {
-      _FIELD_TEST(zprobe_zoffset);
-
-      #if !HAS_BED_PROBE
-        const float zprobe_zoffset = 0;
-      #endif
-      EEPROM_WRITE(zprobe_zoffset);
+      _FIELD_TEST(probe_offset[Z_AXIS]);
+      EEPROM_WRITE(probe_offset);
     }
 
     //
@@ -759,7 +760,7 @@ void MarlinSettings::postprocess() {
     {
       _FIELD_TEST(ui_preheat_hotend_temp);
 
-      #if HAS_LCD_MENU
+      #if HOTENDS && HAS_LCD_MENU
         const int16_t (&ui_preheat_hotend_temp)[2]  = ui.preheat_hotend_temp,
                       (&ui_preheat_bed_temp)[2]     = ui.preheat_bed_temp;
         const uint8_t (&ui_preheat_fan_speed)[2]    = ui.preheat_fan_speed;
@@ -1032,10 +1033,13 @@ void MarlinSettings::postprocess() {
     // TMC StallGuard threshold
     //
     {
-      tmc_sgt_t tmc_sgt = { 0, 0, 0 };
+      tmc_sgt_t tmc_sgt = { 0 };
       #if USE_SENSORLESS
         #if X_SENSORLESS
           tmc_sgt.X = stepperX.homing_threshold();
+        #endif
+        #if X2_SENSORLESS
+          tmc_sgt.X2 = stepperX2.homing_threshold();
         #endif
         #if Y_SENSORLESS
           tmc_sgt.Y = stepperY.homing_threshold();
@@ -1161,6 +1165,7 @@ void MarlinSettings::postprocess() {
     //
     // Advanced Pause filament load & unload lengths
     //
+    #if EXTRUDERS
     {
       #if DISABLED(ADVANCED_PAUSE_FEATURE)
         const fil_change_settings_t fc_settings[EXTRUDERS] = { 0, 0 };
@@ -1168,6 +1173,7 @@ void MarlinSettings::postprocess() {
       _FIELD_TEST(fc_settings);
       EEPROM_WRITE(fc_settings);
     }
+    #endif
 
     //
     // Multiple Extruders
@@ -1182,25 +1188,20 @@ void MarlinSettings::postprocess() {
     // Backlash Compensation
     //
     {
-      #ifdef BACKLASH_DISTANCE_MM
+      #if ENABLED(BACKLASH_GCODE)
         const float (&backlash_distance_mm)[XYZ] = backlash.distance_mm;
-      #else
-        const float backlash_distance_mm[XYZ] = { 0 };
-      #endif
-      #if ENABLED(BACKLASH_COMPENSATION)
         const uint8_t &backlash_correction = backlash.correction;
       #else
+        const float backlash_distance_mm[XYZ] = { 0 };
         const uint8_t backlash_correction = 0;
       #endif
-      #ifdef BACKLASH_SMOOTHING_MM
+      #if ENABLED(BACKLASH_GCODE) && defined(BACKLASH_SMOOTHING_MM)
         const float &backlash_smoothing_mm = backlash.smoothing_mm;
       #else
         const float backlash_smoothing_mm = 3;
       #endif
       _FIELD_TEST(backlash_distance_mm);
-      EEPROM_WRITE(backlash_distance_mm[X_AXIS]);
-      EEPROM_WRITE(backlash_distance_mm[Y_AXIS]);
-      EEPROM_WRITE(backlash_distance_mm[Z_AXIS]);
+      EEPROM_WRITE(backlash_distance_mm);
       EEPROM_WRITE(backlash_correction);
       EEPROM_WRITE(backlash_smoothing_mm);
     }
@@ -1293,21 +1294,19 @@ void MarlinSettings::postprocess() {
       {
         // Get only the number of E stepper parameters previously stored
         // Any steppers added later are set to their defaults
-        const uint32_t def1[] = DEFAULT_MAX_ACCELERATION;
-        const float def2[] = DEFAULT_AXIS_STEPS_PER_UNIT, def3[] = DEFAULT_MAX_FEEDRATE;
-
         uint32_t tmp1[XYZ + esteppers];
+        float tmp2[XYZ + esteppers];
+        feedRate_t tmp3[XYZ + esteppers];
         EEPROM_READ(tmp1);                         // max_acceleration_mm_per_s2
         EEPROM_READ(planner.settings.min_segment_time_us);
-
-        float tmp2[XYZ + esteppers], tmp3[XYZ + esteppers];
         EEPROM_READ(tmp2);                         // axis_steps_per_mm
         EEPROM_READ(tmp3);                         // max_feedrate_mm_s
+
         if (!validating) LOOP_XYZE_N(i) {
           const bool in = (i < esteppers + XYZ);
-          planner.settings.max_acceleration_mm_per_s2[i] = in ? tmp1[i] : def1[ALIM(i, def1)];
-          planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : def2[ALIM(i, def2)];
-          planner.settings.max_feedrate_mm_s[i]          = in ? tmp3[i] : def3[ALIM(i, def3)];
+          planner.settings.max_acceleration_mm_per_s2[i] = in ? tmp1[i] : pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
+          planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : pgm_read_float(&_DASU[ALIM(i, _DASU)]);
+          planner.settings.max_feedrate_mm_s[i]          = in ? tmp3[i] : pgm_read_float(&_DMF[ALIM(i, _DMF)]);
         }
 
         EEPROM_READ(planner.settings.acceleration);
@@ -1419,12 +1418,14 @@ void MarlinSettings::postprocess() {
       // Probe Z Offset
       //
       {
-        _FIELD_TEST(zprobe_zoffset);
+        _FIELD_TEST(probe_offset[Z_AXIS]);
 
-        #if !HAS_BED_PROBE
-          float zprobe_zoffset;
+        #if HAS_BED_PROBE
+          float (&zpo)[XYZ] = probe_offset;
+        #else
+          float zpo[XYZ];
         #endif
-        EEPROM_READ(zprobe_zoffset);
+        EEPROM_READ(zpo);
       }
 
       //
@@ -1557,7 +1558,7 @@ void MarlinSettings::postprocess() {
       {
         _FIELD_TEST(ui_preheat_hotend_temp);
 
-        #if HAS_LCD_MENU
+        #if HOTENDS && HAS_LCD_MENU
           int16_t (&ui_preheat_hotend_temp)[2]  = ui.preheat_hotend_temp,
                   (&ui_preheat_bed_temp)[2]     = ui.preheat_bed_temp;
           uint8_t (&ui_preheat_fan_speed)[2]    = ui.preheat_fan_speed;
@@ -1820,9 +1821,12 @@ void MarlinSettings::postprocess() {
               #if AXIS_HAS_STALLGUARD(X)
                 stepperX.homing_threshold(tmc_sgt.X);
               #endif
-              #if AXIS_HAS_STALLGUARD(X2)
+              #if AXIS_HAS_STALLGUARD(X2) && !X2_SENSORLESS
                 stepperX2.homing_threshold(tmc_sgt.X);
               #endif
+            #endif
+            #if X2_SENSORLESS
+              stepperX2.homing_threshold(tmc_sgt.X2);
             #endif
             #ifdef Y_STALL_SENSITIVITY
               #if AXIS_HAS_STALLGUARD(Y)
@@ -1962,6 +1966,7 @@ void MarlinSettings::postprocess() {
       //
       // Advanced Pause filament load & unload lengths
       //
+      #if EXTRUDERS
       {
         #if DISABLED(ADVANCED_PAUSE_FEATURE)
           fil_change_settings_t fc_settings[EXTRUDERS];
@@ -1969,6 +1974,7 @@ void MarlinSettings::postprocess() {
         _FIELD_TEST(fc_settings);
         EEPROM_READ(fc_settings);
       }
+      #endif
 
       //
       // Tool-change settings
@@ -1982,25 +1988,20 @@ void MarlinSettings::postprocess() {
       // Backlash Compensation
       //
       {
-        #ifdef BACKLASH_DISTANCE_MM
+        #if ENABLED(BACKLASH_GCODE)
           float (&backlash_distance_mm)[XYZ] = backlash.distance_mm;
-        #else
-          float backlash_distance_mm[XYZ];
-        #endif
-        #if ENABLED(BACKLASH_COMPENSATION)
           uint8_t &backlash_correction = backlash.correction;
         #else
+          float backlash_distance_mm[XYZ];
           uint8_t backlash_correction;
         #endif
-        #ifdef BACKLASH_SMOOTHING_MM
+        #if ENABLED(BACKLASH_GCODE) && defined(BACKLASH_SMOOTHING_MM)
           float &backlash_smoothing_mm = backlash.smoothing_mm;
         #else
           float backlash_smoothing_mm;
         #endif
         _FIELD_TEST(backlash_distance_mm);
-        EEPROM_READ(backlash_distance_mm[X_AXIS]);
-        EEPROM_READ(backlash_distance_mm[Y_AXIS]);
-        EEPROM_READ(backlash_distance_mm[Z_AXIS]);
+        EEPROM_READ(backlash_distance_mm);
         EEPROM_READ(backlash_correction);
         EEPROM_READ(backlash_smoothing_mm);
       }
@@ -2063,7 +2064,7 @@ void MarlinSettings::postprocess() {
           }
           else {
             ubl.reset();
-            DEBUG_ECHOLNPGM("UBL System reset()");
+            DEBUG_ECHOLNPGM("UBL reset");
           }
         }
       #endif
@@ -2207,20 +2208,18 @@ void MarlinSettings::postprocess() {
  * M502 - Reset Configuration
  */
 void MarlinSettings::reset() {
-  static const float tmp1[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT, tmp2[] PROGMEM = DEFAULT_MAX_FEEDRATE;
-  static const uint32_t tmp3[] PROGMEM = DEFAULT_MAX_ACCELERATION;
   LOOP_XYZE_N(i) {
-    planner.settings.axis_steps_per_mm[i]          = pgm_read_float(&tmp1[ALIM(i, tmp1)]);
-    planner.settings.max_feedrate_mm_s[i]          = pgm_read_float(&tmp2[ALIM(i, tmp2)]);
-    planner.settings.max_acceleration_mm_per_s2[i] = pgm_read_dword(&tmp3[ALIM(i, tmp3)]);
+    planner.settings.max_acceleration_mm_per_s2[i] = pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
+    planner.settings.axis_steps_per_mm[i]          = pgm_read_float(&_DASU[ALIM(i, _DASU)]);
+    planner.settings.max_feedrate_mm_s[i]          = pgm_read_float(&_DMF[ALIM(i, _DMF)]);
   }
 
   planner.settings.min_segment_time_us = DEFAULT_MINSEGMENTTIME;
   planner.settings.acceleration = DEFAULT_ACCELERATION;
   planner.settings.retract_acceleration = DEFAULT_RETRACT_ACCELERATION;
   planner.settings.travel_acceleration = DEFAULT_TRAVEL_ACCELERATION;
-  planner.settings.min_feedrate_mm_s = DEFAULT_MINIMUMFEEDRATE;
-  planner.settings.min_travel_feedrate_mm_s = DEFAULT_MINTRAVELFEEDRATE;
+  planner.settings.min_feedrate_mm_s = feedRate_t(DEFAULT_MINIMUMFEEDRATE);
+  planner.settings.min_travel_feedrate_mm_s = feedRate_t(DEFAULT_MINTRAVELFEEDRATE);
 
   #if HAS_CLASSIC_JERK
     #ifndef DEFAULT_XJERK
@@ -2285,12 +2284,10 @@ void MarlinSettings::reset() {
 
   #if ENABLED(BACKLASH_GCODE)
     backlash.correction = (BACKLASH_CORRECTION) * 255;
-    #ifdef BACKLASH_DISTANCE_MM
-      constexpr float tmp[XYZ] = BACKLASH_DISTANCE_MM;
-      backlash.distance_mm[X_AXIS] = tmp[X_AXIS];
-      backlash.distance_mm[Y_AXIS] = tmp[Y_AXIS];
-      backlash.distance_mm[Z_AXIS] = tmp[Z_AXIS];
-    #endif
+    constexpr float tmp[XYZ] = BACKLASH_DISTANCE_MM;
+    backlash.distance_mm[X_AXIS] = tmp[X_AXIS];
+    backlash.distance_mm[Y_AXIS] = tmp[Y_AXIS];
+    backlash.distance_mm[Z_AXIS] = tmp[Z_AXIS];
     #ifdef BACKLASH_SMOOTHING_MM
       backlash.smoothing_mm = BACKLASH_SMOOTHING_MM;
     #endif
@@ -2321,7 +2318,12 @@ void MarlinSettings::reset() {
   #endif
 
   #if HAS_BED_PROBE
-    zprobe_zoffset = Z_PROBE_OFFSET_FROM_EXTRUDER;
+    #ifndef NOZZLE_TO_PROBE_OFFSET
+      #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
+    #endif
+    constexpr float dpo[XYZ] = NOZZLE_TO_PROBE_OFFSET;
+    static_assert(COUNT(dpo) == 3, "NOZZLE_TO_PROBE_OFFSET must contain offsets for X, Y, and Z.");
+    LOOP_XYZ(a) probe_offset[a] = dpo[a];
   #endif
 
   //
@@ -2404,7 +2406,7 @@ void MarlinSettings::reset() {
   // Preheat parameters
   //
 
-  #if HAS_LCD_MENU
+  #if HOTENDS && HAS_LCD_MENU
     ui.preheat_hotend_temp[0] = PREHEAT_1_TEMP_HOTEND;
     ui.preheat_hotend_temp[1] = PREHEAT_2_TEMP_HOTEND;
     ui.preheat_bed_temp[0] = PREHEAT_1_TEMP_BED;
@@ -2579,17 +2581,18 @@ void MarlinSettings::reset() {
   #if HAS_TRINAMIC
     inline void say_M906(const bool forReplay) { CONFIG_ECHO_START(); SERIAL_ECHOPGM("  M906"); }
     #if HAS_STEALTHCHOP
-      void say_M569(const char * const etc=nullptr) {
+      void say_M569(const bool forReplay, const char * const etc=nullptr, const bool newLine = false) {
+        CONFIG_ECHO_START();
         SERIAL_ECHOPGM("  M569 S1");
         if (etc) {
           SERIAL_CHAR(' ');
           serialprintPGM(etc);
-          SERIAL_EOL();
         }
+        if (newLine) SERIAL_EOL();
       }
     #endif
     #if ENABLED(HYBRID_THRESHOLD)
-      inline void say_M913() { SERIAL_ECHOPGM("  M913"); }
+      inline void say_M913(const bool forReplay) { CONFIG_ECHO_START(); SERIAL_ECHOPGM("  M913"); }
     #endif
     #if USE_SENSORLESS
       inline void say_M914() { SERIAL_ECHOPGM("  M914"); }
@@ -2792,9 +2795,8 @@ void MarlinSettings::reset() {
       CONFIG_ECHO_START();
       for (uint8_t e = 1; e < HOTENDS; e++) {
         SERIAL_ECHOPAIR(
-            "  M218 T", (int)e
-          , " X", LINEAR_UNIT(hotend_offset[X_AXIS][e])
-          , " Y", LINEAR_UNIT(hotend_offset[Y_AXIS][e])
+          "  M218 T", (int)e,
+          " X", LINEAR_UNIT(hotend_offset[X_AXIS][e]), " Y", LINEAR_UNIT(hotend_offset[Y_AXIS][e])
         );
         SERIAL_ECHOLNPAIR_F(" Z", LINEAR_UNIT(hotend_offset[Z_AXIS][e]), 3);
       }
@@ -2909,9 +2911,9 @@ void MarlinSettings::reset() {
       CONFIG_ECHO_HEADING("Endstop adjustment:");
       CONFIG_ECHO_START();
       SERIAL_ECHOLNPAIR(
-          "  M666 X", LINEAR_UNIT(delta_endstop_adj[X_AXIS])
-        , " Y", LINEAR_UNIT(delta_endstop_adj[Y_AXIS])
-        , " Z", LINEAR_UNIT(delta_endstop_adj[Z_AXIS])
+          "  M666 X", LINEAR_UNIT(delta_endstop_adj[A_AXIS])
+        , " Y", LINEAR_UNIT(delta_endstop_adj[B_AXIS])
+        , " Z", LINEAR_UNIT(delta_endstop_adj[C_AXIS])
       );
 
       CONFIG_ECHO_HEADING("Delta settings: L<diagonal_rod> R<radius> H<height> S<segments_per_s> B<calibration radius> XYZ<tower angle corrections>");
@@ -2949,7 +2951,7 @@ void MarlinSettings::reset() {
 
     #endif // [XYZ]_DUAL_ENDSTOPS
 
-    #if HAS_LCD_MENU
+    #if HOTENDS && HAS_LCD_MENU
 
       CONFIG_ECHO_HEADING("Material heatup parameters:");
       for (uint8_t i = 0; i < COUNT(ui.preheat_hotend_temp); i++) {
@@ -3038,7 +3040,7 @@ void MarlinSettings::reset() {
       SERIAL_ECHOLNPAIR(
           "  M207 S", LINEAR_UNIT(fwretract.settings.retract_length)
         , " W", LINEAR_UNIT(fwretract.settings.swap_retract_length)
-        , " F", MMS_TO_MMM(LINEAR_UNIT(fwretract.settings.retract_feedrate_mm_s))
+        , " F", LINEAR_UNIT(MMS_TO_MMM(fwretract.settings.retract_feedrate_mm_s))
         , " Z", LINEAR_UNIT(fwretract.settings.retract_zraise)
       );
 
@@ -3047,7 +3049,7 @@ void MarlinSettings::reset() {
       SERIAL_ECHOLNPAIR(
           "  M208 S", LINEAR_UNIT(fwretract.settings.retract_recover_extra)
         , " W", LINEAR_UNIT(fwretract.settings.swap_retract_recover_extra)
-        , " F", MMS_TO_MMM(LINEAR_UNIT(fwretract.settings.retract_recover_feedrate_mm_s))
+        , " F", LINEAR_UNIT(MMS_TO_MMM(fwretract.settings.retract_recover_feedrate_mm_s))
       );
 
       #if ENABLED(FWRETRACT_AUTORETRACT)
@@ -3070,7 +3072,9 @@ void MarlinSettings::reset() {
         say_units(true);
       }
       CONFIG_ECHO_START();
-      SERIAL_ECHOLNPAIR("  M851 Z", LINEAR_UNIT(zprobe_zoffset));
+      SERIAL_ECHOLNPAIR("  M851 X", LINEAR_UNIT(probe_offset[X_AXIS]),
+                              " Y", LINEAR_UNIT(probe_offset[Y_AXIS]),
+                              " Z", LINEAR_UNIT(probe_offset[Z_AXIS]));
     #endif
 
     /**
@@ -3162,9 +3166,8 @@ void MarlinSettings::reset() {
        */
       #if ENABLED(HYBRID_THRESHOLD)
         CONFIG_ECHO_HEADING("Hybrid Threshold:");
-        CONFIG_ECHO_START();
         #if AXIS_HAS_STEALTHCHOP(X) || AXIS_HAS_STEALTHCHOP(Y) || AXIS_HAS_STEALTHCHOP(Z)
-          say_M913();
+          say_M913(forReplay);
         #endif
         #if AXIS_HAS_STEALTHCHOP(X)
           SERIAL_ECHOPAIR(" X", stepperX.get_pwm_thrs());
@@ -3180,7 +3183,7 @@ void MarlinSettings::reset() {
         #endif
 
         #if AXIS_HAS_STEALTHCHOP(X2) || AXIS_HAS_STEALTHCHOP(Y2) || AXIS_HAS_STEALTHCHOP(Z2)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOPGM(" I1");
         #endif
         #if AXIS_HAS_STEALTHCHOP(X2)
@@ -3197,32 +3200,32 @@ void MarlinSettings::reset() {
         #endif
 
         #if AXIS_HAS_STEALTHCHOP(Z3)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" I2 Z", stepperZ3.get_pwm_thrs());
         #endif
 
         #if AXIS_HAS_STEALTHCHOP(E0)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T0 E", stepperE0.get_pwm_thrs());
         #endif
         #if AXIS_HAS_STEALTHCHOP(E1)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T1 E", stepperE1.get_pwm_thrs());
         #endif
         #if AXIS_HAS_STEALTHCHOP(E2)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T2 E", stepperE2.get_pwm_thrs());
         #endif
         #if AXIS_HAS_STEALTHCHOP(E3)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T3 E", stepperE3.get_pwm_thrs());
         #endif
         #if AXIS_HAS_STEALTHCHOP(E4)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T4 E", stepperE4.get_pwm_thrs());
         #endif
         #if AXIS_HAS_STEALTHCHOP(E5)
-          say_M913();
+          say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T5 E", stepperE5.get_pwm_thrs());
         #endif
         SERIAL_EOL();
@@ -3233,8 +3236,8 @@ void MarlinSettings::reset() {
        */
       #if USE_SENSORLESS
         CONFIG_ECHO_HEADING("StallGuard threshold:");
-        CONFIG_ECHO_START();
         #if X_SENSORLESS || Y_SENSORLESS || Z_SENSORLESS
+          CONFIG_ECHO_START();
           say_M914();
           #if X_SENSORLESS
             SERIAL_ECHOPAIR(" X", stepperX.homing_threshold());
@@ -3253,6 +3256,7 @@ void MarlinSettings::reset() {
         #define HAS_Z2_SENSORLESS (defined(Z_STALL_SENSITIVITY) && AXIS_HAS_STALLGUARD(Z2))
         #define HAS_Z3_SENSORLESS (defined(Z_STALL_SENSITIVITY) && AXIS_HAS_STALLGUARD(Z3))
         #if HAS_X2_SENSORLESS || HAS_Y2_SENSORLESS || HAS_Z2_SENSORLESS
+          CONFIG_ECHO_START();
           say_M914();
           SERIAL_ECHOPGM(" I1");
           #if HAS_X2_SENSORLESS
@@ -3268,6 +3272,7 @@ void MarlinSettings::reset() {
         #endif
 
         #if HAS_Z3_SENSORLESS
+          CONFIG_ECHO_START();
           say_M914();
           SERIAL_ECHOLNPAIR(" I2 Z", stepperZ3.homing_threshold());
         #endif
@@ -3279,7 +3284,6 @@ void MarlinSettings::reset() {
        */
       #if HAS_STEALTHCHOP
         CONFIG_ECHO_HEADING("Driver stepping mode:");
-        CONFIG_ECHO_START();
         #if AXIS_HAS_STEALTHCHOP(X)
           const bool chop_x = stepperX.get_stealthChop_status();
         #else
@@ -3296,11 +3300,13 @@ void MarlinSettings::reset() {
           constexpr bool chop_z = false;
         #endif
 
-        if (chop_x || chop_y || chop_z) say_M569();
-        if (chop_x) SERIAL_ECHOPGM(" X");
-        if (chop_y) SERIAL_ECHOPGM(" Y");
-        if (chop_z) SERIAL_ECHOPGM(" Z");
-        if (chop_x || chop_y || chop_z) SERIAL_EOL();
+        if (chop_x || chop_y || chop_z) {
+          say_M569(forReplay);
+          if (chop_x) SERIAL_ECHOPGM(" X");
+          if (chop_y) SERIAL_ECHOPGM(" Y");
+          if (chop_z) SERIAL_ECHOPGM(" Z");
+          SERIAL_EOL();
+        }
 
         #if AXIS_HAS_STEALTHCHOP(X2)
           const bool chop_x2 = stepperX2.get_stealthChop_status();
@@ -3318,33 +3324,35 @@ void MarlinSettings::reset() {
           constexpr bool chop_z2 = false;
         #endif
 
-        if (chop_x2 || chop_y2 || chop_z2) say_M569(PSTR("I1"));
-        if (chop_x2) SERIAL_ECHOPGM(" X");
-        if (chop_y2) SERIAL_ECHOPGM(" Y");
-        if (chop_z2) SERIAL_ECHOPGM(" Z");
-        if (chop_x2 || chop_y2 || chop_z2) SERIAL_EOL();
+        if (chop_x2 || chop_y2 || chop_z2) {
+          say_M569(forReplay, PSTR("I1"));
+          if (chop_x2) SERIAL_ECHOPGM(" X");
+          if (chop_y2) SERIAL_ECHOPGM(" Y");
+          if (chop_z2) SERIAL_ECHOPGM(" Z");
+          SERIAL_EOL();
+        }
 
         #if AXIS_HAS_STEALTHCHOP(Z3)
-          if (stepperZ3.get_stealthChop_status()) { say_M569(PSTR("I2 Z")); }
+          if (stepperZ3.get_stealthChop_status()) { say_M569(forReplay, PSTR("I2 Z"), true); }
         #endif
 
         #if AXIS_HAS_STEALTHCHOP(E0)
-          if (stepperE0.get_stealthChop_status()) { say_M569(PSTR("T0 E")); }
+          if (stepperE0.get_stealthChop_status()) { say_M569(forReplay, PSTR("T0 E"), true); }
         #endif
         #if AXIS_HAS_STEALTHCHOP(E1)
-          if (stepperE1.get_stealthChop_status()) { say_M569(PSTR("T1 E")); }
+          if (stepperE1.get_stealthChop_status()) { say_M569(forReplay, PSTR("T1 E"), true); }
         #endif
         #if AXIS_HAS_STEALTHCHOP(E2)
-          if (stepperE2.get_stealthChop_status()) { say_M569(PSTR("T2 E")); }
+          if (stepperE2.get_stealthChop_status()) { say_M569(forReplay, PSTR("T2 E"), true); }
         #endif
         #if AXIS_HAS_STEALTHCHOP(E3)
-          if (stepperE3.get_stealthChop_status()) { say_M569(PSTR("T3 E")); }
+          if (stepperE3.get_stealthChop_status()) { say_M569(forReplay, PSTR("T3 E"), true); }
         #endif
         #if AXIS_HAS_STEALTHCHOP(E4)
-          if (stepperE4.get_stealthChop_status()) { say_M569(PSTR("T4 E")); }
+          if (stepperE4.get_stealthChop_status()) { say_M569(forReplay, PSTR("T4 E"), true); }
         #endif
         #if AXIS_HAS_STEALTHCHOP(E5)
-          if (stepperE5.get_stealthChop_status()) { say_M569(PSTR("T5 E")); }
+          if (stepperE5.get_stealthChop_status()) { say_M569(forReplay, PSTR("T5 E"), true); }
         #endif
 
       #endif // HAS_STEALTHCHOP
