@@ -73,36 +73,36 @@ namespace ExtMenuInfo {
       #endif
     );
     START_SCREEN();
-    STATIC_ITEM(MSG_INFO_PSU ": " PSU_NAME, true);
+    STATIC_ITEM_P(MSG_INFO_PSU ": " PSU_NAME, SS_CENTER);
     #if ENABLED(POWER_LOSS_RECOVERY)
       #if PIN_EXISTS(POWER_LOSS)
-        STATIC_ITEM(MSG_INFO_POWER_LOSS " Pin: " STRINGIFY(POWER_LOSS_PIN), true);
+        STATIC_ITEM_P(MSG_INFO_POWER_LOSS " Pin: " STRINGIFY(POWER_LOSS_PIN), SS_CENTER);
       #else
-        STATIC_ITEM(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", true);
+        STATIC_ITEM_P(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", SS_CENTER);
       #endif
     #endif
     #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
       if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
-        STATIC_ITEM(MSG_BATTERY_CHARGING, true);
+        STATIC_ITEM_P(MSG_BATTERY_CHARGING, SS_CENTER);
       else
-        STATIC_ITEM(MSG_BATTERY_CHARGED, true);
+        STATIC_ITEM_P(MSG_BATTERY_CHARGED, SS_CENTER);
     #endif
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_ITEM(MSG_INFO_POWER_VOLT "OFF", true);
+          STATIC_ITEM_P(MSG_INFO_POWER_VOLT "OFF", SS_CENTER);
         else
       #endif
         {
           char buffer[8];
           uint16_t volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
           sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
-          STATIC_ITEM(MSG_INFO_POWER_VOLT, false, false, buffer);
+          STATIC_ITEM_P(MSG_INFO_POWER_VOLT, SS_LEFT, buffer);
         }
       #if ENABLED(VOLTAGE_WARNING)
-        STATIC_ITEM(MSG_INPUT_VOLTAGE_CHECK_OFF, false, true);
+        STATIC_ITEM_P(MSG_INPUT_VOLTAGE_CHECK_OFF, SS_CENTER);
       #else
-        STATIC_ITEM(MSG_INPUT_VOLTAGE_CHECK_ON, false, true);
+        STATIC_ITEM_P(MSG_INPUT_VOLTAGE_CHECK_ON, SS_CENTER);
       #endif
     #endif
     END_SCREEN();
