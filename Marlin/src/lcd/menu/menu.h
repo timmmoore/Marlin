@@ -30,7 +30,9 @@
 extern int8_t encoderLine, encoderTopLine, screen_items;
 extern bool screen_changed;
 
-constexpr int16_t heater_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP);
+#if HOTENDS
+  constexpr int16_t heater_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP);
+#endif
 
 void scroll_screen(const uint8_t limit, const bool is_menu);
 bool printer_busy();
@@ -46,7 +48,7 @@ bool printer_busy();
     static inline char* strfunc(const float value) { return STRFUNC((TYPE) value); } \
   };
 
-DECLARE_MENU_EDIT_TYPE(uint8_t,  percent,     ui8tostr4pct,    1     );   // 100%       right-justified
+DECLARE_MENU_EDIT_TYPE(uint8_t,  percent,     ui8tostr4pct, 100.0/255);   // 100%       right-justified
 DECLARE_MENU_EDIT_TYPE(int16_t,  int3,        i16tostr3,       1     );   // 123, -12   right-justified
 DECLARE_MENU_EDIT_TYPE(int16_t,  int4,        i16tostr4sign,   1     );   // 1234, -123 right-justified
 DECLARE_MENU_EDIT_TYPE(int8_t,   int8,        i8tostr3,        1     );   // 123, -12   right-justified
@@ -57,7 +59,7 @@ DECLARE_MENU_EDIT_TYPE(uint16_t, uint16_5,    ui16tostr5,      0.01  );   // 123
 DECLARE_MENU_EDIT_TYPE(float,    float3,      ftostr3,         1     );   // 123        right-justified
 DECLARE_MENU_EDIT_TYPE(float,    float52,     ftostr42_52,   100     );   // _2.34, 12.34, -2.34 or 123.45, -23.45
 DECLARE_MENU_EDIT_TYPE(float,    float43,     ftostr43sign, 1000     );   // 1.234
-DECLARE_MENU_EDIT_TYPE(float,    float5,      ftostr5rj,       0.01f );   // 12345      right-justified
+DECLARE_MENU_EDIT_TYPE(float,    float5,      ftostr5rj,       1     );   // 12345      right-justified
 DECLARE_MENU_EDIT_TYPE(float,    float5_25,   ftostr5rj,       0.04f );   // 12345      right-justified (25 increment)
 DECLARE_MENU_EDIT_TYPE(float,    float51,     ftostr51rj,     10     );   // 1234.5     right-justified
 DECLARE_MENU_EDIT_TYPE(float,    float51sign, ftostr51sign,   10     );   // +1234.5
@@ -76,9 +78,13 @@ inline void do_select_screen_yn(selectFunc_t yesFunc, selectFunc_t noFunc, PGM_P
   do_select_screen(PSTR(MSG_YES), PSTR(MSG_NO), yesFunc, noFunc, pref, string, suff);
 }
 
+#define SS_LEFT   0x00
+#define SS_CENTER 0x01
+#define SS_INVERT 0x02
+
 void draw_edit_screen(PGM_P const pstr, const char* const value=nullptr);
 void draw_menu_item(const bool sel, const uint8_t row, PGM_P const pstr, const char pre_char, const char post_char);
-void draw_menu_item_static(const uint8_t row, PGM_P const pstr, const bool center=true, const bool invert=false, const char *valstr=nullptr);
+void draw_menu_item_static(const uint8_t row, PGM_P const pstr, const uint8_t style=SS_CENTER, const char * const valstr=nullptr);
 void _draw_menu_item_edit(const bool sel, const uint8_t row, PGM_P const pstr, const char* const data, const bool pgm);
 FORCE_INLINE void draw_menu_item_back(const bool sel, const uint8_t row, PGM_P const pstr) { draw_menu_item(sel, row, pstr, LCD_STR_UPLEVEL[0], LCD_STR_UPLEVEL[0]); }
 FORCE_INLINE void draw_menu_item_edit(const bool sel, const uint8_t row, PGM_P const pstr, const char* const data) { _draw_menu_item_edit(sel, row, pstr, data, false); }
@@ -144,7 +150,13 @@ DEFINE_DRAW_MENU_ITEM_SETTING_EDIT(long5_25);         // 12345      right-justif
 
 class MenuItem_back {
   public:
-    static inline void action() { ui.goto_previous_screen(); }
+    static inline void action() {
+      ui.goto_previous_screen(
+        #if ENABLED(TURBO_BACK_MENU_ITEM)
+          true
+        #endif
+      );
+    }
 };
 
 class MenuItem_submenu {
@@ -191,8 +203,8 @@ class TMenuItem : MenuItemBase {
   public:
     static void action_edit(PGM_P const pstr, type_t * const ptr, const type_t minValue, const type_t maxValue, const screenFunc_t callback=nullptr, const bool live=false) {
       // Make sure minv and maxv fit within int16_t
-      const int32_t minv = _MAX(scale(minValue), INT_MIN),
-                    maxv = _MIN(scale(maxValue), INT_MAX);
+      const int32_t minv = _MAX(scale(minValue), INT16_MIN),
+                    maxv = _MIN(scale(maxValue), INT16_MAX);
       init(pstr, ptr, minv, maxv - minv, scale(*ptr) - minv, edit, callback, live);
     }
     static void edit() { MenuItemBase::edit(to_string, load); }
@@ -298,30 +310,30 @@ class MenuItem_bool {
  *     MenuItem_int3::action_edit(PSTR(MSG_SPEED), &feedrate_percentage, 10, 999)
  *
  */
-#define _MENU_ITEM_VARIANT_P(TYPE, VARIANT, USE_MULTIPLIER, PLABEL, ...) do { \
+#define _MENU_ITEM_VARIANT_P(TYPE, VARIANT, USE_MULTIPLIER, PLABEL, V...) do { \
     _skipStatic = false; \
     if (_menuLineNr == _thisItemNr) { \
       if (encoderLine == _thisItemNr && ui.use_click()) { \
         _MENU_ITEM_MULTIPLIER_CHECK(USE_MULTIPLIER); \
-        MenuItem_##TYPE ::action ## VARIANT(__VA_ARGS__); \
+        MenuItem_##TYPE ::action ## VARIANT(V); \
         if (screen_changed) return; \
       } \
       if (ui.should_draw()) \
-        draw_menu_item ## VARIANT ## _ ## TYPE(encoderLine == _thisItemNr, _lcdLineNr, PLABEL, ## __VA_ARGS__); \
+        draw_menu_item ## VARIANT ## _ ## TYPE(encoderLine == _thisItemNr, _lcdLineNr, PLABEL, ##V); \
     } \
   ++_thisItemNr; \
 }while(0)
 
 // Used to print static text with no visible cursor.
 // Parameters: label [, bool center [, bool invert [, char *value] ] ]
-#define STATIC_ITEM_P(PLABEL, ...) do{ \
+#define STATIC_ITEM_P(PLABEL, V...) do{ \
   if (_menuLineNr == _thisItemNr) { \
     if (_skipStatic && encoderLine <= _thisItemNr) { \
       ui.encoderPosition += ENCODER_STEPS_PER_MENU_ITEM; \
       ++encoderLine; \
     } \
     if (ui.should_draw()) \
-      draw_menu_item_static(_lcdLineNr, PLABEL, ## __VA_ARGS__); \
+      draw_menu_item_static(_lcdLineNr, PLABEL, ##V); \
   } \
   ++_thisItemNr; \
 } while(0)
@@ -332,16 +344,16 @@ class MenuItem_bool {
 
 #define MENU_ITEM_ADDON_END() } }while(0)
 
-#define STATIC_ITEM(LABEL, ...) STATIC_ITEM_P(PSTR(LABEL), ## __VA_ARGS__)
+#define STATIC_ITEM(LABEL, V...) STATIC_ITEM_P(PSTR(LABEL), ##V)
 
 #define MENU_BACK(LABEL) MENU_ITEM(back, LABEL)
 #define MENU_ITEM_DUMMY() do { _thisItemNr++; }while(0)
-#define MENU_ITEM_P(TYPE, PLABEL, ...)                       _MENU_ITEM_VARIANT_P(TYPE,      , false, PLABEL,                   ## __VA_ARGS__)
-#define MENU_ITEM(TYPE, LABEL, ...)                          _MENU_ITEM_VARIANT_P(TYPE,      , false, PSTR(LABEL),              ## __VA_ARGS__)
-#define MENU_ITEM_EDIT(TYPE, LABEL, ...)                     _MENU_ITEM_VARIANT_P(TYPE, _edit, false, PSTR(LABEL), PSTR(LABEL), ## __VA_ARGS__)
-#define MENU_ITEM_EDIT_CALLBACK(TYPE, LABEL, ...)            _MENU_ITEM_VARIANT_P(TYPE, _edit, false, PSTR(LABEL), PSTR(LABEL), ## __VA_ARGS__)
-#define MENU_MULTIPLIER_ITEM_EDIT(TYPE, LABEL, ...)          _MENU_ITEM_VARIANT_P(TYPE, _edit,  true, PSTR(LABEL), PSTR(LABEL), ## __VA_ARGS__)
-#define MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(TYPE, LABEL, ...) _MENU_ITEM_VARIANT_P(TYPE, _edit,  true, PSTR(LABEL), PSTR(LABEL), ## __VA_ARGS__)
+#define MENU_ITEM_P(TYPE, PLABEL, V...)                       _MENU_ITEM_VARIANT_P(TYPE,      , false, PLABEL,                   ##V)
+#define MENU_ITEM(TYPE, LABEL, V...)                          _MENU_ITEM_VARIANT_P(TYPE,      , false, PSTR(LABEL),              ##V)
+#define MENU_ITEM_EDIT(TYPE, LABEL, V...)                     _MENU_ITEM_VARIANT_P(TYPE, _edit, false, PSTR(LABEL), PSTR(LABEL), ##V)
+#define MENU_ITEM_EDIT_CALLBACK(TYPE, LABEL, V...)            _MENU_ITEM_VARIANT_P(TYPE, _edit, false, PSTR(LABEL), PSTR(LABEL), ##V)
+#define MENU_MULTIPLIER_ITEM_EDIT(TYPE, LABEL, V...)          _MENU_ITEM_VARIANT_P(TYPE, _edit,  true, PSTR(LABEL), PSTR(LABEL), ##V)
+#define MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(TYPE, LABEL, V...) _MENU_ITEM_VARIANT_P(TYPE, _edit,  true, PSTR(LABEL), PSTR(LABEL), ##V)
 
 ////////////////////////////////////////////
 /////////////// Menu Screens ///////////////
@@ -351,7 +363,7 @@ void menu_main();
 void menu_move();
 
 #if ENABLED(SDSUPPORT)
-  void menu_sdcard();
+  void menu_media();
 #endif
 
 // First Fan Speed title in "Tune" and "Control>Temperature" menus

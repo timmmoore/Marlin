@@ -27,7 +27,7 @@
   #error "BIGTREE SKR Pro V1.1 supports up to 3 hotends / E-steppers."
 #endif
 
-#define BOARD_NAME "BIGTREE SKR Pro 1.1"
+#define BOARD_INFO_NAME "BIGTREE SKR Pro 1.1" // redefined?
 
 // Use one of these or SDCard-based Emulation will be used
 //#define SRAM_EEPROM_EMULATION   // Use BackSRAM-based EEPROM emulation
@@ -219,6 +219,26 @@
 
     #define LCD_PINS_ENABLE PD11
     #define LCD_PINS_D4    PG2
+
+    #if ENABLED(FYSETC_MINI_12864)
+      #define DOGLCD_CS    PD11
+      #define DOGLCD_A0    PD10
+      //#define LCD_BACKLIGHT_PIN -1
+      #define LCD_RESET_PIN PG2   // Must be high or open for LCD to operate normally.
+      #if EITHER(FYSETC_MINI_12864_1_2, FYSETC_MINI_12864_2_0)
+        #ifndef RGB_LED_R_PIN
+          #define RGB_LED_R_PIN PG3
+        #endif
+        #ifndef RGB_LED_G_PIN
+          #define RGB_LED_G_PIN PG6
+        #endif
+        #ifndef RGB_LED_B_PIN
+          #define RGB_LED_B_PIN PG7
+        #endif
+      #elif ENABLED(FYSETC_MINI_12864_2_1)
+        #define NEOPIXEL_PIN    PG3
+      #endif
+    #endif // !FYSETC_MINI_12864
 
     #if ENABLED(ULTIPANEL)
       #define LCD_PINS_D5  PG3
