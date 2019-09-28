@@ -81,7 +81,7 @@ namespace ExtMenuInfo {
     #if ENABLED(POWER_LOSS_RECOVERY)
       STATIC_PAIR(MSG_INFO_POWER_LOSS,
         #if PIN_EXISTS(POWER_LOSS)
-          " Pin: " STRINGIFY(POWER_LOSS_PIN)
+          "Pin: " STRINGIFY(POWER_LOSS_PIN)
         #else
           STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm"
         #endif
