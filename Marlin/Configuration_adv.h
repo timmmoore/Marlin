@@ -2650,7 +2650,7 @@
  * Add support for a low-cost 8x8 LED Matrix based on the Max7219 chip as a realtime status display.
  * Requires 3 signal wires. Some useful debug options are included to demonstrate its usage.
  */
-#define MAX7219_DEBUG
+//#define MAX7219_DEBUG
 #if ENABLED(MAX7219_DEBUG)
   #define MAX7219_CLK_PIN   64
   #define MAX7219_DIN_PIN   57
