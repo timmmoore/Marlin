@@ -88,7 +88,7 @@ namespace ExtMenuInfo {
         , SS_CENTER);
     #endif
     #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
-      STATIC_ITEM_P((READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)?MSG_BATTERY_CHARGING:MSG_BATTERY_CHARGED, SS_CENTER);
+      STATIC_ITEM_P((READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)?PSTR(MSG_BATTERY_CHARGING):PSTR(MSG_BATTERY_CHARGED), SS_LEFT);
     #endif
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
@@ -100,15 +100,15 @@ namespace ExtMenuInfo {
           char buffer[8];
           uint16_t volt = (uint16_t)(((float)thermalManager.voltage_level * DIVIDER_RATIO) + 0.5f);
           sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
-          STATIC_ITEM_P(MSG_INFO_POWER_VOLT, SS_LEFT, buffer);
+          STATIC_ITEM(MSG_INFO_POWER_VOLT, SS_LEFT, buffer);
         }
-      STATIC_ITEM_P(
+      STATIC_ITEM(
         #if ENABLED(VOLTAGE_WARNING)
           MSG_INPUT_VOLTAGE_CHECK_OFF
         #else
           MSG_INPUT_VOLTAGE_CHECK_ON
         #endif
-        , SS_CENTER);
+        , SS_LEFT);
     #endif
     END_SCREEN();
   }
