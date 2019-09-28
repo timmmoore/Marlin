@@ -157,13 +157,13 @@ void menu_info_thermistors() {
   #endif
 
   #if EXTRUDERS
-    STATIC_ITEM_P(
+    STATIC_ITEM(
       #if WATCH_HOTENDS
         MSG_INFO_RUNAWAY_ON
       #else
         MSG_INFO_RUNAWAY_OFF
       #endif
-      , SS_INVERT
+      , SS_LEFT
     );
   #endif
 
@@ -174,13 +174,13 @@ void menu_info_thermistors() {
     STATIC_ITEM("TBed:" THERMISTOR_NAME, SS_INVERT);
     STATIC_PAIR_P(MSG_INFO_MIN_TEMP, STRINGIFY(BED_MINTEMP), SS_LEFT);
     STATIC_PAIR_P(MSG_INFO_MAX_TEMP, STRINGIFY(BED_MAXTEMP), SS_LEFT);
-    STATIC_ITEM_P(
+    STATIC_ITEM(
       #if WATCH_BED
         MSG_INFO_RUNAWAY_ON
       #else
         MSG_INFO_RUNAWAY_OFF
       #endif
-      , SS_INVERT
+      , SS_LEFT
     );
   #endif
 
@@ -191,13 +191,13 @@ void menu_info_thermistors() {
     STATIC_ITEM("TCham:" THERMISTOR_NAME, SS_INVERT);
     STATIC_PAIR_P(MSG_INFO_MIN_TEMP, STRINGIFY(CHAMBER_MINTEMP), SS_LEFT);
     STATIC_PAIR_P(MSG_INFO_MAX_TEMP, STRINGIFY(CHAMBER_MAXTEMP), SS_LEFT);
-    STATIC_ITEM_P(
+    STATIC_ITEM(
       #if WATCH_CHAMBER
         MSG_INFO_RUNAWAY_ON
       #else
         MSG_INFO_RUNAWAY_OFF
       #endif
-      , SS_INVERT
+      , SS_LEFT
     );
   #endif
 
