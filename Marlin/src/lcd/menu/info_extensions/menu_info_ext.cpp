@@ -35,6 +35,9 @@
 #include INCLUDE_LANGUAGE
 #include "language_en.h"
 
+#define STATIC_PAIR(MSG, VALUE, STYL)    do{ strcpy_P(buffer, PSTR(": ")); strcpy(buffer + 2, VALUE); STATIC_ITEM(MSG, STYL, buffer); }while(0)
+#define STATIC_PAIR_P(MSG, PVALUE, STYL) do{ strcpy_P(buffer, PSTR(": ")); strcpy_P(buffer + 2, PSTR(PVALUE)); STATIC_ITEM(MSG, STYL, buffer); }while(0)
+
 /*
  * If input voltage is measured then display in Board info menu page
  * Assumes a resistor divider network to lower voltage to something ADC can handle
@@ -77,9 +80,9 @@ namespace ExtMenuInfo {
     STATIC_PAIR_P(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
     #if ENABLED(POWER_LOSS_RECOVERY)
       #if PIN_EXISTS(POWER_LOSS)
-        STATIC_ITEM_P(MSG_INFO_POWER_LOSS " Pin: " STRINGIFY(POWER_LOSS_PIN), SS_CENTER);
+        STATIC_PAIR(MSG_INFO_POWER_LOSS, " Pin: " STRINGIFY(POWER_LOSS_PIN), SS_CENTER);
       #else
-        STATIC_PAIR_P(MSG_INFO_POWER_LOSS, STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", SS_CENTER);
+        STATIC_PAIR(MSG_INFO_POWER_LOSS, STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", SS_CENTER);
       #endif
     #endif
     #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
@@ -88,7 +91,7 @@ namespace ExtMenuInfo {
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_ITEM_P(MSG_INFO_POWER_VOLT "OFF", SS_CENTER);
+          STATIC_PAIR(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
         else
       #endif
         {
