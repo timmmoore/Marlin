@@ -34,6 +34,9 @@
 #include INCLUDE_LANGUAGE
 #include "language_en.h"
 
+#define STATIC_PAIR(MSG, VALUE, STYL)    do{ strcpy_P(buffer, PSTR(": ")); strcpy(buffer + 2, VALUE); STATIC_ITEM(MSG, STYL, buffer); }while(0)
+#define STATIC_PAIR_P(MSG, PVALUE, STYL) do{ strcpy_P(buffer, PSTR(": ")); strcpy_P(buffer + 2, PSTR(PVALUE)); STATIC_ITEM(MSG, STYL, buffer); }while(0)
+
 /*
  * If input voltage is measured then display in Board info menu page
  * Assumes a resistor divider network to lower voltage to something ADC can handle
@@ -72,25 +75,23 @@ namespace ExtMenuInfo {
         true
       #endif
     );
+    char buffer[21];  // for STATIC_PAIR_P
     START_SCREEN();
-    STATIC_ITEM_P(MSG_INFO_PSU ": " PSU_NAME, SS_CENTER);
+    STATIC_PAIR_P(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
     #if ENABLED(POWER_LOSS_RECOVERY)
       #if PIN_EXISTS(POWER_LOSS)
-        STATIC_ITEM_P(MSG_INFO_POWER_LOSS " Pin: " STRINGIFY(POWER_LOSS_PIN), SS_CENTER);
+        STATIC_PAIR(MSG_INFO_POWER_LOSS, " Pin: " STRINGIFY(POWER_LOSS_PIN), SS_CENTER);
       #else
-        STATIC_ITEM_P(MSG_INFO_POWER_LOSS ": " STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", SS_CENTER);
+        STATIC_PAIR(MSG_INFO_POWER_LOSS, STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", SS_CENTER);
       #endif
     #endif
     #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
-      if (READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)
-        STATIC_ITEM_P(MSG_BATTERY_CHARGING, SS_CENTER);
-      else
-        STATIC_ITEM_P(MSG_BATTERY_CHARGED, SS_CENTER);
+      STATIC_ITEM_P((READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)?MSG_BATTERY_CHARGING:MSG_BATTERY_CHARGED, SS_CENTER);
     #endif
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_ITEM_P(MSG_INFO_POWER_VOLT "OFF", SS_CENTER);
+          STATIC_PAIR(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
         else
       #endif
         {
@@ -99,11 +100,13 @@ namespace ExtMenuInfo {
           sprintf_P(buffer, PSTR("%3d.%02dV"), volt / 100, volt % 100);
           STATIC_ITEM_P(MSG_INFO_POWER_VOLT, SS_LEFT, buffer);
         }
+      STATIC_ITEM_P(
       #if ENABLED(VOLTAGE_WARNING)
-        STATIC_ITEM_P(MSG_INPUT_VOLTAGE_CHECK_OFF, SS_CENTER);
+        MSG_INPUT_VOLTAGE_CHECK_OFF
       #else
-        STATIC_ITEM_P(MSG_INPUT_VOLTAGE_CHECK_ON, SS_CENTER);
+        MSG_INPUT_VOLTAGE_CHECK_ON
       #endif
+        , SS_CENTER);
     #endif
     END_SCREEN();
   }
