@@ -51,7 +51,7 @@
 #endif
 
 #ifndef MSG_INFO_POWER_VOLT
-  #define MSG_INFO_POWER_VOLT                 _UxGT("Power Voltage: ")
+  #define MSG_INFO_POWER_VOLT                 _UxGT("Power Voltage")
 #endif
 
 #ifndef MSG_INPUT_VOLTAGE_CHECK_ON
