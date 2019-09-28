@@ -75,15 +75,17 @@ namespace ExtMenuInfo {
         true
       #endif
     );
-    char buffer[21];  // for STATIC_PAIR_P
+    char buffer[21];  // for STATIC_PAIR{_P}
     START_SCREEN();
     STATIC_PAIR_P(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
     #if ENABLED(POWER_LOSS_RECOVERY)
-      #if PIN_EXISTS(POWER_LOSS)
-        STATIC_PAIR(MSG_INFO_POWER_LOSS, " Pin: " STRINGIFY(POWER_LOSS_PIN), SS_CENTER);
-      #else
-        STATIC_PAIR(MSG_INFO_POWER_LOSS, STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm", SS_CENTER);
-      #endif
+      STATIC_PAIR(MSG_INFO_POWER_LOSS,
+        #if PIN_EXISTS(POWER_LOSS)
+          " Pin: " STRINGIFY(POWER_LOSS_PIN)
+        #else
+          STRINGIFY(POWER_LOSS_MIN_Z_CHANGE) "mm"
+        #endif
+        , SS_CENTER);
     #endif
     #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
       STATIC_ITEM_P((READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)?MSG_BATTERY_CHARGING:MSG_BATTERY_CHARGED, SS_CENTER);
@@ -101,11 +103,11 @@ namespace ExtMenuInfo {
           STATIC_ITEM_P(MSG_INFO_POWER_VOLT, SS_LEFT, buffer);
         }
       STATIC_ITEM_P(
-      #if ENABLED(VOLTAGE_WARNING)
-        MSG_INPUT_VOLTAGE_CHECK_OFF
-      #else
-        MSG_INPUT_VOLTAGE_CHECK_ON
-      #endif
+        #if ENABLED(VOLTAGE_WARNING)
+          MSG_INPUT_VOLTAGE_CHECK_OFF
+        #else
+          MSG_INPUT_VOLTAGE_CHECK_ON
+        #endif
         , SS_CENTER);
     #endif
     END_SCREEN();
