@@ -157,6 +157,7 @@ void menu_info_thermistors() {
   #endif
 
   #if EXTRUDERS
+  {
     STATIC_ITEM(
       #if WATCH_HOTENDS
         MSG_INFO_RUNAWAY_ON
@@ -165,9 +166,11 @@ void menu_info_thermistors() {
       #endif
       , SS_LEFT
     );
+  }
   #endif
 
   #if HAS_HEATED_BED
+  {
     #undef THERMISTOR_ID
     #define THERMISTOR_ID TEMP_SENSOR_BED
     #include "../thermistornames.h"
@@ -182,9 +185,11 @@ void menu_info_thermistors() {
       #endif
       , SS_LEFT
     );
+  }
   #endif
 
   #if HAS_HEATED_CHAMBER
+  {
     #undef THERMISTOR_ID
     #define THERMISTOR_ID TEMP_SENSOR_CHAMBER
     #include "../thermistornames.h"
@@ -199,6 +204,7 @@ void menu_info_thermistors() {
       #endif
       , SS_LEFT
     );
+  }
   #endif
 
   END_SCREEN();
