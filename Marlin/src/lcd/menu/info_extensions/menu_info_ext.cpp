@@ -93,7 +93,7 @@ namespace ExtMenuInfo {
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_PAIR(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
+          STATIC_PAIR_P(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
         else
       #endif
         {
