@@ -77,9 +77,9 @@ namespace ExtMenuInfo {
     );
     char buffer[21];  // for STATIC_PAIR{_P}
     START_SCREEN();
-    STATIC_PAIR(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
+    STATIC_PAIR_P(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
     #if ENABLED(POWER_LOSS_RECOVERY)
-      STATIC_PAIR(MSG_INFO_POWER_LOSS,
+      STATIC_PAIR_P(MSG_INFO_POWER_LOSS,
         #if PIN_EXISTS(POWER_LOSS)
           "Pin: " STRINGIFY(POWER_LOSS_PIN)
         #else
@@ -93,7 +93,7 @@ namespace ExtMenuInfo {
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_PAIR(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
+          STATIC_PAIR_P(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
         else
       #endif
         {
