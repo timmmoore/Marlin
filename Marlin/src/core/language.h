@@ -298,6 +298,8 @@
 #define MSG_ERR_PROBING_FAILED              "Probing Failed"
 #define MSG_ZPROBE_OUT_SER                  "Z Probe Past Bed"
 
+#define MSG_INPUT_VOLTAGE_TOO_LOW           "Input Voltage Too low"
+
 // Debug
 #define MSG_DEBUG_PREFIX                    "DEBUG:"
 #define MSG_DEBUG_OFF                       "off"
