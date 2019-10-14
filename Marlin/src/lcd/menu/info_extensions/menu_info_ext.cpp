@@ -32,7 +32,6 @@
 #include "../menu.h"
 #undef LANGUAGE_INCL_
 #define LANGUAGE_INCL_(M) STRINGIFY_(language_##M.h)
-#include INCLUDE_LANGUAGE
 #include "language_en.h"
 
 #define STATIC_PAIR(MSG, VALUE, STYL)    do{ strcpy_P(buffer, PSTR(": ")); strcpy(buffer + 2, VALUE); STATIC_ITEM(MSG, STYL, buffer); }while(0)
@@ -126,12 +125,10 @@ namespace ExtMenuInfo {
   //
   // List of menu info submenus
   //
-  static const char menu1str[] PROGMEM = MSG_INFO_POWER_MENU;
-  static const char menu2str[] PROGMEM = "Test";
 
   MenuInfoExtensions ExtMenuInfoPower = {
-    { menu1str, menu_info_power },
-    { menu2str, menu_info_test },
+    { GET_TEXT(MSG_INFO_POWER_MENU), menu_info_power },
+    { PSTR("Test"), menu_info_test },
     { nullptr, nullptr }
   };
 };

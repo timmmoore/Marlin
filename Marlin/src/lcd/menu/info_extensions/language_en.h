@@ -35,28 +35,12 @@
 #endif
 #undef en
 
-#ifndef MSG_INFO_POWER_MENU
-  #define MSG_INFO_POWER_MENU                 _UxGT("Power Info")
-#endif
-
-#ifndef MSG_BATTERY_CHARGED
-  #define MSG_BATTERY_CHARGED                 _UxGT("Battery: Charged")
-#endif
-#ifndef MSG_BATTERY_CHARGING
-  #define MSG_BATTERY_CHARGING                _UxGT("Battery: Charging")
-#endif
-
-#ifndef MSG_INFO_POWER_LOSS
-  #define MSG_INFO_POWER_LOSS                 _UxGT("Power Loss")
-#endif
-
-#ifndef MSG_INFO_POWER_VOLT
-  #define MSG_INFO_POWER_VOLT                 _UxGT("Power Voltage")
-#endif
-
-#ifndef MSG_INPUT_VOLTAGE_CHECK_ON
-  #define MSG_INPUT_VOLTAGE_CHECK_ON          _UxGT("Voltage Check: On")
-#endif
-#ifndef MSG_INPUT_VOLTAGE_CHECK_OFF
-  #define MSG_INPUT_VOLTAGE_CHECK_OFF         _UxGT("Voltage Check: Off")
-#endif
+namespace Language_en {
+  PROGMEM Language_Str MSG_INFO_POWER_MENU                 = _UxGT("Power Info");
+  PROGMEM Language_Str MSG_BATTERY_CHARGED                 = _UxGT("Battery: Charged");
+  PROGMEM Language_Str MSG_BATTERY_CHARGING                = _UxGT("Battery: Charging");
+  PROGMEM Language_Str MSG_INFO_POWER_LOSS                 = _UxGT("Power Loss");
+  PROGMEM Language_Str MSG_INFO_POWER_VOLT                 = _UxGT("Power Voltage");
+  PROGMEM Language_Str MSG_INPUT_VOLTAGE_CHECK_ON          = _UxGT("Voltage Check: On");
+  PROGMEM Language_Str MSG_INPUT_VOLTAGE_CHECK_OFF         = _UxGT("Voltage Check: Off");
+}
