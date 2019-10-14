@@ -55,7 +55,7 @@ enum {
   MAX_VELOCITY_SCREEN_CACHE,
   MAX_ACCELERATION_SCREEN_CACHE,
   DEFAULT_ACCELERATION_SCREEN_CACHE,
-#if ENABLED(JUNCTION_DEVIATION)
+#if DISABLED(CLASSIC_JERK)
   JUNC_DEV_SCREEN_CACHE,
 #else
   JERK_SCREEN_CACHE,
@@ -135,7 +135,7 @@ class KillScreen {
   // The KillScreen is behaves differently than the
   // others, so we do not bother extending UIScreen.
   public:
-    static void show(progmem_str msg);
+    static void show(const char*);
 };
 
 class DialogBoxBaseClass : public BaseScreen {
@@ -177,6 +177,20 @@ class SaveSettingsDialogBox : public DialogBoxBaseClass, public UncachedScreen {
 
     static void promptToSaveSettings();
     static void settingsChanged() {needs_save = true;}
+};
+
+class ConfirmStartPrintDialogBox : public DialogBoxBaseClass, public UncachedScreen {
+  private:
+    inline static const char *getShortFilename() {return getFilename(false);}
+    inline static const char *getLongFilename()  {return getFilename(true);}
+
+    static const char *getFilename(bool longName);
+  public:
+    static void onEntry();
+    static void onRedraw(draw_mode_t);
+    static bool onTouchEnd(uint8_t);
+
+    static void show(uint8_t file_index);
 };
 
 class ConfirmAbortPrintDialogBox : public DialogBoxBaseClass, public UncachedScreen {
@@ -360,7 +374,8 @@ class BaseNumericAdjustmentScreen : public BaseScreen {
           BTN_ACTION,
           BTN_TOGGLE,
           BTN_DISABLED,
-          TEXT_AREA
+          TEXT_AREA,
+          TEXT_LABEL
         } _style;
 
       protected:
@@ -488,7 +503,7 @@ class DefaultAccelerationScreen : public BaseNumericAdjustmentScreen, public Cac
     static bool onTouchHeld(uint8_t tag);
 };
 
-#if ENABLED(JUNCTION_DEVIATION)
+#if DISABLED(CLASSIC_JERK)
   class JunctionDeviationScreen : public BaseNumericAdjustmentScreen, public CachedScreen<JUNC_DEV_SCREEN_CACHE> {
     public:
       static void onRedraw(draw_mode_t);
@@ -637,9 +652,11 @@ class FilesScreen : public BaseScreen, public CachedScreen<FILES_SCREEN_CACHE, F
     static uint8_t  getTagForLine(uint8_t line) {return line + 2;}
     static uint8_t  getLineForTag(uint8_t tag)  {return  tag - 2;}
     static uint16_t getFileForTag(uint8_t tag);
+    static uint16_t getSelectedFileIndex();
 
-    static const char *getSelectedShortFilename();
-    static const char *getSelectedLongFilename();
+    inline static const char *getSelectedShortFilename() {return getSelectedFilename(false);}
+    inline static const char *getSelectedLongFilename()  {return getSelectedFilename(true);}
+    static const char *getSelectedFilename(bool longName);
 
     static void drawFileButton(const char* filename, uint8_t tag, bool is_dir, bool is_highlighted);
     static void drawFileList();

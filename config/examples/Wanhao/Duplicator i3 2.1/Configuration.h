@@ -71,7 +71,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(Anthony Birkett, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(Matthew Piercey, Bot-In-a-Box Educational Robotics)" // Who made the changes.
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -86,9 +86,10 @@
 
 // Show the Marlin bootscreen on startup. ** ENABLE FOR PRODUCTION **
 #define SHOW_BOOTSCREEN
+#define STRING_SPLASH_LINE2 "https://botinabox.ca"
 
 // Show the bitmap in Marlin/_Bootscreen.h on startup.
-//#define SHOW_CUSTOM_BOOTSCREEN
+#define SHOW_CUSTOM_BOOTSCREEN
 
 // Show the bitmap in Marlin/_Statusscreen.h on the status screen.
 //#define CUSTOM_STATUS_SCREEN_IMAGE
@@ -129,11 +130,11 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_K8400
+  #define MOTHERBOARD BOARD_MELZI
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-//#define CUSTOM_MACHINE_NAME "3D Printer"
+#define CUSTOM_MACHINE_NAME "Wanhao i3"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like http://www.uuidgenerator.net/version4
@@ -146,7 +147,7 @@
 #define EXTRUDERS 1
 
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
-#define DEFAULT_NOMINAL_FILAMENT_DIA 3.0
+#define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
 //#define SINGLENOZZLE
@@ -320,7 +321,7 @@
  * Enable and connect the power supply to the PS_ON_PIN.
  * Specify whether the power supply is active HIGH or active LOW.
  */
-#define PSU_CONTROL
+//#define PSU_CONTROL
 //#define PSU_NAME "Power Supply"
 
 #if ENABLED(PSU_CONTROL)
@@ -383,6 +384,7 @@
  *    67 : 450C thermistor from SliceEngineering
  *    70 : the 100K thermistor found in the bq Hephestos 2
  *    75 : 100k Generic Silicon Heat Pad with NTC 100K MGB18-104F39050L32 thermistor
+ *    99 : 100k thermistor with a 10K pull-up resistor (found on some Wanhao i3 machines)
  *
  *       1k ohm pullup tables - This is atypical, and requires changing out the 4.7k pullup for 1k.
  *                              (but gives greater accuracy and more stable PID)
@@ -400,16 +402,14 @@
  *         Use these for Testing or Development purposes. NEVER for production machine.
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
- *
- * :{ '0':"Not used", '1':"100k / 4.7k - EPCOS", '331':"(3.3V thermistor 1)", '2':"200k / 4.7k - ATC Semitec 204GT-2", '3':"Mendel-parts / 4.7k", '4':"10k !! do not use for a hotend. Bad resolution at high temp. !!", '5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '501':"100K Zonestar (Tronxy X3A)", '512':"100k RPW-Ultra hotend thermistor", '6':"100k / 4.7k EPCOS - Not as accurate as Table 1", '7':"100k / 4.7k Honeywell 135-104LAG-J01", '8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10':"100k / 4.7k RS 198-961", '11':"100k / 4.7k beta 3950 1%", '12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '18':"ATC Semitec 204GT-2 (4.7k pullup) Dagoma.Fr - MKS_Base_DKU001327" '20':"Pt100 (Ultimainboard V2.x)", '201':"Pt100 (Overlord)", '51':"100k / 1k - EPCOS", '52':"200k / 1k - ATC Semitec 204GT-2", '55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '61':"100k Formbot / Vivedino 3950 350C thermistor 4.7k pullup", '66':"Dyze Design 4.7M High Temperature thermistor", '67':"Slice Engineering 450C High Temperature thermistor", '70':"the 100K thermistor found in the bq Hephestos 2", '71':"100k / 4.7k Honeywell 135-104LAF-J01", '147':"Pt100 / 4.7k", '1047':"Pt1000 / 4.7k", '110':"Pt100 / 1k (non-standard)", '1010':"Pt1000 / 1k (non standard)", '-4':"Thermocouple + AD8495", '-3':"Thermocouple + MAX31855 (only for sensor 0)", '-2':"Thermocouple + MAX6675 (only for sensor 0)", '-1':"Thermocouple + AD595", '998':"Dummy 1", '999':"Dummy 2", '1000':"Custom thermistor params" }
  */
-#define TEMP_SENSOR_0 5
+#define TEMP_SENSOR_0 99
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_4 0
 #define TEMP_SENSOR_5 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED 99
 #define TEMP_SENSOR_CHAMBER 0
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
@@ -421,9 +421,9 @@
 //#define TEMP_SENSOR_1_AS_REDUNDANT
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 
-#define TEMP_RESIDENCY_TIME      2  // (seconds) Time to wait for hotend to "settle" in M109
+#define TEMP_RESIDENCY_TIME     10  // (seconds) Time to wait for hotend to "settle" in M109
 #define TEMP_WINDOW              1  // (°C) Temperature proximity for the "temperature reached" timer
-#define TEMP_HYSTERESIS          5  // (°C) Temperature proximity considered "close enough" to the target
+#define TEMP_HYSTERESIS          3  // (°C) Temperature proximity considered "close enough" to the target
 
 #define TEMP_BED_RESIDENCY_TIME 10  // (seconds) Time to wait for bed to "settle" in M190
 #define TEMP_BED_WINDOW          1  // (°C) Temperature proximity for the "temperature reached" timer
@@ -442,13 +442,13 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 275
-#define HEATER_1_MAXTEMP 275
-#define HEATER_2_MAXTEMP 275
-#define HEATER_3_MAXTEMP 275
-#define HEATER_4_MAXTEMP 275
-#define HEATER_5_MAXTEMP 275
-#define BED_MAXTEMP      150
+#define HEATER_0_MAXTEMP 260
+#define HEATER_1_MAXTEMP 260
+#define HEATER_2_MAXTEMP 260
+#define HEATER_3_MAXTEMP 260
+#define HEATER_4_MAXTEMP 260
+#define HEATER_5_MAXTEMP 260
+#define BED_MAXTEMP      100
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -478,15 +478,20 @@
   //#define DEFAULT_Ki 1.08
   //#define DEFAULT_Kd 114
 
+  // Wanhao Duplicator i3
+  #define DEFAULT_Kp 29
+  #define DEFAULT_Ki 2.00
+  #define DEFAULT_Kd 97
+
   // MakerGear
   //#define DEFAULT_Kp 7.0
   //#define DEFAULT_Ki 0.1
   //#define DEFAULT_Kd 12
 
   // Mendel Parts V9 on 12V
-  #define DEFAULT_Kp 63.0
-  #define DEFAULT_Ki 2.25
-  #define DEFAULT_Kd 440
+  //#define DEFAULT_Kp 63.0
+  //#define DEFAULT_Ki 2.25
+  //#define DEFAULT_Kd 440
 
 #endif // PIDTEMP
 
@@ -525,9 +530,14 @@
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  #define DEFAULT_bedKp 10.00
-  #define DEFAULT_bedKi .023
-  #define DEFAULT_bedKd 305.4
+  //#define DEFAULT_bedKp 10.00
+  //#define DEFAULT_bedKi .023
+  //#define DEFAULT_bedKd 305.4
+
+  // Wanhao Duplicator i3
+  #define  DEFAULT_bedKp 249.52
+  #define  DEFAULT_bedKi 47.89
+  #define  DEFAULT_bedKd 325.03
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -636,13 +646,13 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define Z_MIN_PROBE_ENDSTOP_INVERTING true  // Set to true to invert the logic of the probe.
+#define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 
 /**
  * Stepper Drivers
@@ -716,14 +726,14 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 134.74, 134.74, 4266.66, 148.7 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 100 }
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 160, 160, 10, 10000 }
+#define DEFAULT_MAX_FEEDRATE          { 700, 700, 100, 10000 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -731,7 +741,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -741,9 +751,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          6000    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  6000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          700    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   700    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Junction Deviation
@@ -768,12 +778,12 @@
  * value set here, it may happen instantaneously.
  */
 #if DISABLED(JUNCTION_DEVIATION)
-  #define DEFAULT_XJERK 10.0
-  #define DEFAULT_YJERK 10.0
-  #define DEFAULT_ZJERK  0.5
+  #define DEFAULT_XJERK 8.0
+  #define DEFAULT_YJERK 8.0
+  #define DEFAULT_ZJERK 0.4
 #endif
 
-#define DEFAULT_EJERK   20.0  // May be used by Linear Advance
+#define DEFAULT_EJERK    5.0  // May be used by Linear Advance
 
 /**
  * S-Curve Acceleration
@@ -799,7 +809,7 @@
  *
  * Enable this option for a probe connected to the Z Min endstop pin.
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 /**
  * Z_MIN_PROBE_PIN
@@ -888,10 +898,11 @@
 
 /**
  * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
+ * X and Y offsets must be integers.
  *
  * In the following example the X and Y offsets are both positive:
- *
- *   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+ * #define X_PROBE_OFFSET_FROM_EXTRUDER 10
+ * #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
  *
  *     +-- BACK ---+
  *     |           |
@@ -903,10 +914,10 @@
  *     |           |
  *     O-- FRONT --+
  *   (0,0)
- *
- * Specify a Probe position as { X, Y, Z }
  */
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#define X_PROBE_OFFSET_FROM_EXTRUDER 10  // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 10  // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
@@ -940,13 +951,13 @@
  *
  * Use these settings to specify the distance (mm) to raise the probe (or
  * lower the bed). The values set here apply over and above any (negative)
- * probe Z Offset set with NOZZLE_TO_PROBE_OFFSET, M851, or the LCD.
+ * probe Z Offset set with Z_PROBE_OFFSET_FROM_EXTRUDER, M851, or the LCD.
  * Only integer values >= 1 are valid here.
  *
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   15 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
@@ -1006,14 +1017,14 @@
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #define INVERT_X_DIR false
-#define INVERT_Y_DIR true
+#define INVERT_Y_DIR false
 #define INVERT_Z_DIR true
 
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR false
-#define INVERT_E1_DIR true
+#define INVERT_E0_DIR true
+#define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
@@ -1038,7 +1049,7 @@
 
 // The size of the print bed
 #define X_BED_SIZE 200
-#define Y_BED_SIZE 180
+#define Y_BED_SIZE 200
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1046,7 +1057,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 190
+#define Z_MAX_POS 150
 
 /**
  * Software Endstops
@@ -1198,6 +1209,12 @@
   #define GRID_MAX_POINTS_X 3
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
+  // Set the boundaries for probing (where the probe can reach).
+  //#define LEFT_PROBE_BED_POSITION MIN_PROBE_EDGE
+  //#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - (MIN_PROBE_EDGE))
+  //#define FRONT_PROBE_BED_POSITION MIN_PROBE_EDGE
+  //#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - (MIN_PROBE_EDGE))
+
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
 
@@ -1250,6 +1267,19 @@
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
 
 #endif // BED_LEVELING
+
+/**
+ * Points to probe for all 3-point Leveling procedures.
+ * Override if the automatically selected points are inadequate.
+ */
+#if EITHER(AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_UBL)
+  //#define PROBE_PT_1_X 15
+  //#define PROBE_PT_1_Y 180
+  //#define PROBE_PT_2_X 15
+  //#define PROBE_PT_2_Y 20
+  //#define PROBE_PT_3_X 170
+  //#define PROBE_PT_3_Y 20
+#endif
 
 /**
  * Add a bed leveling sub-menu for ABL or MBL.
@@ -1309,7 +1339,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (8*60)
+#define HOMING_FEEDRATE_Z  (4*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -1386,7 +1416,7 @@
  *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
-#define EEPROM_SETTINGS       // Persistent storage with M500 and M501
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #if ENABLED(EEPROM_SETTINGS)
@@ -1422,14 +1452,14 @@
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 210
-#define PREHEAT_1_TEMP_BED      0
-#define PREHEAT_1_FAN_SPEED   165 // Value from 0 to 255
+#define PREHEAT_1_TEMP_HOTEND 205
+#define PREHEAT_1_TEMP_BED     60
+#define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
-#define PREHEAT_2_TEMP_HOTEND 245
-#define PREHEAT_2_TEMP_BED      0
-#define PREHEAT_2_FAN_SPEED   165 // Value from 0 to 255
+#define PREHEAT_2_TEMP_HOTEND 240
+#define PREHEAT_2_TEMP_BED    100
+#define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 /**
  * Nozzle Park
@@ -1545,7 +1575,7 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 
 //=============================================================================
 //============================= LCD and SD support ============================
@@ -1620,7 +1650,7 @@
  *
  * Use CRC checks and retries on the SD communication.
  */
-//#define SD_CHECK_AND_RETRY
+#define SD_CHECK_AND_RETRY
 
 /**
  * LCD Menu Items
@@ -1660,7 +1690,7 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-//#define REVERSE_ENCODER_DIRECTION
+#define REVERSE_ENCODER_DIRECTION
 
 //
 // This option reverses the encoder direction for navigating LCD menus.
@@ -1668,7 +1698,7 @@
 //  If CLOCKWISE normally moves DOWN this makes it go UP.
 //  If CLOCKWISE normally moves UP this makes it go DOWN.
 //
-#define REVERSE_MENU_DIRECTION
+//#define REVERSE_MENU_DIRECTION
 
 //
 // This option reverses the encoder direction for Select Screen.
@@ -1725,7 +1755,7 @@
 //
 // ULTIMAKER Controller.
 //
-#define ULTIMAKERCONTROLLER
+//#define ULTIMAKERCONTROLLER
 
 //
 // ULTIPANEL as seen on Thingiverse.
@@ -1903,7 +1933,7 @@
 //
 // LCD for Melzi Card with Graphical LCD
 //
-//#define LCD_FOR_MELZI
+#define LCD_FOR_MELZI
 
 //
 // Original Ulticontroller from Ultimaker 2 printer with SSD1309 I2C display and encoder
@@ -2128,15 +2158,14 @@
  * LED Type. Enable only one of the following two options.
  *
  */
-//#define RGB_LED  // Enable for the Velleman RGB LED Add-on. https://www.velleman.eu/products/view/?id=430100
+//#define RGB_LED
 //#define RGBW_LED
 
 #if EITHER(RGB_LED, RGBW_LED)
-  // Pin defines for the RGB LED Add-on.
-  #define RGB_LED_R_PIN 41
-  #define RGB_LED_G_PIN 40
-  #define RGB_LED_B_PIN 12
-  #define RGB_LED_W_PIN -1
+  //#define RGB_LED_R_PIN 34
+  //#define RGB_LED_G_PIN 43
+  //#define RGB_LED_B_PIN 35
+  //#define RGB_LED_W_PIN -1
 #endif
 
 // Support for Adafruit Neopixel LED driver

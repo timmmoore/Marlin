@@ -45,24 +45,24 @@ void MoveAxisScreen::onEntry() {
 void MoveAxisScreen::onRedraw(draw_mode_t what) {
   widgets_t w(what);
   w.precision(1);
-  w.units(GET_TEXTF(UNITS_MM));
-  w.heading(                           GET_TEXTF(MOVE_AXIS));
+  w.units(GET_TEXT_F(UNITS_MM));
+  w.heading(                           GET_TEXT_F(MOVE_AXIS));
   w.home_buttons(20);
-  w.color(Theme::x_axis).adjuster(  2, GET_TEXTF(AXIS_X),  getAxisPosition_mm(X), canMove(X));
-  w.color(Theme::y_axis).adjuster(  4, GET_TEXTF(AXIS_Y),  getAxisPosition_mm(Y), canMove(Y));
-  w.color(Theme::z_axis).adjuster(  6, GET_TEXTF(AXIS_Z),  getAxisPosition_mm(Z), canMove(Z));
+  w.color(Theme::x_axis).adjuster(  2, GET_TEXT_F(AXIS_X),  getAxisPosition_mm(X), canMove(X));
+  w.color(Theme::y_axis).adjuster(  4, GET_TEXT_F(AXIS_Y),  getAxisPosition_mm(Y), canMove(Y));
+  w.color(Theme::z_axis).adjuster(  6, GET_TEXT_F(AXIS_Z),  getAxisPosition_mm(Z), canMove(Z));
 
   w.color(Theme::e_axis);
   #if EXTRUDERS == 1
-    w.adjuster(  8, GET_TEXTF(AXIS_E),  screen_data.MoveAxisScreen.e_rel[0], canMove(E0));
+    w.adjuster(  8, GET_TEXT_F(AXIS_E),  screen_data.MoveAxisScreen.e_rel[0], canMove(E0));
   #elif EXTRUDERS > 1
-    w.adjuster(  8, GET_TEXTF(AXIS_E1), screen_data.MoveAxisScreen.e_rel[0], canMove(E0));
-    w.adjuster( 10, GET_TEXTF(AXIS_E2), screen_data.MoveAxisScreen.e_rel[1], canMove(E1));
+    w.adjuster(  8, GET_TEXT_F(AXIS_E1), screen_data.MoveAxisScreen.e_rel[0], canMove(E0));
+    w.adjuster( 10, GET_TEXT_F(AXIS_E2), screen_data.MoveAxisScreen.e_rel[1], canMove(E1));
     #if EXTRUDERS > 2
-      w.adjuster( 12, GET_TEXTF(AXIS_E3), screen_data.MoveAxisScreen.e_rel[2], canMove(E2));
+      w.adjuster( 12, GET_TEXT_F(AXIS_E3), screen_data.MoveAxisScreen.e_rel[2], canMove(E2));
     #endif
     #if EXTRUDERS > 3
-      w.adjuster( 14, GET_TEXTF(AXIS_E4), screen_data.MoveAxisScreen.e_rel[3], canMove(E3));
+      w.adjuster( 14, GET_TEXT_F(AXIS_E4), screen_data.MoveAxisScreen.e_rel[3], canMove(E3));
     #endif
   #endif
   w.increments();
@@ -110,8 +110,8 @@ float MoveAxisScreen::getManualFeedrate(uint8_t axis, float increment_mm) {
   // Compute feedrate so that the tool lags the adjuster when it is
   // being held down, this allows enough margin for the planner to
   // connect segments and even out the motion.
-  constexpr float manual_feedrate[XYZE] = MANUAL_FEEDRATE;
-  return min(manual_feedrate[axis] / 60.0f, abs(increment_mm * (TOUCH_REPEATS_PER_SECOND) * 0.80f));
+  constexpr xyze_feedrate_t max_manual_feedrate = MANUAL_FEEDRATE;
+  return min(max_manual_feedrate[axis] / 60.0f, abs(increment_mm * (TOUCH_REPEATS_PER_SECOND) * 0.80f));
 }
 
 void MoveAxisScreen::setManualFeedrate(ExtUI::axis_t axis, float increment_mm) {
