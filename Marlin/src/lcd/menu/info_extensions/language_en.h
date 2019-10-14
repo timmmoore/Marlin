@@ -36,10 +36,9 @@
 #undef en
 
 namespace Language_en {
-
   PROGMEM Language_Str MSG_INFO_POWER_MENU                 = _UxGT("Power Info");
   PROGMEM Language_Str MSG_BATTERY_CHARGED                 = _UxGT("Battery: Charged");
-  PROGMEM Language_Str MSG_BATTERY_CHARGING                 = _UxGT("Battery: Charging");
+  PROGMEM Language_Str MSG_BATTERY_CHARGING                = _UxGT("Battery: Charging");
   PROGMEM Language_Str MSG_INFO_POWER_LOSS                 = _UxGT("Power Loss");
   PROGMEM Language_Str MSG_INFO_POWER_VOLT                 = _UxGT("Power Voltage");
   PROGMEM Language_Str MSG_INPUT_VOLTAGE_CHECK_ON          = _UxGT("Voltage Check: On");
