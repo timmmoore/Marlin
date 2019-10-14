@@ -33,8 +33,8 @@
 #define LANGUAGE_INCL_(M) STRINGIFY_(language_##M.h)
 #include "language_en.h"
 
-#define STATIC_PAIR(MSG, VALUE, STYL)    do{ strcpy_P(buffer, PSTR(": ")); strcpy(buffer + 2, VALUE); STATIC_ITEM(MSG, STYL, buffer); }while(0)
-#define STATIC_PAIR_P(MSG, PVALUE, STYL) do{ strcpy_P(buffer, PSTR(": ")); strcpy_P(buffer + 2, PSTR(PVALUE)); STATIC_ITEM(MSG, STYL, buffer); }while(0)
+#define VALUE_ITEM(MSG, VALUE, STYL)    do{ strcpy_P(buffer, PSTR(": ")); strcpy(buffer + 2, VALUE); STATIC_ITEM(MSG, STYL, buffer); }while(0)
+#define VALUE_ITEM_P(MSG, PVALUE, STYL) do{ strcpy_P(buffer, PSTR(": ")); strcpy_P(buffer + 2, PSTR(PVALUE)); STATIC_ITEM(MSG, STYL, buffer); }while(0)
 
 /*
  * If input voltage is measured then display in Board info menu page
@@ -74,11 +74,11 @@ namespace ExtMenuInfo {
         true
       #endif
     );
-    char buffer[21];  // for STATIC_PAIR{_P}
+    char buffer[21];  // for VALUE_PAIR{_P}
     START_SCREEN();
-    STATIC_PAIR_P(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
+    VALUE_ITEM_P(MSG_INFO_PSU, PSU_NAME, SS_CENTER);
     #if ENABLED(POWER_LOSS_RECOVERY)
-      STATIC_PAIR_P(MSG_INFO_POWER_LOSS,
+      VALUE_ITEM_P(MSG_INFO_POWER_LOSS,
         #if PIN_EXISTS(POWER_LOSS)
           "Pin: " STRINGIFY(POWER_LOSS_PIN)
         #else
@@ -87,12 +87,12 @@ namespace ExtMenuInfo {
         , SS_CENTER);
     #endif
     #if ENABLED(BATTERY_STATUS_AVAILABLE) && PIN_EXISTS(BATTERY_STATUS)
-      STATIC_ITEM_P((READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)?PSTR(MSG_BATTERY_CHARGING):PSTR(MSG_BATTERY_CHARGED), SS_LEFT);
+      STATIC_ITEM_P((READ(BATTERY_STATUS_PIN) != BATTERY_STATUS_CHARGED)?MSG_BATTERY_CHARGING:MSG_BATTERY_CHARGED, SS_LEFT);
     #endif
     #if HAS_VOLTAGE_AVAILABLE
       #if HAS_POWER_SWITCH && DISABLED(VOLTAGE_ALWAYS_AVAILABLE)
         if (!powersupply_on)
-          STATIC_PAIR_P(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
+          VALUE_ITEM_P(MSG_INFO_POWER_VOLT, "OFF", SS_CENTER);
         else
       #endif
         {
