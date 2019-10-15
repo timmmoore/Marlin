@@ -515,7 +515,7 @@ void Endstops::update() {
   /**
    * Check and update endstops
    */
-  #if HAS_X_MIN
+  #if HAS_X_MIN && !X_SPI_SENSORLESS
     #if ENABLED(X_DUAL_ENDSTOPS)
       UPDATE_ENDSTOP_BIT(X, MIN);
       #if HAS_X2_MIN
@@ -528,7 +528,7 @@ void Endstops::update() {
     #endif
   #endif
 
-  #if HAS_X_MAX
+  #if HAS_X_MAX && !X_SPI_SENSORLESS
     #if ENABLED(X_DUAL_ENDSTOPS)
       UPDATE_ENDSTOP_BIT(X, MAX);
       #if HAS_X2_MAX
@@ -541,7 +541,7 @@ void Endstops::update() {
     #endif
   #endif
 
-  #if HAS_Y_MIN
+  #if HAS_Y_MIN && !Y_SPI_SENSORLESS
     #if ENABLED(Y_DUAL_ENDSTOPS)
       UPDATE_ENDSTOP_BIT(Y, MIN);
       #if HAS_Y2_MIN
@@ -554,7 +554,7 @@ void Endstops::update() {
     #endif
   #endif
 
-  #if HAS_Y_MAX
+  #if HAS_Y_MAX && !Y_SPI_SENSORLESS
     #if ENABLED(Y_DUAL_ENDSTOPS)
       UPDATE_ENDSTOP_BIT(Y, MAX);
       #if HAS_Y2_MAX
@@ -567,7 +567,7 @@ void Endstops::update() {
     #endif
   #endif
 
-  #if HAS_Z_MIN
+  #if HAS_Z_MIN && !Z_SPI_SENSORLESS
     #if Z_MULTI_ENDSTOPS
       UPDATE_ENDSTOP_BIT(Z, MIN);
       #if HAS_Z2_MIN
@@ -594,7 +594,7 @@ void Endstops::update() {
     UPDATE_ENDSTOP_BIT(Z, MIN_PROBE);
   #endif
 
-  #if HAS_Z_MAX
+  #if HAS_Z_MAX && !Z_SPI_SENSORLESS
     // Check both Z dual endstops
     #if Z_MULTI_ENDSTOPS
       UPDATE_ENDSTOP_BIT(Z, MAX);
