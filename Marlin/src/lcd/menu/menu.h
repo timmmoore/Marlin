@@ -403,7 +403,7 @@ class MenuItem_bool : public MenuEditItemBase {
       return;                                                   \
     }                                                           \
     if (ui.should_draw()) MenuItem_confirm::draw                \
-      (encoderLine == _thisItemNr, _lcdLineNr, PLABEL);         \
+      (encoderLine == _thisItemNr, _lcdLineNr, PLABEL, ##V);    \
   }                                                             \
   ++_thisItemNr;                                                \
 }while(0)
